@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* ============================================================
+   6×0 Worlds — design tokens (dark esports premium, grafite + dourado)
+   Mapeados a partir do README de handoff.
+   ============================================================ */
+@theme {
+  /* tipografia */
+  --font-display: "Oswald", system-ui, sans-serif;
+  --font-logo: "Bebas Neue", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+  --font-body: "Barlow", system-ui, sans-serif;
+
+  /* cores base / paineis */
+  --color-ink: #1a1f28;
+  --color-ink-top: #222834;
+  --color-panel: #11151b;
+  --color-panel-2: #0e1116;
+  --color-panel-3: #0b0e12;
+
+  /* dourado */
+  --color-gold: #c9a24b;
+  --color-gold-bright: #e8ce86;
+
+  /* texto */
+  --color-cream: #f2ecde;
+  --color-muted: #9097a1;
+  --color-muted-2: #a7abb2;
+  --color-dim: #777e89;
+  --color-dim-2: #8b919b;
+
+  /* acentos */
+  --color-win: #7ed08f;
+  --color-win-bright: #86d79a;
+  --color-blue: #6aa0da;
+  --color-blue-deep: #2a6fb0;
+  --color-red: #d27a68;
+  --color-red-soft: #d2a08e;
+  --color-baron: #9a72c9;
+  --color-dragon: #d2814a;
+
+  /* breakpoint custom: abaixo de 920px as colunas empilham */
+  --breakpoint-wide: 920px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ============================================================
+   Keyframes (do protótipo)
+   ============================================================ */
+@keyframes scPulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(201, 162, 75, 0);
+  }
+  50% {
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.35), 0 0 0 7px rgba(201, 162, 75, 0.16);
+  }
+}
+@keyframes scFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes scPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-fade {
+  animation: scFade 0.5s ease both;
+}
+.anim-fade-fast {
+  animation: scFade 0.35s ease both;
+}
+.anim-pop {
+  animation: scPop 0.4s ease both;
+}
+
+/* ============================================================
+   Componentes utilitários (gradientes/sombras complexos)
+   ============================================================ */
+
+/* fundo do app: glow dourado no topo + glow azul embaixo + base grafite */
+.bg-app {
+  background:
+    radial-gradient(1100px 600px at 50% -6%, rgba(201, 162, 75, 0.16), transparent 60%),
+    radial-gradient(950px 720px at 100% 112%, rgba(74, 120, 184, 0.14), transparent 58%),
+    linear-gradient(180deg, #222834, #1a1f28);
+}
+
+/* botão dourado primário */
+.btn-gold {
+  color: #1a1f28;
+  background: linear-gradient(180deg, #f5e2a4, #d2ac52);
+  box-shadow: 0 10px 30px rgba(201, 162, 75, 0.32);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(201, 162, 75, 0.45);
+}
+
+/* botão secundário (ghost dourado) */
+.btn-ghost {
+  color: #f2ecde;
+  background: rgba(42, 51, 65, 0.6);
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  transition: all 0.15s ease;
+}
+.btn-ghost:hover {
+  border-color: #e8ce86;
+  background: rgba(201, 162, 75, 0.12);
+}
+
+/* texto com preenchimento em gradiente dourado (tier, etc.) */
+.text-gold-fill {
+  background: linear-gradient(180deg, #f8ebbe, #d2ac52);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* card padrão "raised" (gradiente grafite claro) */
+.panel-raised {
+  background: linear-gradient(180deg, rgba(40, 49, 63, 0.94), rgba(28, 34, 45, 0.94));
+}
+
+/* linha de jogador (draft) + hover dourado com translate */
+.player-row {
+  transition: all 0.15s ease;
+}
+.player-row:not(:disabled):hover {
+  border-color: #e8ce86;
+  transform: translateX(5px);
+  background: linear-gradient(180deg, rgba(62, 73, 91, 0.98), rgba(46, 55, 70, 0.98));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 3px 0 0 #e8ce86;
+}
+
+/* botões de resorteio */
+.btn-reroll {
+  transition: all 0.15s ease;
+}
+.btn-reroll:not(:disabled):hover {
+  border-color: rgba(201, 162, 75, 0.65);
+}
