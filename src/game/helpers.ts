@@ -23,11 +23,13 @@ export function teamAvg(players: RosterEntry[]): number {
 
 /**
  * Sensibilidade da curva de probabilidade. Quanto MENOR, mais a diferença de
- * overall importa (mais determinístico). ~15 dá um jogo competitivo:
- *   diff +5 → ~61% · +10 → ~82% · +15 → ~91% · 0 → 50%.
- * Ajuste aqui pra deixar o jogo mais fácil/difícil.
+ * overall importa (time forte vence mais). S=6 ("Dominante"):
+ *   diff +5 → ~87% · +10 → ~98% · 0 → 50% por jogo.
+ * Calibração (pool médio ~89, via scripts/sim.mjs):
+ *   nota 92 → 37% título · 95 → 84% título / 57% 6-0 · 99 → 99% / 91% 6-0.
+ * Aumente pra deixar mais aleatório/difícil; diminua pra premiar mais a nota.
  */
-export const STRENGTH_SENSITIVITY = 15;
+export const STRENGTH_SENSITIVITY = 6;
 
 /** Probabilidade de você vencer UM jogo, dada a diferença de força média. */
 export function gameWinProb(yourAvg: number, oppAvg: number): number {
