@@ -1,33 +1,35 @@
 import type { Team } from "../../types";
 
 // Worlds 2017 — campeão: Samsung Galaxy sobre a SK Telecom T1 (final em Pequim).
-// 24 times (entrou o play-in). Tuplas: [role, nome, overall, país]. RÉGUA em teams.ts (política B).
+// 24 times (entrou o play-in). Tuplas: [role, nome, overall, país]. NOTAS dos times de
+// playoff: mescla colocação + RFT 1.0 (rft.gg), 70% playoff + 30% geral; ver teams.ts.
 // Times de play-in eliminados ⚠ têm rosters menos verificáveis (cauda longa).
 export const WORLDS_2017: Team[] = [
-  // 1º — Campeão (base 88). Samsung equilibrado (sem transcendente único); Ruler foi o destaque.
+  // 1º — Campeão (base 88). Equilibrado, sem transcendente; mas TODOS gigantes no playoff
+  // (CuVee 81 na QF, CoreJJ 74). Varreram a SKT 3-0 na final.
   { id: "ssg-2017", team: "Samsung Galaxy", short: "SSG", year: 2017, league: "LCK", champion: true,
-    players: [["TOP", "CuVee", 90, "kr"], ["JNG", "Ambition", 91, "kr"], ["MID", "Crown", 89, "kr"], ["BOT", "Ruler", 93, "kr"], ["SUP", "CoreJJ", 91, "kr"]] },
-  // 2º — Vice (base 84). Faker ainda elite mesmo na derrota.
+    players: [["TOP", "CuVee", 96, "kr"], ["JNG", "Ambition", 91, "kr"], ["MID", "Crown", 93, "kr"], ["BOT", "Ruler", 94, "kr"], ["SUP", "CoreJJ", 96, "kr"]] },
+  // 2º — Vice (base 84). Faker ainda elite (89), mas o bot (Bang/Wolf) desabou na final 0-3.
   { id: "skt-2017", team: "SK Telecom T1", short: "SKT", year: 2017, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Huni", 85, "kr"], ["JNG", "Peanut", 86, "kr"], ["MID", "Faker", 90, "kr"], ["BOT", "Bang", 87, "kr"], ["SUP", "Wolf", 86, "kr"]] },
-  // 3º-4º — Semifinal (base 81). Uzi.
+    players: [["TOP", "Huni", 87, "kr"], ["JNG", "Peanut", 76, "kr"], ["MID", "Faker", 89, "kr"], ["BOT", "Bang", 80, "kr"], ["SUP", "Wolf", 79, "kr"]] },
+  // 3º-4º — Semifinal (base 81). Xiaohu 90 e Uzi 87 (77 na QF) carregaram.
   { id: "rng-2017", team: "Royal Never Give Up", short: "RNG", year: 2017, league: "LPL", champion: false,
-    players: [["TOP", "Letme", 83, "cn"], ["JNG", "Mlxg", 84, "cn"], ["MID", "Xiaohu", 84, "cn"], ["BOT", "Uzi", 86, "cn"], ["SUP", "Ming", 83, "cn"]] },
-  // 3º-4º — Semifinal (base 81).
+    players: [["TOP", "Letme", 81, "cn"], ["JNG", "Mlxg", 81, "cn"], ["MID", "Xiaohu", 90, "cn"], ["BOT", "Uzi", 87, "cn"], ["SUP", "Ming", 83, "cn"]] },
+  // 3º-4º — Semifinal (base 81). xiye o destaque.
   { id: "we-2017", team: "Team WE", short: "WE", year: 2017, league: "LPL", champion: false,
-    players: [["TOP", "957", 82, "cn"], ["JNG", "Condi", 84, "cn"], ["MID", "xiye", 83, "cn"], ["BOT", "Mystic", 84, "kr"], ["SUP", "Ben", 82, "kr"]] },
-  // 5º-8º — Quartas (base 78). Khan/Bdd.
+    players: [["TOP", "957", 80, "cn"], ["JNG", "Condi", 76, "cn"], ["MID", "xiye", 85, "cn"], ["BOT", "Mystic", 79, "kr"], ["SUP", "Ben", 76, "kr"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela SSG; só Bdd apareceu (62).
   { id: "lz-2017", team: "Longzhu Gaming", short: "LZ", year: 2017, league: "LCK", champion: false,
-    players: [["TOP", "Khan", 81, "kr"], ["JNG", "Cuzz", 79, "kr"], ["MID", "Bdd", 81, "kr"], ["BOT", "PraY", 81, "kr"], ["SUP", "GorillA", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78). Levou a SKT ao 5º jogo.
+    players: [["TOP", "Khan", 71, "kr"], ["JNG", "Cuzz", 66, "kr"], ["MID", "Bdd", 80, "kr"], ["BOT", "PraY", 67, "kr"], ["SUP", "GorillA", 69, "kr"]] },
+  // 5º-8º — Quartas (base 78). Levaram a SKT ao 5º jogo; RFT equilibrado.
   { id: "msf-2017", team: "Misfits Gaming", short: "MSF", year: 2017, league: "EU", champion: false,
-    players: [["TOP", "Alphari", 80, "gb"], ["JNG", "Maxlore", 79, "gb"], ["MID", "PowerOfEvil", 80, "de"], ["BOT", "Hans Sama", 80, "fr"], ["SUP", "IgNar", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78). Caps.
+    players: [["TOP", "Alphari", 77, "gb"], ["JNG", "Maxlore", 74, "gb"], ["MID", "PowerOfEvil", 74, "de"], ["BOT", "Hans Sama", 79, "fr"], ["SUP", "IgNar", 79, "kr"]] },
+  // 5º-8º — Quartas (base 78). Perderam 1-3 pra RNG; Rekkles o destaque.
   { id: "fnatic-2017", team: "Fnatic", short: "FNC", year: 2017, league: "EU", champion: false,
-    players: [["TOP", "sOAZ", 79, "fr"], ["JNG", "Broxah", 79, "dk"], ["MID", "Caps", 81, "dk"], ["BOT", "Rekkles", 81, "se"], ["SUP", "Jesiz", 79, "dk"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "sOAZ", 70, "fr"], ["JNG", "Broxah", 74, "dk"], ["MID", "Caps", 76, "dk"], ["BOT", "Rekkles", 83, "se"], ["SUP", "Jesiz", 72, "dk"]] },
+  // 5º-8º — Quartas (base 78). Jogaram muito bem no 2-3 vs WE; line toda forte.
   { id: "c9-2017", team: "Cloud9", short: "C9", year: 2017, league: "NA", champion: false,
-    players: [["TOP", "Impact", 80, "kr"], ["JNG", "Contractz", 79, "us"], ["MID", "Jensen", 80, "dk"], ["BOT", "Sneaky", 80, "us"], ["SUP", "Smoothie", 79, "ca"]] },
+    players: [["TOP", "Impact", 83, "kr"], ["JNG", "Contractz", 82, "us"], ["MID", "Jensen", 86, "dk"], ["BOT", "Sneaky", 84, "us"], ["SUP", "Smoothie", 85, "ca"]] },
   // 9º-16º — Fase de grupos (base 72). Clearlove/Scout.
   { id: "edg-2017", team: "EDward Gaming", short: "EDG", year: 2017, league: "LPL", champion: false,
     players: [["TOP", "Mouse", 72, "cn"], ["JNG", "Clearlove7", 75, "cn"], ["MID", "Scout", 76, "kr"], ["BOT", "iBoy", 74, "cn"], ["SUP", "Meiko", 75, "cn"]] },
