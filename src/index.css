@@ -141,6 +141,17 @@ body {
   background: rgba(201, 162, 75, 0.12);
 }
 
+/* botão dourado translúcido (ex.: "Próxima série") */
+.btn-soft-gold {
+  color: #f2ecde;
+  background: rgba(201, 162, 75, 0.1);
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  transition: transform 0.15s ease;
+}
+.btn-soft-gold:hover {
+  transform: translateY(-2px);
+}
+
 /* texto com preenchimento em gradiente dourado (tier, etc.) */
 .text-gold-fill {
   background: linear-gradient(180deg, #f8ebbe, #d2ac52);
