@@ -2,32 +2,35 @@ import type { Team } from "../../types";
 
 // Worlds 2014 — Season 4 World Championship (final em Seul, Sangam Stadium).
 // 16 times · campeão: Samsung White (sobre o Star Horn Royal Club) — uma das lines mais dominantes da história.
-// Tuplas: [role, nome, overall, país]. Notas pela RÉGUA em teams.ts (política B).
+// Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
+// 70% no RFT dos playoffs (agregado por série) + 30% no geral; ver teams.ts.
+// Mata'14 e PawN'14 com override de curadoria (MVP transcendente do evento).
 export const WORLDS_2014: Team[] = [
-  // 1º — Campeão (base 88). Mata, MVP transcendente = 96; elenco todo de elite.
+  // 1º — Campeão (base 88). O mais dominante da história; RFT de playoff absurdo
+  // (PawN 98 na semi, Looper 90, Mata 85). 4 jogadores no teto; imp 88 (QF1 fraco).
   { id: "sswhite-2014", team: "Samsung White", short: "SSW", year: 2014, league: "OGN", champion: true,
-    players: [["TOP", "Looper", 90, "kr"], ["JNG", "DanDy", 94, "kr"], ["MID", "PawN", 93, "kr"], ["BOT", "imp", 92, "kr"], ["SUP", "Mata", 96, "kr"]] },
-  // 2º — Vice (base 84). Uzi de novo na final.
+    players: [["TOP", "Looper", 96, "kr"], ["JNG", "DanDy", 96, "kr"], ["MID", "PawN", 96, "kr"], ["BOT", "imp", 88, "kr"], ["SUP", "Mata", 99, "kr"]] },
+  // 2º — Vice (base 84). Campanha modesta: sobreviveram sem brilhar (zero 85 o melhor).
   { id: "shrc-2014", team: "Star Horn Royal Club", short: "SHR", year: 2014, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Cola", 84, "cn"], ["JNG", "inSec", 87, "kr"], ["MID", "corn", 85, "cn"], ["BOT", "Uzi", 89, "cn"], ["SUP", "Zero", 85, "kr"]] },
-  // 3º-4º — Semifinal (base 81). Deft/Dade.
+    players: [["TOP", "Cola", 80, "cn"], ["JNG", "inSec", 78, "kr"], ["MID", "corn", 82, "cn"], ["BOT", "Uzi", 83, "cn"], ["SUP", "Zero", 85, "kr"]] },
+  // 3º-4º — Semifinal (base 81). Foram varridos 0-3 pela SSW na semi; QF2 melhor equilibrou.
   { id: "ssblue-2014", team: "Samsung Blue", short: "SSB", year: 2014, league: "OGN", champion: false,
-    players: [["TOP", "Acorn", 83, "kr"], ["JNG", "Spirit", 84, "kr"], ["MID", "Dade", 84, "kr"], ["BOT", "Deft", 85, "kr"], ["SUP", "Heart", 83, "kr"]] },
-  // 3º-4º — Semifinal (base 81).
+    players: [["TOP", "Acorn", 76, "kr"], ["JNG", "Spirit", 77, "kr"], ["MID", "Dade", 78, "kr"], ["BOT", "Deft", 77, "kr"], ["SUP", "Heart", 80, "kr"]] },
+  // 3º-4º — Semifinal (base 81). Os verdadeiros carrys: Gogoing 88, Cool 87, Cloud 86 (2 séries fortes).
   { id: "omg-2014", team: "Oh My God", short: "OMG", year: 2014, league: "LPL", champion: false,
-    players: [["TOP", "Gogoing", 83, "cn"], ["JNG", "Loveling", 83, "cn"], ["MID", "Cool", 84, "cn"], ["BOT", "San", 84, "cn"], ["SUP", "Cloud", 82, "cn"]] },
-  // 5º-8º — Quartas (base 78). Bjergsen.
+    players: [["TOP", "Gogoing", 88, "cn"], ["JNG", "Loveling", 82, "cn"], ["MID", "Cool", 87, "cn"], ["BOT", "San", 82, "cn"], ["SUP", "Cloud", 86, "cn"]] },
+  // 5º-8º — Quartas (base 78). RFT playoff: Bjergsen 65 o único que apareceu; WildTurtle 23.
   { id: "tsm-2014", team: "Team SoloMid", short: "TSM", year: 2014, league: "NA", champion: false,
-    players: [["TOP", "Dyrus", 79, "us"], ["JNG", "Amazing", 79, "de"], ["MID", "Bjergsen", 82, "dk"], ["BOT", "WildTurtle", 79, "ca"], ["SUP", "Lustboy", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Dyrus", 78, "us"], ["JNG", "Amazing", 70, "de"], ["MID", "Bjergsen", 82, "dk"], ["BOT", "WildTurtle", 67, "ca"], ["SUP", "Lustboy", 73, "kr"]] },
+  // 5º-8º — Quartas (base 78). RFT playoff (QF2): LemonNation 63 o destaque.
   { id: "c9-2014", team: "Cloud9", short: "C9", year: 2014, league: "NA", champion: false,
-    players: [["TOP", "Balls", 79, "us"], ["JNG", "Meteos", 81, "us"], ["MID", "Hai", 80, "us"], ["BOT", "Sneaky", 80, "us"], ["SUP", "LemonNation", 79, "us"]] },
-  // 5º-8º — Quartas (base 78). ClearLove.
+    players: [["TOP", "Balls", 76, "us"], ["JNG", "Meteos", 75, "us"], ["MID", "Hai", 76, "us"], ["BOT", "Sneaky", 78, "us"], ["SUP", "LemonNation", 81, "us"]] },
+  // 5º-8º — Quartas (base 78). RFT playoff (QF3): Koro1 63, U 60 (jungler real ClearLove = Mann 52).
   { id: "edg-2014", team: "EDward Gaming", short: "EDG", year: 2014, league: "LPL", champion: false,
-    players: [["TOP", "Koro1", 80, "cn"], ["JNG", "ClearLove", 82, "cn"], ["MID", "U", 79, "cn"], ["BOT", "NaMei", 80, "cn"], ["SUP", "Fzzf", 79, "cn"]] },
-  // 5º-8º — Quartas (base 78). GorillA.
+    players: [["TOP", "Koro1", 82, "cn"], ["JNG", "ClearLove", 77, "cn"], ["MID", "U", 81, "cn"], ["BOT", "NaMei", 74, "cn"], ["SUP", "Fzzf", 78, "cn"]] },
+  // 5º-8º — Quartas (base 78). Ggoong tinha RFT geral nº1, mas foi VARRIDO 0-3 na QF (46) → 78.
   { id: "najinws-2014", team: "NaJin White Shield", short: "NWS", year: 2014, league: "OGN", champion: false,
-    players: [["TOP", "Save", 79, "kr"], ["JNG", "Watch", 79, "kr"], ["MID", "Ggoong", 79, "kr"], ["BOT", "Zefa", 79, "kr"], ["SUP", "GorillA", 81, "kr"]] },
+    players: [["TOP", "Save", 71, "kr"], ["JNG", "Watch", 72, "kr"], ["MID", "Ggoong", 78, "kr"], ["BOT", "Zefa", 74, "kr"], ["SUP", "GorillA", 74, "kr"]] },
   // 9º-16º — Fase de grupos (base 72). westdoor (o Fizz lendário).
   { id: "ahq-2014", team: "ahq e-Sports Club", short: "AHQ", year: 2014, league: "GPL", champion: false,
     players: [["TOP", "Prydz", 72, "tw"], ["JNG", "NAZ", 72, "tw"], ["MID", "westdoor", 74, "tw"], ["BOT", "GarnetDevil", 73, "tw"], ["SUP", "GreenTea", 72, "tw"]] },

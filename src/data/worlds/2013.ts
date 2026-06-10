@@ -2,32 +2,35 @@ import type { Team } from "../../types";
 
 // Worlds 2013 — Season 3 World Championship (final no Staples Center, LA).
 // 14 times · campeão: SK Telecom T1 (1ª taça do Faker) sobre o Royal Club.
-// Tuplas: [role, nome, overall, país]. Notas pela RÉGUA em teams.ts (política B).
+// Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
+// com 70% do peso no RFT DOS PLAYOFFS (quartas/semi/final, agregado por série) e
+// 30% no geral; ver teams.ts. Faker'13 e Impact'13 com override de curadoria.
 export const WORLDS_2013: Team[] = [
-  // 1º — Campeão (base 88). Faker transcendente (MVP) = 96.
+  // 1º — Campeão (base 88). Bengi gigante no playoff (59/74/60); Piglet equilibrado
+  // (35 na final, 68/63 nas outras). Faker/Impact 96 por curadoria.
   { id: "skt-2013", team: "SK Telecom T1", short: "SKT", year: 2013, league: "OGN", champion: true,
-    players: [["TOP", "Impact", 90, "kr"], ["JNG", "Bengi", 92, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Piglet", 91, "kr"], ["SUP", "PoohManDu", 89, "kr"]] },
-  // 2º — Vice (base 84). Uzi carregando.
+    players: [["TOP", "Impact", 96, "kr"], ["JNG", "Bengi", 94, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Piglet", 90, "kr"], ["SUP", "PoohManDu", 92, "kr"]] },
+  // 2º — Vice (base 84). Final/S2 fracas; QF4 melhor equilibrou. Wh1t3zZ o destaque.
   { id: "royal-2013", team: "Royal Club", short: "RC", year: 2013, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "GoDlike", 85, "cn"], ["JNG", "Lucky", 84, "cn"], ["MID", "Wh1t3zZ", 85, "cn"], ["BOT", "Uzi", 89, "cn"], ["SUP", "Tabe", 85, "hk"]] },
-  // 3º — Semifinal (base 81).
+    players: [["TOP", "GoDlike", 82, "cn"], ["JNG", "Lucky", 78, "cn"], ["MID", "Wh1t3zZ", 87, "cn"], ["BOT", "Uzi", 84, "cn"], ["SUP", "Tabe", 84, "hk"]] },
+  // 3º — Semifinal (base 81). Watch (74 na semi) e Cain (66) brilharam mesmo perdendo.
   { id: "najinbs-2013", team: "NaJin Black Sword", short: "NJBS", year: 2013, league: "OGN", champion: false,
-    players: [["TOP", "Expession", 83, "kr"], ["JNG", "Watch", 82, "kr"], ["MID", "Nagne", 83, "kr"], ["BOT", "PraY", 85, "kr"], ["SUP", "Cain", 82, "kr"]] },
-  // 4º — Semifinal (base 81).
+    players: [["TOP", "Expession", 85, "kr"], ["JNG", "Watch", 85, "kr"], ["MID", "Nagne", 83, "kr"], ["BOT", "PraY", 79, "kr"], ["SUP", "Cain", 83, "kr"]] },
+  // 4º — Semifinal (base 81). sOAZ dominante no playoff (74/71 — top do evento).
   { id: "fnatic-2013", team: "Fnatic", short: "FNC", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "sOAZ", 83, "fr"], ["JNG", "Cyanide", 82, "fi"], ["MID", "xPeke", 85, "es"], ["BOT", "Puszu", 82, "ee"], ["SUP", "YellOwStaR", 84, "fr"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "sOAZ", 94, "fr"], ["JNG", "Cyanide", 82, "fi"], ["MID", "xPeke", 88, "es"], ["BOT", "Puszu", 86, "ee"], ["SUP", "YellOwStaR", 86, "fr"]] },
+  // 5º-8º — Quartas (base 78). Varridos pela SKT na QF3 (todos 35-42) — RFT puxa pra baixo.
   { id: "gamania-2013", team: "Gamania Bears", short: "GB", year: 2013, league: "GPL", champion: false,
-    players: [["TOP", "Steak", 79, "tw"], ["JNG", "Winds", 78, "tw"], ["MID", "Maple", 80, "tw"], ["BOT", "NL", 79, "tw"], ["SUP", "SwordArT", 80, "tw"]] },
-  // 5º-8º — Quartas (base 78). Diamondprox/Alex Ich.
+    players: [["TOP", "Steak", 71, "tw"], ["JNG", "Winds", 69, "tw"], ["MID", "Maple", 69, "tw"], ["BOT", "NL", 68, "tw"], ["SUP", "SwordArT", 71, "tw"]] },
+  // 5º-8º — Quartas (base 78). RFT playoff (QF2): Darien 58 o destaque.
   { id: "gambit-2013", team: "Gambit Gaming", short: "GMB", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "Darien", 79, "ru"], ["JNG", "Diamondprox", 81, "ru"], ["MID", "Alex Ich", 81, "ru"], ["BOT", "Genja", 80, "ru"], ["SUP", "Voidle", 78, "ee"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Darien", 82, "ru"], ["JNG", "Diamondprox", 74, "ru"], ["MID", "Alex Ich", 78, "ru"], ["BOT", "Genja", 74, "ru"], ["SUP", "Voidle", 75, "ee"]] },
+  // 5º-8º — Quartas (base 78). Bons nos grupos, modestos na QF4 (perderam 0-2): Gogoing 56.
   { id: "omg-2013", team: "Oh My God", short: "OMG", year: 2013, league: "LPL", champion: false,
-    players: [["TOP", "Gogoing", 80, "cn"], ["JNG", "LoveLin", 79, "cn"], ["MID", "Cool", 80, "cn"], ["BOT", "San", 80, "cn"], ["SUP", "Bigpomelo", 78, "cn"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Gogoing", 83, "cn"], ["JNG", "LoveLin", 74, "cn"], ["MID", "Cool", 81, "cn"], ["BOT", "San", 71, "cn"], ["SUP", "Bigpomelo", 76, "cn"]] },
+  // 5º-8º — Quartas (base 78). RFT playoff (QF1): Balls 62 o destaque.
   { id: "c9-2013", team: "Cloud9", short: "C9", year: 2013, league: "NA", champion: false,
-    players: [["TOP", "Balls", 79, "us"], ["JNG", "Meteos", 81, "us"], ["MID", "Hai", 80, "us"], ["BOT", "Sneaky", 80, "us"], ["SUP", "LemonNation", 79, "us"]] },
+    players: [["TOP", "Balls", 84, "us"], ["JNG", "Meteos", 76, "us"], ["MID", "Hai", 73, "us"], ["BOT", "Sneaky", 73, "us"], ["SUP", "LemonNation", 75, "us"]] },
   // 9º-10º — Fase de grupos (base 72).
   { id: "lemondogs-2013", team: "Lemondogs", short: "LD", year: 2013, league: "EU", champion: false,
     players: [["TOP", "Zorozero", 73, "dk"], ["JNG", "Dexter", 73, "de"], ["MID", "Nukeduck", 74, "no"], ["BOT", "Tabzz", 73, "nl"], ["SUP", "Mithy", 74, "es"]] },

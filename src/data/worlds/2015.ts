@@ -2,32 +2,34 @@ import type { Team } from "../../types";
 
 // Worlds 2015 — Season 5 World Championship (final em Berlim).
 // 16 times · campeão: SK Telecom T1 (bi) sobre os KOO Tigers — outra line histórica.
-// Tuplas: [role, nome, overall, país]. Notas pela RÉGUA em teams.ts (política B).
+// Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
+// 70% no RFT dos playoffs (agregado por série) + 30% no geral; ver teams.ts.
+// Faker'15 com override de curadoria. (ROX no RFT = KOO Tigers, mesmo elenco.)
 export const WORLDS_2015: Team[] = [
-  // 1º — Campeão (base 88). Faker transcendente = 96; MaRin foi MVP da final.
+  // 1º — Campeão (base 88). Faker dominante no playoff (75/77/75). Bengi o mais discreto da line.
   { id: "skt-2015", team: "SK Telecom T1", short: "SKT", year: 2015, league: "LCK", champion: true,
-    players: [["TOP", "MaRin", 94, "kr"], ["JNG", "Bengi", 91, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Bang", 92, "kr"], ["SUP", "Wolf", 90, "kr"]] },
-  // 2º — Vice (base 84).
+    players: [["TOP", "MaRin", 96, "kr"], ["JNG", "Bengi", 87, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Bang", 93, "kr"], ["SUP", "Wolf", 94, "kr"]] },
+  // 2º — Vice (base 84). Smeb/GorillA/Kuro carregaram (78/76/68 na semi); Hojin/PraY modestos.
   { id: "koo-2015", team: "KOO Tigers", short: "KOO", year: 2015, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Smeb", 88, "kr"], ["JNG", "Hojin", 85, "kr"], ["MID", "Kuro", 86, "kr"], ["BOT", "PraY", 88, "kr"], ["SUP", "GorillA", 87, "kr"]] },
-  // 3º-4º — Semifinal (base 81). Fnatic do verão 18-0.
+    players: [["TOP", "Smeb", 93, "kr"], ["JNG", "Hojin", 82, "kr"], ["MID", "Kuro", 89, "kr"], ["BOT", "PraY", 83, "kr"], ["SUP", "GorillA", 90, "kr"]] },
+  // 3º-4º — Semifinal (base 81). Febiven o destaque (80 na QF), Huni forte; bot apagado na semi.
   { id: "fnatic-2015", team: "Fnatic", short: "FNC", year: 2015, league: "EU", champion: false,
-    players: [["TOP", "Huni", 84, "kr"], ["JNG", "Reignover", 84, "kr"], ["MID", "Febiven", 84, "nl"], ["BOT", "Rekkles", 84, "se"], ["SUP", "YellOwStaR", 83, "fr"]] },
-  // 3º-4º — Semifinal (base 81).
+    players: [["TOP", "Huni", 87, "kr"], ["JNG", "Reignover", 81, "kr"], ["MID", "Febiven", 94, "nl"], ["BOT", "Rekkles", 81, "se"], ["SUP", "YellOwStaR", 80, "fr"]] },
+  // 3º-4º — Semifinal (base 81). Varridos pela SKT na semi; Soaz/Niels o melhor.
   { id: "origen-2015", team: "Origen", short: "OG", year: 2015, league: "EU", champion: false,
-    players: [["TOP", "Soaz", 83, "fr"], ["JNG", "Amazing", 82, "de"], ["MID", "xPeke", 84, "es"], ["BOT", "Niels", 83, "dk"], ["SUP", "Mithy", 83, "es"]] },
-  // 5º-8º — Quartas (base 78). Deft/PawN/ClearLove.
+    players: [["TOP", "Soaz", 83, "fr"], ["JNG", "Amazing", 76, "de"], ["MID", "xPeke", 80, "es"], ["BOT", "Niels", 83, "dk"], ["SUP", "Mithy", 81, "es"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela Fnatic; RFT puxa pra baixo.
   { id: "edg-2015", team: "EDward Gaming", short: "EDG", year: 2015, league: "LPL", champion: false,
-    players: [["TOP", "Koro1", 80, "cn"], ["JNG", "ClearLove", 81, "cn"], ["MID", "PawN", 81, "kr"], ["BOT", "Deft", 82, "kr"], ["SUP", "Meiko", 80, "cn"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Koro1", 70, "cn"], ["JNG", "ClearLove", 73, "cn"], ["MID", "PawN", 76, "kr"], ["BOT", "Deft", 74, "kr"], ["SUP", "Meiko", 71, "cn"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela SKT.
   { id: "ahq-2015", team: "ahq e-Sports Club", short: "AHQ", year: 2015, league: "LMS", champion: false,
-    players: [["TOP", "Ziv", 80, "tw"], ["JNG", "Mountain", 79, "tw"], ["MID", "Westdoor", 80, "tw"], ["BOT", "AN", 79, "tw"], ["SUP", "Albis", 79, "tw"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Ziv", 70, "tw"], ["JNG", "Mountain", 71, "tw"], ["MID", "Westdoor", 69, "tw"], ["BOT", "AN", 70, "tw"], ["SUP", "Albis", 73, "tw"]] },
+  // 5º-8º — Quartas (base 78). Levaram um game da ROX; RFT equilibrado.
   { id: "kt-2015", team: "KT Rolster", short: "KT", year: 2015, league: "LCK", champion: false,
-    players: [["TOP", "Ssumday", 80, "kr"], ["JNG", "Score", 80, "kr"], ["MID", "Nagne", 79, "kr"], ["BOT", "Arrow", 80, "kr"], ["SUP", "Piccaboo", 79, "kr"]] },
-  // 5º-8º — Quartas (base 78). Karsa.
+    players: [["TOP", "Ssumday", 77, "kr"], ["JNG", "Score", 77, "kr"], ["MID", "Nagne", 76, "kr"], ["BOT", "Arrow", 78, "kr"], ["SUP", "Piccaboo", 79, "kr"]] },
+  // 5º-8º — Quartas (base 78). Maple o destaque (65 na QF).
   { id: "fw-2015", team: "Flash Wolves", short: "FW", year: 2015, league: "LMS", champion: false,
-    players: [["TOP", "Steak", 79, "tw"], ["JNG", "Karsa", 81, "tw"], ["MID", "Maple", 80, "tw"], ["BOT", "NL", 79, "tw"], ["SUP", "SwordArT", 80, "tw"]] },
+    players: [["TOP", "Steak", 75, "tw"], ["JNG", "Karsa", 75, "tw"], ["MID", "Maple", 85, "tw"], ["BOT", "NL", 74, "tw"], ["SUP", "SwordArT", 76, "tw"]] },
   // 9º-16º — Fase de grupos (base 72).
   { id: "clg-2015", team: "Counter Logic Gaming", short: "CLG", year: 2015, league: "NA", champion: false,
     players: [["TOP", "ZionSpartan", 73, "ca"], ["JNG", "Xmithie", 73, "ph"], ["MID", "Pobelter", 73, "us"], ["BOT", "Doublelift", 75, "us"], ["SUP", "aphromoo", 74, "us"]] },
