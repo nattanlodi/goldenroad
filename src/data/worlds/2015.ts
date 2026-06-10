@@ -1,0 +1,55 @@
+import type { Team } from "../../types";
+
+// Worlds 2015 — Season 5 World Championship (final em Berlim).
+// 16 times · campeão: SK Telecom T1 (bi) sobre os KOO Tigers — outra line histórica.
+// Tuplas: [role, nome, overall, país]. Notas pela RÉGUA em teams.ts (política B).
+export const WORLDS_2015: Team[] = [
+  // 1º — Campeão (base 88). Faker transcendente = 96; MaRin foi MVP da final.
+  { id: "skt-2015", team: "SK Telecom T1", short: "SKT", year: 2015, league: "LCK", champion: true,
+    players: [["TOP", "MaRin", 94, "kr"], ["JNG", "Bengi", 91, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Bang", 92, "kr"], ["SUP", "Wolf", 90, "kr"]] },
+  // 2º — Vice (base 84).
+  { id: "koo-2015", team: "KOO Tigers", short: "KOO", year: 2015, league: "LCK", champion: false, finalist: true,
+    players: [["TOP", "Smeb", 88, "kr"], ["JNG", "Hojin", 85, "kr"], ["MID", "Kuro", 86, "kr"], ["BOT", "PraY", 88, "kr"], ["SUP", "GorillA", 87, "kr"]] },
+  // 3º-4º — Semifinal (base 81). Fnatic do verão 18-0.
+  { id: "fnatic-2015", team: "Fnatic", short: "FNC", year: 2015, league: "EU", champion: false,
+    players: [["TOP", "Huni", 84, "kr"], ["JNG", "Reignover", 84, "kr"], ["MID", "Febiven", 84, "nl"], ["BOT", "Rekkles", 84, "se"], ["SUP", "YellOwStaR", 83, "fr"]] },
+  // 3º-4º — Semifinal (base 81).
+  { id: "origen-2015", team: "Origen", short: "OG", year: 2015, league: "EU", champion: false,
+    players: [["TOP", "Soaz", 83, "fr"], ["JNG", "Amazing", 82, "de"], ["MID", "xPeke", 84, "es"], ["BOT", "Niels", 83, "dk"], ["SUP", "Mithy", 83, "es"]] },
+  // 5º-8º — Quartas (base 78). Deft/PawN/ClearLove.
+  { id: "edg-2015", team: "EDward Gaming", short: "EDG", year: 2015, league: "LPL", champion: false,
+    players: [["TOP", "Koro1", 80, "cn"], ["JNG", "ClearLove", 81, "cn"], ["MID", "PawN", 81, "kr"], ["BOT", "Deft", 82, "kr"], ["SUP", "Meiko", 80, "cn"]] },
+  // 5º-8º — Quartas (base 78).
+  { id: "ahq-2015", team: "ahq e-Sports Club", short: "AHQ", year: 2015, league: "LMS", champion: false,
+    players: [["TOP", "Ziv", 80, "tw"], ["JNG", "Mountain", 79, "tw"], ["MID", "Westdoor", 80, "tw"], ["BOT", "AN", 79, "tw"], ["SUP", "Albis", 79, "tw"]] },
+  // 5º-8º — Quartas (base 78).
+  { id: "kt-2015", team: "KT Rolster", short: "KT", year: 2015, league: "LCK", champion: false,
+    players: [["TOP", "Ssumday", 80, "kr"], ["JNG", "Score", 80, "kr"], ["MID", "Nagne", 79, "kr"], ["BOT", "Arrow", 80, "kr"], ["SUP", "Piccaboo", 79, "kr"]] },
+  // 5º-8º — Quartas (base 78). Karsa.
+  { id: "fw-2015", team: "Flash Wolves", short: "FW", year: 2015, league: "LMS", champion: false,
+    players: [["TOP", "Steak", 79, "tw"], ["JNG", "Karsa", 81, "tw"], ["MID", "Maple", 80, "tw"], ["BOT", "NL", 79, "tw"], ["SUP", "SwordArT", 80, "tw"]] },
+  // 9º-16º — Fase de grupos (base 72).
+  { id: "clg-2015", team: "Counter Logic Gaming", short: "CLG", year: 2015, league: "NA", champion: false,
+    players: [["TOP", "ZionSpartan", 73, "ca"], ["JNG", "Xmithie", 73, "ph"], ["MID", "Pobelter", 73, "us"], ["BOT", "Doublelift", 75, "us"], ["SUP", "aphromoo", 74, "us"]] },
+  // 9º-16º — Fase de grupos (base 72). Favorito que naufragou.
+  { id: "lgd-2015", team: "LGD Gaming", short: "LGD", year: 2015, league: "LPL", champion: false,
+    players: [["TOP", "Flame", 74, "kr"], ["JNG", "TBQ", 73, "cn"], ["MID", "GODV", 73, "cn"], ["BOT", "imp", 75, "kr"], ["SUP", "Pyl", 73, "cn"]] },
+  // 9º-16º — Fase de grupos (base 72).
+  { id: "tsm-2015", team: "Team SoloMid", short: "TSM", year: 2015, league: "NA", champion: false,
+    players: [["TOP", "Dyrus", 73, "us"], ["JNG", "Santorin", 73, "dk"], ["MID", "Bjergsen", 75, "dk"], ["BOT", "WildTurtle", 73, "ca"], ["SUP", "Lustboy", 73, "kr"]] },
+  // 9º-16º — Fase de grupos (base 72).
+  { id: "h2k-2015", team: "H2K", short: "H2K", year: 2015, league: "EU", champion: false,
+    players: [["TOP", "Odoamne", 73, "ro"], ["JNG", "loulex", 72, "fr"], ["MID", "Ryu", 74, "kr"], ["BOT", "Hjarnan", 73, "se"], ["SUP", "kaSing", 73, "gb"]] },
+  // 9º-16º — Fase de grupos (base 72). Rookie.
+  { id: "ig-2015", team: "Invictus Gaming", short: "IG", year: 2015, league: "LPL", champion: false,
+    players: [["TOP", "Zz1tai", 73, "cn"], ["JNG", "KAKAO", 74, "kr"], ["MID", "Rookie", 75, "kr"], ["BOT", "Kid", 73, "cn"], ["SUP", "Kitties", 72, "cn"]] },
+  // 9º-16º — Fase de grupos (base 72).
+  { id: "c9-2015", team: "Cloud9", short: "C9", year: 2015, league: "NA", champion: false,
+    players: [["TOP", "Balls", 73, "us"], ["JNG", "Hai", 73, "us"], ["MID", "Incarnati0n", 74, "dk"], ["BOT", "Sneaky", 74, "us"], ["SUP", "LemonNation", 73, "us"]] },
+  // 9º-16º — Fase de grupos, wildcard da Tailândia (base 72, fundo da tabela).
+  { id: "bkt-2015", team: "Bangkok Titans", short: "BKT", year: 2015, league: "SEA", champion: false,
+    players: [["TOP", "WarL0cK", 67, "th"], ["JNG", "007x", 66, "th"], ["MID", "G4", 67, "th"], ["BOT", "Lloyd", 67, "th"], ["SUP", "Moss", 66, "th"]] },
+  // 9º-16º — Fase de grupos, wildcard do Brasil (base 72).
+  { id: "pain-2015", team: "paiN Gaming", short: "PNG", year: 2015, league: "CBLOL", champion: false,
+    players: [["TOP", "Mylon", 69, "br"], ["JNG", "SirT", 68, "br"], ["MID", "Kami", 70, "br"], ["BOT", "brTT", 70, "br"], ["SUP", "Dioud", 68, "fr"]] },
+];
