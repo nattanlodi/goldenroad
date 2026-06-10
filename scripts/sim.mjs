@@ -70,4 +70,4 @@ for (const S of S_VALUES) {
   }
   console.log(`S=${String(S).padStart(2)}  →  ${row.join("  ·  ")}`);
 }
-console.log(`\n(cada célula = % título / % 6-0 perfeito · S atual no jogo = 8)`);
+console.log(`\n(cada célula = % título / % 6-0 perfeito · S atual no jogo = 6)`);

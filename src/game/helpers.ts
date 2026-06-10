@@ -23,15 +23,15 @@ export function teamAvg(players: RosterEntry[]): number {
 
 /**
  * Sensibilidade da curva de probabilidade. Quanto MENOR, mais a diferença de
- * overall importa (time forte vence mais). S=8 ("Equilibrado"):
- *   diff +5 → ~80% · +10 → ~95% · 0 → 50% por jogo.
- * Calibração no pool REAL de playoffs (116 times, média 83, teto de line 95),
- * via scripts/sim.mjs:
- *   nota 83 → ~9% título · 88 → ~53% · 90 → ~70% · 92 → ~83% / 61% 6-0 ·
- *   95 (teto) → ~95% título / 82% 6-0.
+ * overall importa (time forte vence mais). S=6 ("Dominante"):
+ *   diff +5 → ~87% · +10 → ~98% · 0 → 50% por jogo.
+ * Calibração no pool REAL de playoffs pós-mescla RFT (116 times, média 81,
+ * min 67 / max 96, teto de line ~97), via scripts/sim.mjs:
+ *   nota 80 → ~5% título · 86 → ~37% · 88 → ~50% · 90 → ~61% ·
+ *   92 → ~71% / 50% 6-0 · 95 (quase-teto) → ~88% título / 73% 6-0.
  * Aumente pra deixar mais aleatório/difícil; diminua pra premiar mais a nota.
  */
-export const STRENGTH_SENSITIVITY = 8;
+export const STRENGTH_SENSITIVITY = 6;
 
 /** Probabilidade de você vencer UM jogo, dada a diferença de força média. */
 export function gameWinProb(yourAvg: number, oppAvg: number): number {

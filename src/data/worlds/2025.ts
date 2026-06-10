@@ -1,33 +1,34 @@
 import type { Team } from "../../types";
 
 // Worlds 2025 — campeão: T1 sobre o KT Rolster (3-2; o TRICAMPEONATO seguido — 6º título de T1; final na China).
-// 17 times. Tuplas: [role, nome, overall, país]. RÉGUA em teams.ts (política B).
+// 17 times. Tuplas: [role, nome, overall, país]. NOTAS dos times de playoff: mescla
+// colocação + RFT 1.0 (rft.gg), 70% playoff + 30% geral; ver teams.ts. Faker'25 curadoria.
 // Final 100% LCK (clássico T1 x KT). Gumayusi MVP da final. Doran no top (lugar do Zeus).
 export const WORLDS_2025: Team[] = [
-  // 1º — Campeão (base 88). Terceiro título seguido, façanha inédita. Gumayusi MVP; Faker eterno.
+  // 1º — Campeão (base 88). Tricampeonato seguido (6º título); Gumayusi MVP. Oner 89 na semi.
   { id: "t1-2025", team: "T1", short: "T1", year: 2025, league: "LCK", champion: true,
-    players: [["TOP", "Doran", 89, "kr"], ["JNG", "Oner", 91, "kr"], ["MID", "Faker", 94, "kr"], ["BOT", "Gumayusi", 93, "kr"], ["SUP", "Keria", 92, "kr"]] },
-  // 2º — Vice (base 84). O eterno rival levou T1 ao 5º jogo.
+    players: [["TOP", "Doran", 92, "kr"], ["JNG", "Oner", 94, "kr"], ["MID", "Faker", 94, "kr"], ["BOT", "Gumayusi", 95, "kr"], ["SUP", "Keria", 96, "kr"]] },
+  // 2º — Vice (base 84). O eterno rival levou T1 ao 5º jogo; Bdd/Cuzz/Peter monstruosos (92/90/91 na QF).
   { id: "kt-2025", team: "KT Rolster", short: "KT", year: 2025, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "PerfecT", 85, "kr"], ["JNG", "Cuzz", 86, "kr"], ["MID", "Bdd", 86, "kr"], ["BOT", "deokdam", 85, "kr"], ["SUP", "Peter", 84, "kr"]] },
-  // 3º-4º — Semifinal (base 81). JackeyLove/369/Kanavi.
+    players: [["TOP", "PerfecT", 90, "kr"], ["JNG", "Cuzz", 95, "kr"], ["MID", "Bdd", 95, "kr"], ["BOT", "deokdam", 91, "kr"], ["SUP", "Peter", 94, "kr"]] },
+  // 3º-4º — Semifinal (base 81). 369/Creme fortes na QF; varridos 0-3 pela T1 na semi (Kanavi 40).
   { id: "tes-2025", team: "Top Esports", short: "TES", year: 2025, league: "LPL", champion: false,
-    players: [["TOP", "369", 82, "cn"], ["JNG", "Kanavi", 83, "kr"], ["MID", "Creme", 81, "cn"], ["BOT", "JackeyLove", 84, "cn"], ["SUP", "Hang", 81, "cn"]] },
-  // 3º-4º — Semifinal (base 81). Chovy/Canyon/Ruler — superlinha que de novo não levou.
+    players: [["TOP", "369", 83, "cn"], ["JNG", "Kanavi", 77, "kr"], ["MID", "Creme", 81, "cn"], ["BOT", "JackeyLove", 79, "cn"], ["SUP", "Hang", 82, "cn"]] },
+  // 3º-4º — Semifinal (base 81). Chovy o destaque; a superlinha que de novo parou cedo.
   { id: "geng-2025", team: "Gen.G Esports", short: "GEN", year: 2025, league: "LCK", champion: false,
-    players: [["TOP", "Kiin", 82, "kr"], ["JNG", "Canyon", 84, "kr"], ["MID", "Chovy", 85, "kr"], ["BOT", "Ruler", 84, "kr"], ["SUP", "Duro", 81, "kr"]] },
-  // 5º-8º — Quartas (base 78). A LPL renomeada (ex-Weibo/núcleo novo); Tarzan.
+    players: [["TOP", "Kiin", 80, "kr"], ["JNG", "Canyon", 82, "kr"], ["MID", "Chovy", 83, "kr"], ["BOT", "Ruler", 80, "kr"], ["SUP", "Duro", 80, "kr"]] },
+  // 5º-8º — Quartas (base 78). LPL renomeada; Kael/Flandre o destaque, levaram a T1 ao 5º jogo.
   { id: "al-2025", team: "Anyone's Legend", short: "AL", year: 2025, league: "LPL", champion: false,
-    players: [["TOP", "Flandre", 79, "cn"], ["JNG", "Tarzan", 80, "kr"], ["MID", "Shanks", 78, "cn"], ["BOT", "Hope", 80, "cn"], ["SUP", "Kael", 78, "kr"]] },
-  // 5º-8º — Quartas (base 78). A melhor campanha do Ocidente; Caps.
+    players: [["TOP", "Flandre", 80, "cn"], ["JNG", "Tarzan", 78, "kr"], ["MID", "Shanks", 77, "cn"], ["BOT", "Hope", 74, "cn"], ["SUP", "Kael", 81, "kr"]] },
+  // 5º-8º — Quartas (base 78). A melhor campanha do Ocidente; perderam 1-3 pra TES.
   { id: "g2-2025", team: "G2 Esports", short: "G2", year: 2025, league: "LEC", champion: false,
-    players: [["TOP", "BrokenBlade", 78, "de"], ["JNG", "SkewMond", 78, "fr"], ["MID", "Caps", 80, "dk"], ["BOT", "Hans Sama", 79, "fr"], ["SUP", "Labrov", 78, "gr"]] },
-  // 5º-8º — Quartas (base 78). Zeus migrou pra cá; Zeka/Viper.
+    players: [["TOP", "BrokenBlade", 72, "de"], ["JNG", "SkewMond", 75, "fr"], ["MID", "Caps", 76, "dk"], ["BOT", "Hans Sama", 71, "fr"], ["SUP", "Labrov", 71, "gr"]] },
+  // 5º-8º — Quartas (base 78). Zeus migrou pra cá; Viper o destaque (78 na QF).
   { id: "hle-2025", team: "Hanwha Life Esports", short: "HLE", year: 2025, league: "LCK", champion: false,
-    players: [["TOP", "Zeus", 80, "kr"], ["JNG", "Peanut", 79, "kr"], ["MID", "Zeka", 81, "kr"], ["BOT", "Viper", 81, "kr"], ["SUP", "Delight", 79, "kr"]] },
-  // 5º-8º — Quartas (base 78). Surpresa de Taiwan, bateu na trave das semis.
+    players: [["TOP", "Zeus", 79, "kr"], ["JNG", "Peanut", 76, "kr"], ["MID", "Zeka", 73, "kr"], ["BOT", "Viper", 85, "kr"], ["SUP", "Delight", 80, "kr"]] },
+  // 5º-8º — Quartas (base 78). Surpresa de Taiwan; varridos 0-3 pela KT.
   { id: "cfo-2025", team: "CTBC Flying Oyster", short: "CFO", year: 2025, league: "PCS", champion: false,
-    players: [["TOP", "Driver", 78, "tw"], ["JNG", "JunJia", 79, "tw"], ["MID", "HongQ", 79, "tw"], ["BOT", "Doggo", 80, "tw"], ["SUP", "Kaiwing", 78, "hk"]] },
+    players: [["TOP", "Driver", 68, "tw"], ["JNG", "JunJia", 67, "tw"], ["MID", "HongQ", 67, "tw"], ["BOT", "Doggo", 69, "tw"], ["SUP", "Kaiwing", 71, "hk"]] },
   // 9º-16º — Fase suíça eliminados (base 72). De novo a melhor NA (Bwipo/Inspired).
   { id: "flyquest-2025", team: "FlyQuest", short: "FLY", year: 2025, league: "LCS", champion: false,
     players: [["TOP", "Bwipo", 74, "be"], ["JNG", "Inspired", 74, "pl"], ["MID", "Quad", 73, "kr"], ["BOT", "Massu", 73, "ca"], ["SUP", "Busio", 73, "us"]] },

@@ -1,32 +1,33 @@
 import type { Team } from "../../types";
 
 // Worlds 2023 — campeão: T1 sobre o Weibo Gaming (o tetra do Faker; final em Seul, Gocheok Sky Dome).
-// 22 times. 1º Worlds com fase suíça. Tuplas: [role, nome, overall, país]. RÉGUA em teams.ts (política B).
+// 22 times. 1º Worlds com fase suíça. Tuplas: [role, nome, overall, país]. NOTAS dos times de
+// playoff: mescla colocação + RFT 1.0 (rft.gg), 70% playoff + 30% geral; ver teams.ts. Faker'23 curadoria.
 export const WORLDS_2023: Team[] = [
-  // 1º — Campeão (base 88). T1 em casa, dominante (3-0 na final). Faker MVP simbólico; Zeus/Keria/Gumayusi no auge.
+  // 1º — Campeão (base 88). Tetra do Faker em casa. Zeus monstro (95 na final, top do evento).
   { id: "t1-2023", team: "T1", short: "T1", year: 2023, league: "LCK", champion: true,
-    players: [["TOP", "Zeus", 92, "kr"], ["JNG", "Oner", 91, "kr"], ["MID", "Faker", 95, "kr"], ["BOT", "Gumayusi", 92, "kr"], ["SUP", "Keria", 93, "kr"]] },
-  // 2º — Vice (base 84). TheShy de volta a uma final.
+    players: [["TOP", "Zeus", 96, "kr"], ["JNG", "Oner", 96, "kr"], ["MID", "Faker", 95, "kr"], ["BOT", "Gumayusi", 92, "kr"], ["SUP", "Keria", 96, "kr"]] },
+  // 2º — Vice (base 84). TheShy de volta a uma final; Crisp 92 na QF, ascensão até a final.
   { id: "wbg-2023", team: "Weibo Gaming", short: "WBG", year: 2023, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "TheShy", 86, "kr"], ["JNG", "Weiwei", 84, "cn"], ["MID", "Xiaohu", 85, "cn"], ["BOT", "Light", 86, "cn"], ["SUP", "Crisp", 84, "cn"]] },
-  // 3º-4º — Semifinal (base 81). Bin/Elk explodiram.
+    players: [["TOP", "TheShy", 90, "kr"], ["JNG", "Weiwei", 82, "cn"], ["MID", "Xiaohu", 88, "cn"], ["BOT", "Light", 85, "cn"], ["SUP", "Crisp", 87, "cn"]] },
+  // 3º-4º — Semifinal (base 81). ON o destaque (89); Bin/Elk.
   { id: "blg-2023", team: "Bilibili Gaming", short: "BLG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "Bin", 84, "cn"], ["JNG", "XUN", 82, "cn"], ["MID", "Yagao", 82, "cn"], ["BOT", "Elk", 84, "cn"], ["SUP", "ON", 82, "cn"]] },
-  // 3º-4º — Semifinal (base 81). 1º colocado da LPL; Knight/Ruler.
+    players: [["TOP", "Bin", 81, "cn"], ["JNG", "XUN", 87, "cn"], ["MID", "Yagao", 85, "cn"], ["BOT", "Elk", 86, "cn"], ["SUP", "ON", 89, "cn"]] },
+  // 3º-4º — Semifinal (base 81). 1º colocado da LPL; Ruler/MISSING.
   { id: "jdg-2023", team: "JD Gaming", short: "JDG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "369", 83, "cn"], ["JNG", "Kanavi", 84, "kr"], ["MID", "knight", 86, "cn"], ["BOT", "Ruler", 87, "kr"], ["SUP", "MISSING", 82, "cn"]] },
-  // 5º-8º — Quartas (base 78). Chovy + Peyz (novato sensação).
+    players: [["TOP", "369", 82, "cn"], ["JNG", "Kanavi", 82, "kr"], ["MID", "knight", 82, "cn"], ["BOT", "Ruler", 85, "kr"], ["SUP", "MISSING", 84, "cn"]] },
+  // 5º-8º — Quartas (base 78). Perderam 2-3 pra BLG; Chovy o destaque.
   { id: "geng-2023", team: "Gen.G Esports", short: "GEN", year: 2023, league: "LCK", champion: false,
-    players: [["TOP", "Doran", 79, "kr"], ["JNG", "Peanut", 80, "kr"], ["MID", "Chovy", 83, "kr"], ["BOT", "Peyz", 81, "kr"], ["SUP", "Delight", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78). A surpresa norte-americana.
+    players: [["TOP", "Doran", 77, "kr"], ["JNG", "Peanut", 74, "kr"], ["MID", "Chovy", 79, "kr"], ["BOT", "Peyz", 77, "kr"], ["SUP", "Delight", 76, "kr"]] },
+  // 5º-8º — Quartas (base 78). A surpresa norte-americana; varridos 0-3 pela WBG.
   { id: "nrg-2023", team: "NRG", short: "NRG", year: 2023, league: "LCS", champion: false,
-    players: [["TOP", "Dhokla", 78, "us"], ["JNG", "Contractz", 78, "us"], ["MID", "Palafox", 78, "us"], ["BOT", "FBI", 80, "au"], ["SUP", "IgNar", 79, "kr"]] },
-  // 5º-8º — Quartas (base 78). Kiin/Bdd/Aiming/Lehends.
+    players: [["TOP", "Dhokla", 73, "us"], ["JNG", "Contractz", 71, "us"], ["MID", "Palafox", 71, "us"], ["BOT", "FBI", 68, "au"], ["SUP", "IgNar", 68, "kr"]] },
+  // 5º-8º — Quartas (base 78). Perderam 1-3 pra JDG; Bdd o destaque.
   { id: "kt-2023", team: "KT Rolster", short: "KT", year: 2023, league: "LCK", champion: false,
-    players: [["TOP", "Kiin", 80, "kr"], ["JNG", "Cuzz", 79, "kr"], ["MID", "Bdd", 81, "kr"], ["BOT", "Aiming", 80, "kr"], ["SUP", "Lehends", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78). Scout/Tarzan/GALA.
+    players: [["TOP", "Kiin", 78, "kr"], ["JNG", "Cuzz", 74, "kr"], ["MID", "Bdd", 80, "kr"], ["BOT", "Aiming", 77, "kr"], ["SUP", "Lehends", 74, "kr"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Scout/Tarzan tiveram um Worlds ruim.
   { id: "lng-2023", team: "LNG Esports", short: "LNG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "Zika", 78, "cn"], ["JNG", "Tarzan", 80, "kr"], ["MID", "Scout", 81, "kr"], ["BOT", "GALA", 80, "cn"], ["SUP", "Hang", 78, "cn"]] },
+    players: [["TOP", "Zika", 71, "cn"], ["JNG", "Tarzan", 68, "kr"], ["MID", "Scout", 74, "kr"], ["BOT", "GALA", 69, "cn"], ["SUP", "Hang", 72, "cn"]] },
   // 9º-18º — Fase suíça eliminados (base 72). Caps/Hans Sama.
   { id: "g2-2023", team: "G2 Esports", short: "G2", year: 2023, league: "LEC", champion: false,
     players: [["TOP", "BrokenBlade", 73, "de"], ["JNG", "Yike", 73, "se"], ["MID", "Caps", 76, "dk"], ["BOT", "Hans Sama", 74, "fr"], ["SUP", "Mikyx", 73, "si"]] },
