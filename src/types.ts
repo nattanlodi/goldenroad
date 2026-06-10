@@ -2,8 +2,9 @@
 
 export type Role = "TOP" | "JNG" | "MID" | "BOT" | "SUP";
 
-/** Jogador dentro do dataset: [role, nome, overall]. */
-export type RosterEntry = [Role, string, number];
+/** Jogador dentro do dataset: [role, nome, overall, país?].
+ *  O 4º item é o código ISO 3166-1 alpha-2 minúsculo (ex.: "kr", "br") — opcional. */
+export type RosterEntry = [Role, string, number, string?];
 
 /** Uma campanha (time + ano) do Worlds. */
 export interface Team {
@@ -13,6 +14,8 @@ export interface Team {
   year: number;
   league: string;
   champion: boolean;
+  /** Vice-campeão: perdeu a final daquele Worlds. */
+  finalist?: boolean;
   players: RosterEntry[];
 }
 
@@ -26,6 +29,8 @@ export interface LineupPlayer {
   year: number;
   league: string;
   champion: boolean;
+  finalist?: boolean;
+  country?: string;
 }
 
 export type Lineup = Record<Role, LineupPlayer | null>;

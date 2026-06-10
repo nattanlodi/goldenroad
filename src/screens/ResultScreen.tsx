@@ -1,5 +1,6 @@
 import type { Game } from "../game/useGame";
 import { lineScore, lineupPicks, tierFor, yy } from "../game/helpers";
+import { Flag } from "../components/Flag";
 import type { PlayedSeries } from "../types";
 
 function eliminationCopy(last: PlayedSeries | undefined, wins: number, losses: number) {
@@ -92,7 +93,10 @@ export function ResultScreen({ game }: { game: Game }) {
                   {p.role}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display text-[17px] font-semibold text-cream">{p.name}</span>
+                  <span className="flex items-center gap-1.5">
+                    <Flag cc={p.country} size={12} />
+                    <span className="truncate font-display text-[17px] font-semibold text-cream">{p.name}</span>
+                  </span>
                   <span className="block font-mono text-[11px] text-muted">
                     {p.short} '{yy(p.year)}
                   </span>

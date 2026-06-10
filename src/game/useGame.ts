@@ -96,6 +96,8 @@ export function useGame() {
         year: current.year,
         league: current.league,
         champion: current.champion,
+        finalist: current.finalist,
+        country: entry[3],
       };
       const lu = { ...lineup, [role]: player };
       const complete = ROLES.every((r) => lu[r]);

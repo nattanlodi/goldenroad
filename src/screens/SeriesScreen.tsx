@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import { lineScore, lineupPicks, seriesFlavor, yy } from "../game/helpers";
+import { Flag } from "../components/Flag";
 
 const dotGreen: CSSProperties = {
   background: "linear-gradient(180deg,#86d79a,#5fae72)",
@@ -136,7 +137,10 @@ export function SeriesScreen({ game }: { game: Game }) {
                 <span className="min-w-[36px] rounded-[4px] bg-gold-bright px-[5px] py-[3px] text-center font-mono text-[9px] text-ink">
                   {p.role}
                 </span>
-                <span className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold text-cream">{p.name}</span>
+                <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                  <Flag cc={p.country} size={12} />
+                  <span className="truncate font-display text-[15px] font-semibold text-cream">{p.name}</span>
+                </span>
                 {showRatings && <span className="font-mono text-[14px] font-bold text-gold-bright">{p.rating}</span>}
               </div>
             ))}
@@ -240,8 +244,9 @@ export function SeriesScreen({ game }: { game: Game }) {
                 >
                   {p[0]}
                 </span>
-                <span className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold text-[#E7E0D6]">
-                  {p[1]}
+                <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                  <Flag cc={p[3]} size={12} />
+                  <span className="truncate font-display text-[15px] font-semibold text-[#E7E0D6]">{p[1]}</span>
                 </span>
                 {showRatings && <span className="font-mono text-[14px] font-bold text-red-soft">{p[2]}</span>}
               </div>

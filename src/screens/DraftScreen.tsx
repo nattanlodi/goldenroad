@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import { ROLES, ROLE_LABELS, TEAMS } from "../data/teams";
 import { yy } from "../game/helpers";
+import { Flag } from "../components/Flag";
 import { Logo6x0 } from "../components/Logo6x0";
 import { RiftMap } from "../components/RiftMap";
 
@@ -163,11 +164,18 @@ export function DraftScreen({ game }: { game: Game }) {
                     ) : (
                       <>
                         <div className="font-display text-[24px] leading-none font-bold text-gold-bright">'{c.year}</div>
-                        {c.champion && (
+                        {c.champion ? (
                           <div className="mt-1 inline-block rounded-[4px] bg-gold-bright px-[7px] py-0.5 font-mono text-[10px] tracking-[1px] text-ink">
                             ★ CAMPEÃO
                           </div>
-                        )}
+                        ) : c.finalist ? (
+                          <div
+                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] tracking-[1px] text-ink"
+                            style={{ background: "#c4c9d2" }}
+                          >
+                            🥈 VICE
+                          </div>
+                        ) : null}
                       </>
                     )}
                   </div>
@@ -193,7 +201,10 @@ export function DraftScreen({ game }: { game: Game }) {
                           {role}
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col gap-px">
-                          <span className="truncate font-display text-[17px] font-semibold text-cream">{p[1]}</span>
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <Flag cc={p[3]} />
+                            <span className="truncate font-display text-[17px] font-semibold text-cream">{p[1]}</span>
+                          </span>
                           <span className="text-[11px] text-muted">{ROLE_LABELS[role]}</span>
                         </span>
                         {showRatings && <span className="font-mono text-[18px] font-bold text-gold-bright">{p[2]}</span>}
@@ -253,8 +264,9 @@ export function DraftScreen({ game }: { game: Game }) {
                         <span className="min-w-[40px] rounded-[5px] bg-gold-bright px-1.5 py-[3px] text-center font-mono text-[10px] tracking-[1px] text-ink">
                           {p.role}
                         </span>
-                        <span className="min-w-0 flex-1 truncate font-display text-[16px] font-semibold text-cream">
-                          {p.name}
+                        <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                          <Flag cc={p.country} size={12} />
+                          <span className="truncate font-display text-[16px] font-semibold text-cream">{p.name}</span>
                         </span>
                         <span className="font-mono text-[10px] text-muted">
                           {p.short} '{yy(p.year)}
