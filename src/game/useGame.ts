@@ -1,23 +1,29 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
-import type { LineupPlayer, Role, Team } from "../types";
+import type { LineupPlayer, PlayedSeries, Role, Team } from "../types";
 import { ROLES, TEAMS } from "../data/teams";
-import { buildJourney, drawAny, lineScore, lineupPicks, rnd, seriesTarget, yy } from "./helpers";
+import { buildNextSeries, drawAny, lineScore, lineupPicks, rnd, simulateSeries, yy } from "./helpers";
 import { initialState, reducer } from "./reducer";
 import { useAudio } from "./useAudio";
 
 const RECORD_KEY = "w60_record";
 
+function loadRecord(): number {
+  try {
+    return parseInt(localStorage.getItem(RECORD_KEY) || "0", 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
 /**
- * Controlador do jogo: amarra o reducer (estado puro) com os timers da roleta /
- * das séries, o áudio sintetizado e a persistência. Espelha a `class Component`
- * do protótipo (rollSeq, pick, rerollOther/Same, playSeries, nextSeries, share…).
+ * Controlador do jogo: amarra o reducer com os timers da roleta / das séries,
+ * o áudio sintetizado, a persistência e o motor de competição (Suíça + mata-mata).
  */
 export function useGame() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const audio = useAudio();
-  const { sndTick, sndPick, sndWin, sndTrophy } = audio;
+  const { sndTick, sndPick, sndWin, sndLose, sndTrophy, sndDefeat } = audio;
 
-  // espelho do estado p/ ler valores atuais dentro de callbacks/timers
   const stateRef = useRef(state);
   stateRef.current = state;
 
@@ -118,41 +124,58 @@ export function useGame() {
     rollSeq(rnd(pool));
   }, [rollSeq]);
 
-  // ---- playoffs ----
+  // ---- campanha / playoffs ----
   const startSeries = useCallback(() => {
-    dispatch({ type: "startSeries", journey: buildJourney() });
+    const { series, usedOppIds } = buildNextSeries("swiss", 0, 0, 0, []);
+    dispatch({ type: "startCampaign", series, usedOppIds });
   }, []);
 
   const playSeries = useCallback(() => {
     const S = stateRef.current;
-    if (S.seriesPlaying || S.revealed || !S.journey) return;
-    const target = seriesTarget(S.journey[S.seriesIndex].score);
-    dispatch({ type: "seriesPlayBegin" });
-    let g = 0;
+    if (S.seriesPlaying || S.revealed || !S.series) return;
+    const yourAvg = lineScore(S.lineup);
+    const sim = simulateSeries(S.series.target, yourAvg, S.series.opp.avg);
+    dispatch({ type: "playBegin" });
+    let yw = 0;
+    let ow = 0;
+    let i = 0;
     clearInterval(seriesTimer.current);
     seriesTimer.current = setInterval(() => {
-      g++;
-      sndWin();
-      dispatch({ type: "seriesGameWon", gamesWon: g });
-      if (g >= target) {
+      const youWon = sim.games[i];
+      i++;
+      if (youWon) {
+        yw++;
+        sndWin();
+      } else {
+        ow++;
+        sndLose();
+      }
+      dispatch({ type: "gameStep", yourGames: yw, oppGames: ow });
+      if (i >= sim.games.length) {
         clearInterval(seriesTimer.current);
-        setTimeout(() => dispatch({ type: "seriesReveal" }), 520);
+        setTimeout(() => dispatch({ type: "seriesReveal", result: sim.won ? "win" : "loss" }), 520);
       }
     }, 620);
-  }, [sndWin]);
+  }, [sndWin, sndLose]);
 
   const nextSeries = useCallback(() => {
     const S = stateRef.current;
-    if (S.seriesIndex >= 5) {
+    if (!S.series || !S.revealed) return;
+    const won = S.seriesResult === "win";
+    const played: PlayedSeries = {
+      stageKey: S.series.stageKey,
+      stageLabel: S.series.stageLabel,
+      format: S.series.format,
+      opp: S.series.opp,
+      yourGames: S.yourGames,
+      oppGames: S.oppGames,
+      won,
+    };
+
+    const finishChampion = () => {
       const avg = lineScore(S.lineup);
-      let best = 0;
-      try {
-        best = parseInt(localStorage.getItem(RECORD_KEY) || "0", 10) || 0;
-      } catch {
-        /* ignore */
-      }
+      const best = loadRecord();
       const isNewRecord = avg > best;
-      const record = Math.max(avg, best);
       if (isNewRecord) {
         try {
           localStorage.setItem(RECORD_KEY, String(avg));
@@ -161,11 +184,83 @@ export function useGame() {
         }
       }
       sndTrophy();
-      dispatch({ type: "toResult", record, isNewRecord });
+      dispatch({ type: "finishCampaign", played, finished: "champion", record: Math.max(avg, best), isNewRecord });
+    };
+    const finishEliminated = () => {
+      sndDefeat();
+      dispatch({ type: "finishCampaign", played, finished: "eliminated", record: loadRecord(), isNewRecord: false });
+    };
+
+    if (S.stagePhase === "swiss") {
+      if (won) {
+        const swissWins = S.swissWins + 1;
+        if (swissWins >= 3) {
+          const { series, usedOppIds } = buildNextSeries("ko", swissWins, S.swissLosses, 0, S.usedOppIds);
+          dispatch({
+            type: "nextSeriesAdvance",
+            played,
+            series,
+            stagePhase: "ko",
+            swissWins,
+            swissLosses: S.swissLosses,
+            koIndex: 0,
+            usedOppIds,
+          });
+        } else {
+          const { series, usedOppIds } = buildNextSeries("swiss", swissWins, S.swissLosses, S.koIndex, S.usedOppIds);
+          dispatch({
+            type: "nextSeriesAdvance",
+            played,
+            series,
+            stagePhase: "swiss",
+            swissWins,
+            swissLosses: S.swissLosses,
+            koIndex: S.koIndex,
+            usedOppIds,
+          });
+        }
+      } else {
+        const swissLosses = S.swissLosses + 1;
+        if (swissLosses >= 3) {
+          finishEliminated();
+        } else {
+          const { series, usedOppIds } = buildNextSeries("swiss", S.swissWins, swissLosses, S.koIndex, S.usedOppIds);
+          dispatch({
+            type: "nextSeriesAdvance",
+            played,
+            series,
+            stagePhase: "swiss",
+            swissWins: S.swissWins,
+            swissLosses,
+            koIndex: S.koIndex,
+            usedOppIds,
+          });
+        }
+      }
     } else {
-      dispatch({ type: "nextSeries" });
+      // mata-mata: vitória avança; derrota elimina
+      if (won) {
+        if (S.koIndex >= 2) {
+          finishChampion();
+        } else {
+          const koIndex = S.koIndex + 1;
+          const { series, usedOppIds } = buildNextSeries("ko", S.swissWins, S.swissLosses, koIndex, S.usedOppIds);
+          dispatch({
+            type: "nextSeriesAdvance",
+            played,
+            series,
+            stagePhase: "ko",
+            swissWins: S.swissWins,
+            swissLosses: S.swissLosses,
+            koIndex,
+            usedOppIds,
+          });
+        }
+      } else {
+        finishEliminated();
+      }
     }
-  }, [sndTrophy]);
+  }, [sndTrophy, sndDefeat]);
 
   const restart = useCallback(() => dispatch({ type: "restart" }), []);
 
@@ -177,7 +272,15 @@ export function useGame() {
     const line = picks
       .map((p) => `${p.role === "BOT" ? "ADC" : p.role} ${p.name} (${p.short} '${yy(p.year)})`)
       .join(" · ");
-    const txt = `🏆 6X0 Worlds — fiz um 6-0 PERFEITO!\n${line}\nNota da line: ${avg}. Consegue superar?`;
+    const wins = S.history.filter((h) => h.won).length;
+    const losses = S.history.filter((h) => !h.won).length;
+    const header =
+      S.finished === "champion"
+        ? losses === 0
+          ? "🏆 6X0 Worlds — 6-0 PERFEITO, campeão do mundo!"
+          : `🏆 6X0 Worlds — CAMPEÃO DO MUNDO (${wins}-${losses})!`
+        : `6X0 Worlds — minha campanha terminou em ${wins}-${losses}.`;
+    const txt = `${header}\n${line}\nNota da line: ${avg}. Consegue superar?`;
     const done = () => {
       dispatch({ type: "setCopied", copied: true });
       clearTimeout(copyTimer.current);
@@ -192,6 +295,16 @@ export function useGame() {
     const picks = lineupPicks(S.lineup);
     const avg = lineScore(S.lineup);
     const champs = picks.filter((p) => p.champion).length;
+    const wins = S.history.filter((h) => h.won).length;
+    const losses = S.history.filter((h) => !h.won).length;
+    const subtitle =
+      S.finished === "champion"
+        ? losses === 0
+          ? "CAMPEÃO DO MUNDO · 6–0 PERFEITO"
+          : `CAMPEÃO DO MUNDO · ${wins}–${losses}`
+        : `CAMPANHA ENCERRADA · ${wins}–${losses}`;
+    const footer = S.finished === "champion" && losses === 0 ? "FLAWLESS WORLDS RUN" : "MY WORLDS RUN";
+
     const W = 1080;
     const H = 1080;
     const c = document.createElement("canvas");
@@ -226,7 +339,7 @@ export function useGame() {
     x.stroke();
     x.fillStyle = "#9097A1";
     x.font = "400 28px 'Space Mono', monospace";
-    x.fillText("CAMPEÃO DO MUNDO · 6–0 PERFEITO", W / 2, 332);
+    x.fillText(subtitle, W / 2, 332);
     x.fillStyle = "#E8CE86";
     x.font = "700 124px 'Space Mono', monospace";
     x.fillText(String(avg), W / 2, 476);
@@ -253,7 +366,7 @@ export function useGame() {
     x.textAlign = "center";
     x.fillStyle = "#777E89";
     x.font = "400 24px 'Space Mono', monospace";
-    x.fillText("FLAWLESS WORLDS RUN", W / 2, H - 72);
+    x.fillText(footer, W / 2, H - 72);
     try {
       const a = document.createElement("a");
       a.href = c.toDataURL("image/png");

@@ -1,4 +1,4 @@
-import type { Lineup, LineupPlayer, Series, Team } from "../types";
+import type { Lineup, LineupPlayer, Opponent, RosterEntry, SeriesSetup, StagePhase, Team } from "../types";
 import { ROLES, TEAMS } from "../data/teams";
 
 /** Sorteia um item aleatório de um array. */
@@ -12,50 +12,117 @@ export function drawAny(excludeId?: string): Team {
   return rnd(pool.length ? pool : TEAMS);
 }
 
-/** Estágios fixos dos 6 playoffs: [estágio, formato, placar]. */
-export const STAGES: [string, string, string][] = [
-  ["Fase Suíça", "Bo1", "1-0"],
-  ["Fase Suíça", "Bo3", "2-0"],
-  ["Fase Suíça", "Bo3 · decisiva", "2-0"],
-  ["Quartas de final", "Bo5", "3-0"],
-  ["Semifinal", "Bo5", "3-0"],
-  ["Grande Final", "Bo5", "3-0"],
-];
+/** Média (arredondada) dos overalls de um time. */
+export function teamAvg(players: RosterEntry[]): number {
+  return Math.round(players.reduce((a, p) => a + p[2], 0) / players.length);
+}
 
-/** Monta a jornada de 6 séries com adversários aleatórios sem repetição. */
-export function buildJourney(): Series[] {
-  const used: string[] = [];
-  return STAGES.map((s) => {
-    let pool = TEAMS.filter((t) => !used.includes(t.id));
-    if (!pool.length) pool = TEAMS;
-    const opp = rnd(pool);
-    used.push(opp.id);
+// ============================================================
+// Motor de competição (força agregada)
+// ============================================================
+
+/**
+ * Sensibilidade da curva de probabilidade. Quanto MENOR, mais a diferença de
+ * overall importa (mais determinístico). ~15 dá um jogo competitivo:
+ *   diff +5 → ~61% · +10 → ~82% · +15 → ~91% · 0 → 50%.
+ * Ajuste aqui pra deixar o jogo mais fácil/difícil.
+ */
+export const STRENGTH_SENSITIVITY = 15;
+
+/** Probabilidade de você vencer UM jogo, dada a diferença de força média. */
+export function gameWinProb(yourAvg: number, oppAvg: number): number {
+  return 1 / (1 + Math.pow(10, -(yourAvg - oppAvg) / STRENGTH_SENSITIVITY));
+}
+
+export interface SimulatedSeries {
+  games: boolean[]; // ordem dos jogos: true = você venceu
+  yourGames: number;
+  oppGames: number;
+  won: boolean;
+}
+
+/** Simula uma série (primeiro a `target` vitórias) jogo a jogo. */
+export function simulateSeries(target: number, yourAvg: number, oppAvg: number): SimulatedSeries {
+  const p = gameWinProb(yourAvg, oppAvg);
+  const games: boolean[] = [];
+  let yw = 0;
+  let ow = 0;
+  while (yw < target && ow < target) {
+    const youWin = Math.random() < p;
+    games.push(youWin);
+    if (youWin) yw++;
+    else ow++;
+  }
+  return { games, yourGames: yw, oppGames: ow, won: yw >= target };
+}
+
+/** Sorteia um adversário (evitando os já enfrentados) com a média pronta. */
+export function drawOpponent(usedIds: string[]): Opponent {
+  let pool = TEAMS.filter((t) => !usedIds.includes(t.id));
+  if (!pool.length) pool = TEAMS;
+  const t = rnd(pool);
+  return {
+    id: t.id,
+    team: t.team,
+    short: t.short,
+    year: t.year,
+    league: t.league,
+    players: t.players,
+    avg: teamAvg(t.players),
+  };
+}
+
+const KO_STAGES = [
+  { stageKey: "quarter", stageLabel: "Quartas de final" },
+  { stageKey: "semi", stageLabel: "Semifinal" },
+  { stageKey: "final", stageLabel: "Grande Final" },
+] as const;
+
+export interface NextSeries {
+  series: SeriesSetup;
+  usedOppIds: string[];
+}
+
+/**
+ * Monta a próxima série de acordo com a fase e o placar de séries.
+ * Suíça: Bo1, salvo séries decisivas (com 2 vitórias ou 2 derrotas) → Bo3.
+ * Mata-mata: sempre Bo5.
+ */
+export function buildNextSeries(
+  stagePhase: StagePhase,
+  swissWins: number,
+  swissLosses: number,
+  koIndex: number,
+  usedIds: string[],
+): NextSeries {
+  const opp = drawOpponent(usedIds);
+  const usedOppIds = [...usedIds, opp.id];
+
+  if (stagePhase === "swiss") {
+    const decisive = swissWins === 2 || swissLosses === 2;
     return {
-      stage: s[0],
-      format: s[1],
-      score: s[2],
-      team: opp.team,
-      short: opp.short,
-      year: opp.year,
-      league: opp.league,
-      players: opp.players,
+      series: {
+        stageKey: "swiss",
+        stageLabel: "Fase Suíça",
+        format: decisive ? "Bo3" : "Bo1",
+        target: decisive ? 2 : 1,
+        decisive,
+        opp,
+      },
+      usedOppIds,
     };
-  });
+  }
+
+  const ko = KO_STAGES[koIndex];
+  return {
+    series: { stageKey: ko.stageKey, stageLabel: ko.stageLabel, format: "Bo5", target: 3, decisive: true, opp },
+    usedOppIds,
+  };
 }
 
-export const SERIES_FLAVORS = [
-  "Sweep impecável — sua botlane dominou cada partida.",
-  "Macro perfeito: vitória sem dar brechas.",
-  "O mid carregou e o time fechou sem sustos.",
-  "Pressão constante, nexus atrás de nexus.",
-  "Draft superior e teamfights impecáveis.",
-  "Domínio de início ao fim. Sem chances pro rival.",
-];
-
-/** Quantas vitórias até fechar a série (1, 2 ou 3). */
-export function seriesTarget(score: string): number {
-  return Math.max(1, parseInt(score.split("-")[0], 10) || 1);
-}
+// ============================================================
+// Line, nota e tiers
+// ============================================================
 
 /** Lista de jogadores da line na ordem das roles (apenas os preenchidos). */
 export function lineupPicks(lineup: Lineup): LineupPlayer[] {
@@ -86,4 +153,40 @@ export function tierFor(avg: number): Tier {
 /** Sufixo de ano curto: 2023 -> "23". */
 export function yy(year: number): string {
   return String(year).slice(2);
+}
+
+// ============================================================
+// Narração
+// ============================================================
+
+export const WIN_FLAVORS = [
+  "Sweep impecável — sua botlane dominou cada partida.",
+  "Macro perfeito: vitória sem dar brechas.",
+  "O mid carregou e o time fechou sem sustos.",
+  "Pressão constante, nexus atrás de nexus.",
+  "Draft superior e teamfights impecáveis.",
+  "Domínio de início ao fim. Sem chances pro rival.",
+];
+
+export const CLOSE_WIN_FLAVORS = [
+  "Série suada — mas você segurou nos jogos decisivos.",
+  "Levou um susto, deu a volta e fechou.",
+  "Disputa equilibrada, decidida nos detalhes a seu favor.",
+];
+
+export const LOSS_FLAVORS = [
+  "A botlane adversária abriu o mapa e não teve volta.",
+  "Draft perdido e teamfights desfavoráveis — eles mereceram.",
+  "Seu time vacilou nos objetivos e pagou caro.",
+  "O mid inimigo dominou e ditou o ritmo da série.",
+  "Faltou pouco, mas o nexus deles caiu por último.",
+  "Eles jogaram melhor as partidas que decidiam.",
+];
+
+/** Escolhe uma frase de narração pro resultado da série. */
+export function seriesFlavor(won: boolean, _yourGames: number, oppGames: number, seed: number): string {
+  if (!won) return LOSS_FLAVORS[seed % LOSS_FLAVORS.length];
+  const close = oppGames > 0; // perdeu pelo menos um jogo
+  const pool = close ? CLOSE_WIN_FLAVORS : WIN_FLAVORS;
+  return pool[seed % pool.length];
 }

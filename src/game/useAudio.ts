@@ -62,8 +62,15 @@ export function useAudio() {
     tone(659, 0.1, "triangle", 0.13);
     tone(988, 0.16, "triangle", 0.1, 0.05);
   }, [tone]);
+  const sndLose = useCallback(() => {
+    tone(330, 0.12, "sine", 0.1);
+    tone(247, 0.18, "sine", 0.08, 0.06);
+  }, [tone]);
   const sndTrophy = useCallback(() => {
     [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.34, "triangle", 0.13, i * 0.11));
+  }, [tone]);
+  const sndDefeat = useCallback(() => {
+    [440, 349, 262].forEach((f, i) => tone(f, 0.4, "sine", 0.12, i * 0.16));
   }, [tone]);
 
   const toggleMute = useCallback(() => {
@@ -83,7 +90,7 @@ export function useAudio() {
     });
   }, [ensureAudio]);
 
-  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndWin, sndTrophy };
+  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndWin, sndLose, sndTrophy, sndDefeat };
 }
 
 export type AudioApi = ReturnType<typeof useAudio>;

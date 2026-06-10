@@ -34,14 +34,43 @@ export type Difficulty = "classico" | "especialista";
 
 export type Phase = "start" | "play" | "series" | "result";
 
-/** Uma das 6 séries dos playoffs. */
-export interface Series {
-  stage: string;
-  format: string;
-  score: string; // ex.: "3-0"
+// ---- campanha / playoffs ----
+
+export type StageKey = "swiss" | "quarter" | "semi" | "final";
+
+/** Fase atual da campanha. */
+export type StagePhase = "swiss" | "ko";
+
+/** Time adversário de uma série, já com a média de overall pré-calculada. */
+export interface Opponent {
+  id: string;
   team: string;
   short: string;
   year: number;
   league: string;
   players: RosterEntry[];
+  avg: number;
 }
+
+/** Configuração de uma série a ser jogada. */
+export interface SeriesSetup {
+  stageKey: StageKey;
+  stageLabel: string; // "Fase Suíça" / "Quartas de final" / ...
+  format: string; // "Bo1" / "Bo3" / "Bo5"
+  target: number; // vitórias necessárias (1 / 2 / 3)
+  decisive: boolean; // série suíça que avança ou elimina
+  opp: Opponent;
+}
+
+/** Resultado de uma série já disputada (entra no histórico da jornada). */
+export interface PlayedSeries {
+  stageKey: StageKey;
+  stageLabel: string;
+  format: string;
+  opp: Opponent;
+  yourGames: number;
+  oppGames: number;
+  won: boolean;
+}
+
+export type CampaignEnd = "champion" | "eliminated";
