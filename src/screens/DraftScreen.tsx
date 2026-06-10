@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
-import { ROLES, ROLE_LABELS, TEAMS } from "../data/teams";
+import { DRAFT_TEAMS, ROLES, ROLE_LABELS } from "../data/teams";
 import { yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { Logo6x0 } from "../components/Logo6x0";
@@ -41,7 +41,7 @@ export function DraftScreen({ game }: { game: Game }) {
   const roundNum = Math.min(filledCount + 1, 5);
 
   const canReroll = rerolls > 0 && !rolling;
-  const canSame = !!current && !rolling && TEAMS.some((t) => t.team === current.team && t.id !== current.id);
+  const canSame = !!current && !rolling && DRAFT_TEAMS.some((t) => t.team === current.team && t.id !== current.id);
 
   return (
     <div className="anim-fade-fast mx-auto w-full max-w-[1180px]">

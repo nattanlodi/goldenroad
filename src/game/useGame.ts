@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import type { LineupPlayer, PlayedSeries, Role, Team } from "../types";
-import { ROLES, TEAMS } from "../data/teams";
+import { DRAFT_TEAMS, ROLES } from "../data/teams";
 import { buildNextSeries, drawAny, lineScore, lineupPicks, rnd, simulateSeries, yy } from "./helpers";
 import { initialState, reducer } from "./reducer";
 import { useAudio } from "./useAudio";
@@ -54,7 +54,7 @@ export function useGame() {
   const rollSeq = useCallback(
     (finalTeam: Team) => {
       clearTimeout(rollTimer.current);
-      dispatch({ type: "roll", display: rnd(TEAMS) });
+      dispatch({ type: "roll", display: rnd(DRAFT_TEAMS) });
       let i = 0;
       const total = 15;
       const step = () => {
@@ -65,7 +65,7 @@ export function useGame() {
           return;
         }
         sndTick();
-        dispatch({ type: "roll", display: rnd(TEAMS) });
+        dispatch({ type: "roll", display: rnd(DRAFT_TEAMS) });
         const delay = 45 + Math.pow(i / total, 2.5) * 230;
         rollTimer.current = setTimeout(step, delay);
       };
@@ -111,8 +111,8 @@ export function useGame() {
   const rerollOther = useCallback(() => {
     const { rerolls, current, rolling } = stateRef.current;
     if (rolling || rerolls <= 0 || !current) return;
-    const pool = TEAMS.filter((t) => t.team !== current.team);
-    const target = rnd(pool.length ? pool : TEAMS);
+    const pool = DRAFT_TEAMS.filter((t) => t.team !== current.team);
+    const target = rnd(pool.length ? pool : DRAFT_TEAMS);
     dispatch({ type: "rerollDec" });
     rollSeq(target);
   }, [rollSeq]);
@@ -120,7 +120,7 @@ export function useGame() {
   const rerollSame = useCallback(() => {
     const { rerolls, current, rolling } = stateRef.current;
     if (rolling || rerolls <= 0 || !current) return;
-    const pool = TEAMS.filter((t) => t.team === current.team && t.id !== current.id);
+    const pool = DRAFT_TEAMS.filter((t) => t.team === current.team && t.id !== current.id);
     if (!pool.length) return;
     dispatch({ type: "rerollDec" });
     rollSeq(rnd(pool));

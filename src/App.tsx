@@ -1,4 +1,4 @@
-import { TEAMS } from "./data/teams";
+import { DRAFT_TEAMS } from "./data/teams";
 import { useGame } from "./game/useGame";
 import { MuteButton } from "./components/MuteButton";
 import { StartScreen } from "./screens/StartScreen";
@@ -17,7 +17,7 @@ export function App() {
     >
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
-      {phase === "start" && <StartScreen poolCount={TEAMS.length} onBegin={game.begin} />}
+      {phase === "start" && <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={game.begin} />}
       {phase === "play" && <DraftScreen game={game} />}
       {phase === "series" && <SeriesScreen game={game} />}
       {phase === "result" && <ResultScreen game={game} />}

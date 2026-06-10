@@ -48,6 +48,26 @@ export const TEAMS: Team[] = [
   ...WORLDS_2025,
 ];
 
+// ── POOL DE JOGO (só playoffs) ──────────────────────────────────────────────
+// O draft e os adversários só usam times que chegaram aos playoffs de cada Worlds.
+// Em todas as edições os times estão listados em ordem de colocação, então os de
+// playoff são os 8 primeiros (campeão + vice + 2 semis + 4 quartas). Exceção: 2011,
+// formato diferente, só teve 4 semifinalistas (Fnatic, aAa, TSM, Epik Gamer).
+// As demais campanhas continuam no arquivo (TEAMS) — só não entram no sorteio.
+const PLAYOFF_COUNT: Record<number, number> = { 2011: 4 };
+const DEFAULT_PLAYOFF_COUNT = 8;
+
+function playoffTeamsOf(year: number): Team[] {
+  const teams = TEAMS.filter((t) => t.year === year);
+  const n = PLAYOFF_COUNT[year] ?? DEFAULT_PLAYOFF_COUNT;
+  return teams.slice(0, n);
+}
+
+const YEARS = [...new Set(TEAMS.map((t) => t.year))].sort((a, b) => a - b);
+
+// Times elegíveis no jogo (draft + adversários). Mantém a ordem cronológica.
+export const DRAFT_TEAMS: Team[] = YEARS.flatMap(playoffTeamsOf);
+
 export const ROLES: Role[] = ["TOP", "JNG", "MID", "BOT", "SUP"];
 
 export const ROLE_LABELS: Record<Role, string> = {

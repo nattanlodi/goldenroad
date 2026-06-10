@@ -1,5 +1,5 @@
 import type { Lineup, LineupPlayer, Opponent, RosterEntry, SeriesSetup, StagePhase, Team } from "../types";
-import { ROLES, TEAMS } from "../data/teams";
+import { DRAFT_TEAMS, ROLES } from "../data/teams";
 
 /** Sorteia um item aleatório de um array. */
 export function rnd<T>(arr: T[]): T {
@@ -8,8 +8,8 @@ export function rnd<T>(arr: T[]): T {
 
 /** Sorteia qualquer time, evitando repetir o último (excludeId). */
 export function drawAny(excludeId?: string): Team {
-  const pool = TEAMS.filter((t) => t.id !== excludeId);
-  return rnd(pool.length ? pool : TEAMS);
+  const pool = DRAFT_TEAMS.filter((t) => t.id !== excludeId);
+  return rnd(pool.length ? pool : DRAFT_TEAMS);
 }
 
 /** Média (arredondada) dos overalls de um time. */
@@ -60,8 +60,8 @@ export function simulateSeries(target: number, yourAvg: number, oppAvg: number):
 
 /** Sorteia um adversário (evitando os já enfrentados) com a média pronta. */
 export function drawOpponent(usedIds: string[]): Opponent {
-  let pool = TEAMS.filter((t) => !usedIds.includes(t.id));
-  if (!pool.length) pool = TEAMS;
+  let pool = DRAFT_TEAMS.filter((t) => !usedIds.includes(t.id));
+  if (!pool.length) pool = DRAFT_TEAMS;
   const t = rnd(pool);
   return {
     id: t.id,
