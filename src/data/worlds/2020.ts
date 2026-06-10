@@ -1,32 +1,33 @@
 import type { Team } from "../../types";
 
 // Worlds 2020 — campeão: DAMWON Gaming sobre o Suning (final em Xangai, bolha COVID).
-// 22 times (GAM e Team Flash não viajaram por COVID). Tuplas: [role, nome, overall, país]. RÉGUA em teams.ts.
+// 22 times (GAM e Team Flash não viajaram por COVID). Tuplas: [role, nome, overall, país].
+// NOTAS dos times de playoff: mescla colocação + RFT 1.0 (rft.gg), 70% playoff + 30% geral; ver teams.ts.
 export const WORLDS_2020: Team[] = [
-  // 1º — Campeão (base 88). DAMWON dominante; Canyon perto do teto, mas equilibrado (política B).
+  // 1º — Campeão (base 88). Domínio total; Canyon MVP (81 na QF), Nuguri/ShowMaker no teto.
   { id: "dwg-2020", team: "DAMWON Gaming", short: "DWG", year: 2020, league: "LCK", champion: true,
-    players: [["TOP", "Nuguri", 91, "kr"], ["JNG", "Canyon", 93, "kr"], ["MID", "ShowMaker", 92, "kr"], ["BOT", "Ghost", 89, "kr"], ["SUP", "BeryL", 90, "kr"]] },
-  // 2º — Vice (base 84). SofM, o jungler vietnamita na LPL.
+    players: [["TOP", "Nuguri", 96, "kr"], ["JNG", "Canyon", 96, "kr"], ["MID", "ShowMaker", 96, "kr"], ["BOT", "Ghost", 91, "kr"], ["SUP", "BeryL", 94, "kr"]] },
+  // 2º — Vice (base 84). Bin/SofM cresceram nas séries vencidas; final fraca os segurou.
   { id: "suning-2020", team: "Suning", short: "SN", year: 2020, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Bin", 87, "cn"], ["JNG", "SofM", 87, "vn"], ["MID", "Angel", 85, "cn"], ["BOT", "huanfeng", 86, "cn"], ["SUP", "SwordArt", 86, "tw"]] },
-  // 3º-4º — Semifinal (base 81). knight/JackeyLove.
+    players: [["TOP", "Bin", 90, "cn"], ["JNG", "SofM", 89, "vn"], ["MID", "Angel", 86, "cn"], ["BOT", "huanfeng", 86, "cn"], ["SUP", "SwordArt", 86, "tw"]] },
+  // 3º-4º — Semifinal (base 81). knight gigante (79 na QF); JackeyLove apagado na semi.
   { id: "tes-2020", team: "Top Esports", short: "TES", year: 2020, league: "LPL", champion: false,
-    players: [["TOP", "369", 82, "cn"], ["JNG", "Karsa", 83, "tw"], ["MID", "knight", 84, "cn"], ["BOT", "JackeyLove", 84, "cn"], ["SUP", "yuyanjia", 82, "cn"]] },
-  // 3º-4º — Semifinal (base 81).
+    players: [["TOP", "369", 82, "cn"], ["JNG", "Karsa", 83, "tw"], ["MID", "knight", 89, "cn"], ["BOT", "JackeyLove", 78, "cn"], ["SUP", "yuyanjia", 80, "cn"]] },
+  // 3º-4º — Semifinal (base 81). Caps/Mikyx demoliram a Gen.G na QF (82/84).
   { id: "g2-2020", team: "G2 Esports", short: "G2", year: 2020, league: "LEC", champion: false,
-    players: [["TOP", "Wunder", 82, "dk"], ["JNG", "Jankos", 83, "pl"], ["MID", "Caps", 84, "dk"], ["BOT", "Perkz", 84, "hr"], ["SUP", "Mikyx", 82, "si"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Wunder", 81, "dk"], ["JNG", "Jankos", 84, "pl"], ["MID", "Caps", 89, "dk"], ["BOT", "Perkz", 83, "hr"], ["SUP", "Mikyx", 88, "si"]] },
+  // 5º-8º — Quartas (base 78). Kanavi o destaque; perderam 1-3 pro Suning.
   { id: "jdg-2020", team: "JD Gaming", short: "JDG", year: 2020, league: "LPL", champion: false,
-    players: [["TOP", "Zoom", 79, "cn"], ["JNG", "Kanavi", 80, "kr"], ["MID", "Yagao", 79, "cn"], ["BOT", "LokeN", 79, "kr"], ["SUP", "LvMao", 79, "cn"]] },
-  // 5º-8º — Quartas (base 78). Estreia do Keria.
+    players: [["TOP", "Zoom", 75, "cn"], ["JNG", "Kanavi", 81, "kr"], ["MID", "Yagao", 77, "cn"], ["BOT", "LokeN", 72, "kr"], ["SUP", "LvMao", 76, "cn"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela DWG. Estreia do Keria; Deft afundou (39).
   { id: "drx-2020", team: "DRX", short: "DRX", year: 2020, league: "LCK", champion: false,
-    players: [["TOP", "Doran", 79, "kr"], ["JNG", "Pyosik", 79, "kr"], ["MID", "Chovy", 81, "kr"], ["BOT", "Deft", 81, "kr"], ["SUP", "Keria", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Doran", 76, "kr"], ["JNG", "Pyosik", 69, "kr"], ["MID", "Chovy", 75, "kr"], ["BOT", "Deft", 67, "kr"], ["SUP", "Keria", 74, "kr"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela G2; Ruler/Bdd apagados.
   { id: "geng-2020", team: "Gen.G Esports", short: "GEN", year: 2020, league: "LCK", champion: false,
-    players: [["TOP", "Rascal", 79, "kr"], ["JNG", "Clid", 79, "kr"], ["MID", "Bdd", 80, "kr"], ["BOT", "Ruler", 81, "kr"], ["SUP", "Life", 79, "kr"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Rascal", 70, "kr"], ["JNG", "Clid", 68, "kr"], ["MID", "Bdd", 74, "kr"], ["BOT", "Ruler", 71, "kr"], ["SUP", "Life", 68, "kr"]] },
+  // 5º-8º — Quartas (base 78). Perderam 2-3 pra TES; Selfmade/Hylissang o destaque.
   { id: "fnatic-2020", team: "Fnatic", short: "FNC", year: 2020, league: "LEC", champion: false,
-    players: [["TOP", "Bwipo", 79, "be"], ["JNG", "Selfmade", 79, "pl"], ["MID", "Nemesis", 79, "si"], ["BOT", "Rekkles", 80, "se"], ["SUP", "Hylissang", 79, "bg"]] },
+    players: [["TOP", "Bwipo", 74, "be"], ["JNG", "Selfmade", 79, "pl"], ["MID", "Nemesis", 72, "si"], ["BOT", "Rekkles", 76, "se"], ["SUP", "Hylissang", 79, "bg"]] },
   // 9º-16º — Fase de grupos (base 72). Os infames 0-6.
   { id: "tsm-2020", team: "TSM", short: "TSM", year: 2020, league: "LCS", champion: false,
     players: [["TOP", "Broken Blade", 73, "de"], ["JNG", "Spica", 73, "cn"], ["MID", "Bjergsen", 75, "dk"], ["BOT", "Doublelift", 74, "us"], ["SUP", "Biofrost", 73, "ca"]] },

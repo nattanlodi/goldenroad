@@ -1,33 +1,34 @@
 import type { Team } from "../../types";
 
 // Worlds 2019 — campeão: FunPlus Phoenix sobre a G2 Esports (final em Paris).
-// 24 times. Tuplas: [role, nome, overall, país]. RÉGUA em teams.ts (política B).
+// 24 times. Tuplas: [role, nome, overall, país]. NOTAS dos times de playoff: mescla
+// colocação + RFT 1.0 (rft.gg), 70% playoff (agregado por série) + 30% geral; ver teams.ts.
 // ⚠ Play-in eliminados: best-effort (cauda/arquivo); alguns slots de wildcards são palpite.
 export const WORLDS_2019: Team[] = [
-  // 1º — Campeão (base 88). Tian foi MVP da final; Doinb o cérebro. Sem transcendente único.
+  // 1º — Campeão (base 88). Varreram a final 3-0; Tian MVP, Doinb cérebro, Crisp sensacional (80 na semi).
   { id: "fpx-2019", team: "FunPlus Phoenix", short: "FPX", year: 2019, league: "LPL", champion: true,
-    players: [["TOP", "GimGoon", 88, "kr"], ["JNG", "Tian", 92, "cn"], ["MID", "doinb", 92, "kr"], ["BOT", "lwx", 90, "cn"], ["SUP", "Crisp", 89, "cn"]] },
-  // 2º — Vice (base 84). A super-G2.
+    players: [["TOP", "GimGoon", 92, "kr"], ["JNG", "Tian", 96, "cn"], ["MID", "doinb", 96, "kr"], ["BOT", "lwx", 94, "cn"], ["SUP", "Crisp", 96, "cn"]] },
+  // 2º — Vice (base 84). A super-G2, mas massacrada 0-3 na final (Caps 37, Perkz 40).
   { id: "g2-2019", team: "G2 Esports", short: "G2", year: 2019, league: "LEC", champion: false, finalist: true,
-    players: [["TOP", "Wunder", 85, "dk"], ["JNG", "Jankos", 86, "pl"], ["MID", "Caps", 89, "dk"], ["BOT", "Perkz", 88, "hr"], ["SUP", "Mikyx", 86, "si"]] },
-  // 3º-4º — Semifinal (base 81).
+    players: [["TOP", "Wunder", 86, "dk"], ["JNG", "Jankos", 83, "pl"], ["MID", "Caps", 83, "dk"], ["BOT", "Perkz", 82, "hr"], ["SUP", "Mikyx", 83, "si"]] },
+  // 3º-4º — Semifinal (base 81). TheShy 77 na QF; Rookie consistente.
   { id: "ig-2019", team: "Invictus Gaming", short: "IG", year: 2019, league: "LPL", champion: false,
-    players: [["TOP", "TheShy", 86, "kr"], ["JNG", "Ning", 84, "cn"], ["MID", "Rookie", 86, "kr"], ["BOT", "JackeyLove", 85, "cn"], ["SUP", "Baolan", 83, "cn"]] },
-  // 3º-4º — Semifinal (base 81). Faker ainda elite.
+    players: [["TOP", "TheShy", 87, "kr"], ["JNG", "Ning", 76, "cn"], ["MID", "Rookie", 86, "kr"], ["BOT", "JackeyLove", 79, "cn"], ["SUP", "Baolan", 76, "cn"]] },
+  // 3º-4º — Semifinal (base 81). Khan 90 (top do evento na fase); Faker sólido na derrota.
   { id: "skt-2019", team: "SK Telecom T1", short: "SKT", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Khan", 84, "kr"], ["JNG", "Clid", 84, "kr"], ["MID", "Faker", 88, "kr"], ["BOT", "Teddy", 84, "kr"], ["SUP", "Effort", 83, "kr"]] },
-  // 5º-8º — Quartas (base 78). Chovy/Tarzan.
+    players: [["TOP", "Khan", 90, "kr"], ["JNG", "Clid", 85, "kr"], ["MID", "Faker", 81, "kr"], ["BOT", "Teddy", 78, "kr"], ["SUP", "Effort", 81, "kr"]] },
+  // 5º-8º — Quartas (base 78). Os jovens talentos: Lehends 84, Tarzan 82, Viper 81.
   { id: "griffin-2019", team: "Griffin", short: "GRF", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Sword", 79, "kr"], ["JNG", "Tarzan", 82, "kr"], ["MID", "Chovy", 82, "kr"], ["BOT", "Viper", 81, "kr"], ["SUP", "Lehends", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78).
+    players: [["TOP", "Sword", 66, "kr"], ["JNG", "Tarzan", 82, "kr"], ["MID", "Chovy", 77, "kr"], ["BOT", "Viper", 81, "kr"], ["SUP", "Lehends", 84, "kr"]] },
+  // 5º-8º — Quartas (base 78). Perderam 1-3 pra FPX; bot apagado.
   { id: "fnatic-2019", team: "Fnatic", short: "FNC", year: 2019, league: "LEC", champion: false,
-    players: [["TOP", "Bwipo", 80, "be"], ["JNG", "Broxah", 79, "dk"], ["MID", "Nemesis", 79, "si"], ["BOT", "Rekkles", 81, "se"], ["SUP", "Hylissang", 80, "bg"]] },
-  // 5º-8º — Quartas (base 78). Estreia da DAMWON (campeã em 2020).
+    players: [["TOP", "Bwipo", 75, "be"], ["JNG", "Broxah", 69, "dk"], ["MID", "Nemesis", 77, "si"], ["BOT", "Rekkles", 69, "se"], ["SUP", "Hylissang", 75, "bg"]] },
+  // 5º-8º — Quartas (base 78). Estreia da futura campeã 2020; ShowMaker/BeryL já brilhando.
   { id: "dwg-2019", team: "DAMWON Gaming", short: "DWG", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Nuguri", 81, "kr"], ["JNG", "Canyon", 81, "kr"], ["MID", "ShowMaker", 81, "kr"], ["BOT", "Nuclear", 79, "kr"], ["SUP", "BeryL", 80, "kr"]] },
-  // 5º-8º — Quartas (base 78). Subiu do play-in.
+    players: [["TOP", "Nuguri", 73, "kr"], ["JNG", "Canyon", 73, "kr"], ["MID", "ShowMaker", 81, "kr"], ["BOT", "Nuclear", 71, "kr"], ["SUP", "BeryL", 79, "kr"]] },
+  // 5º-8º — Quartas (base 78). Subiu do play-in; Tore o destaque.
   { id: "splyce-2019", team: "Splyce", short: "SPY", year: 2019, league: "LEC", champion: false,
-    players: [["TOP", "Vizicsacsi", 79, "hu"], ["JNG", "Xerxe", 79, "ro"], ["MID", "Humanoid", 80, "cz"], ["BOT", "Kobbe", 79, "dk"], ["SUP", "Norskeren", 79, "dk"]] },
+    players: [["TOP", "Vizicsacsi", 69, "hu"], ["JNG", "Xerxe", 76, "ro"], ["MID", "Humanoid", 75, "cz"], ["BOT", "Kobbe", 77, "dk"], ["SUP", "Norskeren", 79, "dk"]] },
   // 9º-16º — Fase de grupos (base 72). Último Worlds do Uzi com a RNG.
   { id: "rng-2019", team: "Royal Never Give Up", short: "RNG", year: 2019, league: "LPL", champion: false,
     players: [["TOP", "Langx", 72, "cn"], ["JNG", "Karsa", 74, "tw"], ["MID", "Xiaohu", 74, "cn"], ["BOT", "Uzi", 75, "cn"], ["SUP", "Ming", 73, "cn"]] },
