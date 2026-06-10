@@ -23,13 +23,15 @@ export function teamAvg(players: RosterEntry[]): number {
 
 /**
  * Sensibilidade da curva de probabilidade. Quanto MENOR, mais a diferença de
- * overall importa (time forte vence mais). S=6 ("Dominante"):
- *   diff +5 → ~87% · +10 → ~98% · 0 → 50% por jogo.
- * Calibração (pool médio ~89, via scripts/sim.mjs):
- *   nota 92 → 37% título · 95 → 84% título / 57% 6-0 · 99 → 99% / 91% 6-0.
+ * overall importa (time forte vence mais). S=8 ("Equilibrado"):
+ *   diff +5 → ~80% · +10 → ~95% · 0 → 50% por jogo.
+ * Calibração no pool REAL de playoffs (116 times, média 83, teto de line 95),
+ * via scripts/sim.mjs:
+ *   nota 83 → ~9% título · 88 → ~53% · 90 → ~70% · 92 → ~83% / 61% 6-0 ·
+ *   95 (teto) → ~95% título / 82% 6-0.
  * Aumente pra deixar mais aleatório/difícil; diminua pra premiar mais a nota.
  */
-export const STRENGTH_SENSITIVITY = 6;
+export const STRENGTH_SENSITIVITY = 8;
 
 /** Probabilidade de você vencer UM jogo, dada a diferença de força média. */
 export function gameWinProb(yourAvg: number, oppAvg: number): number {
@@ -143,12 +145,16 @@ export interface Tier {
   desc: string;
 }
 
-/** Tier por nota média (idêntico ao protótipo). */
+/**
+ * Tier por nota média da line. Calibrado ao pool real de playoffs: o teto de
+ * line é ~95 (limite das notas individuais) e a line "comum" sai em ~80-85,
+ * então as faixas foram rebaixadas pra premiar bem quem monta uma line forte.
+ */
 export function tierFor(avg: number): Tier {
-  if (avg >= 95) return { tier: "DREAM TEAM", desc: "Esquadrão dos sonhos — pentacampeão em potencial." };
-  if (avg >= 92) return { tier: "SUPERTIME", desc: "Favoritíssimo absoluto ao título mundial." };
-  if (avg >= 89) return { tier: "ELITE MUNDIAL", desc: "Time de elite, pronto pra erguer a taça." };
-  if (avg >= 86) return { tier: "CONTENDER", desc: "Forte candidato, com brilho de sobra." };
+  if (avg >= 93) return { tier: "DREAM TEAM", desc: "Esquadrão dos sonhos — pentacampeão em potencial." };
+  if (avg >= 90) return { tier: "SUPERTIME", desc: "Favoritíssimo absoluto ao título mundial." };
+  if (avg >= 87) return { tier: "ELITE MUNDIAL", desc: "Time de elite, pronto pra erguer a taça." };
+  if (avg >= 84) return { tier: "CONTENDER", desc: "Forte candidato, com brilho de sobra." };
   return { tier: "UNDERDOG", desc: "Zebra perigosa — ninguém quis te enfrentar." };
 }
 

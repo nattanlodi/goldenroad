@@ -1,9 +1,21 @@
 // Monte Carlo do motor de competição (espelha src/game/helpers.ts).
 // Compara valores de STRENGTH_SENSITIVITY (S) pra calibrar a dificuldade.
 // S menor => diferença de nota pesa mais => time forte vence mais.
+//
+// Os adversários são sorteados do POOL DE JOGO real (DRAFT_TEAMS, só playoffs),
+// usando a média de cada time — exatamente como drawOpponent faz no jogo.
 
-// médias reais do pool (arredondadas, iguais a teamAvg do dataset)
-const POOL = [91, 92, 90, 93, 94, 94, 90, 89, 91, 90, 89, 90, 88, 89, 90, 89, 88, 89, 85, 87, 83];
+import { DRAFT_TEAMS } from "../src/data/teams.ts";
+
+// média (arredondada) de cada time do pool — igual a teamAvg() do jogo
+const POOL = DRAFT_TEAMS.map((t) => Math.round(t.players.reduce((a, p) => a + p[2], 0) / t.players.length));
+
+const sum = POOL.reduce((a, v) => a + v, 0);
+const mean = sum / POOL.length;
+const sorted = [...POOL].sort((a, b) => a - b);
+const median = sorted[Math.floor(sorted.length / 2)];
+const min = sorted[0];
+const max = sorted[sorted.length - 1];
 
 const rnd = (a) => a[Math.floor(Math.random() * a.length)];
 
@@ -22,6 +34,8 @@ function makeEngine(S) {
     used.add(i);
     return v;
   }
+  // espelha a campanha real: Suíça (Bo1, decisiva→Bo3) até 3 vitórias / 3 derrotas,
+  // depois mata-mata de 3 rodadas em Bo5.
   function campaign(you) {
     const used = new Set();
     let w = 0, l = 0;
@@ -37,10 +51,11 @@ function makeEngine(S) {
 }
 
 const N = 40000;
-const RATINGS = [89, 92, 95, 99];
-const S_VALUES = [15, 12, 10, 8, 6];
+const RATINGS = [80, 83, 86, 88, 90, 92, 95];
+const S_VALUES = [10, 8, 7, 6, 5];
 
-console.log(`${N} campanhas · pool médio ~89\n`);
+console.log(`Pool de jogo: ${POOL.length} times · média ${mean.toFixed(1)} · mediana ${median} · min ${min} · max ${max}`);
+console.log(`${N} campanhas por (S, nota). título = vira campeão · 6-0 = sem perder nenhuma série\n`);
 for (const S of S_VALUES) {
   const campaign = makeEngine(S);
   const row = [];
@@ -51,7 +66,8 @@ for (const S of S_VALUES) {
       if (r.champion) champ++;
       if (r.perfect) perf++;
     }
-    row.push(`nota ${you}: ${((100 * champ) / N).toFixed(0)}% título / ${((100 * perf) / N).toFixed(0)}% 6-0`);
+    row.push(`${you}: ${((100 * champ) / N).toFixed(0)}%/${((100 * perf) / N).toFixed(0)}%`);
   }
-  console.log(`S=${String(S).padStart(2)}  →  ${row.join("   ·   ")}`);
+  console.log(`S=${String(S).padStart(2)}  →  ${row.join("  ·  ")}`);
 }
+console.log(`\n(cada célula = % título / % 6-0 perfeito · S atual no jogo = 8)`);
