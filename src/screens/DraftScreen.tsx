@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
-import { DRAFT_TEAMS, ROLES } from "../data/teams";
+import { DRAFT_TEAMS, ROLES, SEMIFINAL_IDS } from "../data/teams";
 import { lineScore, lineupPicks, rarityFor, tierFor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
@@ -82,8 +82,8 @@ export function DraftScreen({ game }: { game: Game }) {
       <div className="flex flex-col items-stretch gap-[18px] wide:flex-row wide:gap-[26px]">
         {/* esquerda */}
         <div className="w-full wide:w-[344px] wide:flex-none">
-          {/* card MÉDIA DO ELENCO — reflete a line em montagem (só no clássico) */}
-          {showRatings && picks.length > 0 && (
+          {/* card MÉDIA DO ELENCO — sempre visível (só no clássico). Vazio mostra "−". */}
+          {showRatings && (
             <div
               className="anim-fade-fast mb-[18px] overflow-hidden rounded-2xl border border-gold/30"
               style={{ background: "linear-gradient(150deg,rgba(58,48,22,0.5),rgba(30,37,49,0.7))" }}
@@ -106,9 +106,11 @@ export function DraftScreen({ game }: { game: Game }) {
                 </div>
               </div>
               <div className="flex items-center gap-3 px-[18px] pb-3.5 pt-1.5">
-                <span className="font-mono text-[44px] font-bold leading-none text-gold-bright">{avg}</span>
+                <span className="font-mono text-[44px] font-bold leading-none text-gold-bright">
+                  {picks.length > 0 ? avg : "–"}
+                </span>
                 <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-cream">
-                  {tier.tier}
+                  {picks.length > 0 ? tier.tier : "Sua line"}
                 </span>
               </div>
             </div>
@@ -202,17 +204,24 @@ export function DraftScreen({ game }: { game: Game }) {
                         <div className="font-display text-[24px] leading-none font-bold text-gold-bright">{c.year}</div>
                         {c.champion ? (
                           <div
-                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px] text-gold-bright"
+                            className="mt-2.5 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px] text-gold-bright"
                             style={{ background: "rgba(18,22,29,0.55)", border: "1px solid rgba(232,206,134,0.55)" }}
                           >
                             ★ CAMPEÃO
                           </div>
                         ) : c.finalist ? (
                           <div
-                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px]"
+                            className="mt-2.5 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px]"
                             style={{ background: "rgba(18,22,29,0.55)", border: "1px solid rgba(196,201,210,0.55)", color: "#c4c9d2" }}
                           >
                             🥈 VICE
+                          </div>
+                        ) : SEMIFINAL_IDS.has(c.id) ? (
+                          <div
+                            className="mt-2.5 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px]"
+                            style={{ background: "rgba(18,22,29,0.55)", border: "1px solid rgba(205,139,90,0.55)", color: "#cd8b5a" }}
+                          >
+                            🥉 SEMIFINALISTA
                           </div>
                         ) : null}
                       </>
@@ -227,18 +236,21 @@ export function DraftScreen({ game }: { game: Game }) {
                       const role = p[0];
                       const taken = !!lineup[role];
                       const skin = rarityFor(p[2]);
-                      // só revela a moldura de raridade quando as notas estão visíveis
-                      const surface = showRatings ? skin.cls : "panel-raised";
+                      // só revela a moldura de raridade quando as notas estão visíveis.
+                      // já escolhido (taken): some a moldura, a animação e quase a opacidade.
+                      const surface = taken ? "panel-raised" : showRatings ? skin.cls : "panel-raised";
                       return (
                         <button
                           key={role}
                           onClick={() => game.pick(role)}
                           disabled={taken}
-                          style={{ "--i": i } as CSSProperties}
-                          className={`player-row row-in ${surface} flex w-full items-center gap-3 rounded-[12px] border border-gold/20 px-3.5 py-[21px] text-left text-cream ${
+                          style={
                             taken
-                              ? "cursor-not-allowed border-dashed opacity-[0.34] [filter:grayscale(0.7)]"
-                              : "cursor-pointer"
+                              ? { opacity: 0.26, filter: "grayscale(1)" }
+                              : ({ "--i": i } as CSSProperties)
+                          }
+                          className={`player-row ${taken ? "" : "row-in"} ${surface} flex w-full items-center gap-3 rounded-[12px] border border-gold/20 px-3.5 py-[21px] text-left text-cream ${
+                            taken ? "cursor-not-allowed border-dashed" : "cursor-pointer"
                           }`}
                         >
                           <RoleBadge role={role} variant="neutral" />
@@ -248,7 +260,7 @@ export function DraftScreen({ game }: { game: Game }) {
                           </span>
                           {showRatings && (
                             <span
-                              className="mr-1.5 font-mono text-[26px] font-bold leading-none"
+                              className="mr-1.5 font-mono text-[29px] font-bold leading-none"
                               style={{ color: skin.ratingColor }}
                             >
                               {p[2]}
