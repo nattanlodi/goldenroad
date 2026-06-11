@@ -1,17 +1,26 @@
 import type { Role } from "../types";
-import topIcon from "../assets/roles/top.svg";
-import jngIcon from "../assets/roles/jng.svg";
-import midIcon from "../assets/roles/mid.svg";
-import adcIcon from "../assets/roles/adc.svg";
-import supIcon from "../assets/roles/sup.svg";
+import topRaw from "../assets/roles/top.svg?raw";
+import jngRaw from "../assets/roles/jungle.svg?raw";
+import midRaw from "../assets/roles/mid.svg?raw";
+import adcRaw from "../assets/roles/adcarry.svg?raw";
+import supRaw from "../assets/roles/support.svg?raw";
 
-// Ícone (URL do SVG) de cada role. BOT usa o ícone de ADC.
-const ROLE_ICON: Record<Role, string> = {
-  TOP: topIcon,
-  JNG: jngIcon,
-  MID: midIcon,
-  BOT: adcIcon,
-  SUP: supIcon,
+// SVG inline da role. Trocamos a cor fixa do arquivo por currentColor pra que o
+// ícone herde a cor do texto, e tiramos width/height fixos pra escalar pelo CSS.
+function prep(raw: string): string {
+  return raw
+    .replace(/fill="#[0-9a-fA-F]{3,8}"/g, 'fill="currentColor"')
+    .replace(/fill="white"/gi, 'fill="currentColor"')
+    .replace(/\s(width|height)="[^"]*"/g, "");
+}
+
+// BOT usa o ícone de ADC.
+const ROLE_SVG: Record<Role, string> = {
+  TOP: prep(topRaw),
+  JNG: prep(jngRaw),
+  MID: prep(midRaw),
+  BOT: prep(adcRaw),
+  SUP: prep(supRaw),
 };
 
 // Texto exibido na badge. BOT aparece como "ADC".
@@ -25,50 +34,32 @@ const ROLE_TEXT: Record<Role, string> = {
 
 interface Props {
   role: Role;
-  /** Estilo da badge: dourada (sua line) ou vermelha (adversário). */
-  variant?: "gold" | "red";
-  /** Tamanho: define padding, fonte e largura mínima. */
+  /** Cor: dourada (sua line), avermelhada (adversário) ou neutra (branco). */
+  variant?: "gold" | "red" | "neutral";
+  /** Tamanho: define a fonte e o tamanho do ícone. */
   size?: "sm" | "md";
   className?: string;
 }
 
 /**
- * Badge da lane: ícone SVG + sigla, em negrito. Os ícones ficam em
- * src/assets/roles/ e são pintados via CSS `mask`, então herdam a cor do texto
- * (a cor do arquivo SVG é ignorada). BOT é rotulado como "ADC".
+ * Badge da lane: ícone da role (SVG inline que herda a cor do texto via
+ * currentColor) + a sigla em negrito ao lado. Sem fundo nem caixa. BOT vira "ADC".
  */
 export function RoleBadge({ role, variant = "gold", size = "md", className = "" }: Props) {
-  const icon = ROLE_ICON[role];
+  const svg = ROLE_SVG[role];
   const text = ROLE_TEXT[role];
 
-  const box =
-    size === "sm"
-      ? "min-w-[44px] gap-[3px] px-[5px] py-[3px] text-[9px]"
-      : "min-w-[50px] gap-1 px-[7px] py-1 text-[10px]";
-  const iconSize = size === "sm" ? "h-[11px] w-[11px]" : "h-3 w-3";
-  const skin =
-    variant === "red"
-      ? "text-cream"
-      : "bg-gold-bright text-ink";
+  const isSm = size === "sm";
+  const box = isSm ? "min-w-[48px] gap-[4px] text-[9px]" : "min-w-[54px] gap-[5px] text-[10px]";
+  const iconSize = isSm ? "h-[15px] w-[15px]" : "h-[17px] w-[17px]";
+  const color = variant === "red" ? "text-red-soft" : variant === "neutral" ? "text-cream" : "text-gold-bright";
 
   return (
-    <span
-      className={`inline-flex items-center justify-center rounded-[5px] text-center font-mono font-bold tracking-[1px] ${box} ${skin} ${className}`}
-      style={variant === "red" ? { background: "rgba(210,122,104,0.35)" } : undefined}
-    >
+    <span className={`inline-flex items-center font-mono font-bold tracking-[1px] ${box} ${color} ${className}`}>
       <span
         aria-hidden
-        className={`${iconSize} shrink-0 bg-current`}
-        style={{
-          maskImage: `url(${icon})`,
-          WebkitMaskImage: `url(${icon})`,
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
-          maskPosition: "center",
-          WebkitMaskPosition: "center",
-          maskSize: "contain",
-          WebkitMaskSize: "contain",
-        }}
+        className={`${iconSize} shrink-0 [&>svg]:h-full [&>svg]:w-full`}
+        dangerouslySetInnerHTML={{ __html: svg }}
       />
       {text}
     </span>

@@ -6,10 +6,10 @@ substituir o conteúdo de cada um pelo seu ícone, mantendo os nomes:
 | Arquivo   | Lane            |
 | --------- | --------------- |
 | `top.svg` | Top             |
-| `jng.svg` | Jungle          |
+| `jungle.svg` | Jungle          |
 | `mid.svg` | Mid             |
-| `adc.svg` | ADC (BOT)       |
-| `sup.svg` | Suporte         |
+| `adcarry.svg` | ADC (BOT)       |
+| `support.svg` | Suporte         |
 
 ## Como salvar o SVG
 
