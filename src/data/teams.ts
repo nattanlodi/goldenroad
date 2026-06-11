@@ -76,6 +76,19 @@ const YEARS = [...new Set(TEAMS.map((t) => t.year))].sort((a, b) => a - b);
 // Times elegíveis no jogo (draft + adversários). Mantém a ordem cronológica.
 export const DRAFT_TEAMS: Team[] = YEARS.flatMap(playoffTeamsOf);
 
+// Ids dos times que pararam nas QUARTAS de final (5º-8º colocados de cada edição
+// — os 4 últimos do grupo de playoff). Usado pra ponderar o sorteio do draft:
+// quartas caem um pouco menos que campeão/vice/semi. 2011 (4 times) não tem quartas.
+export const QUARTERFINAL_IDS: Set<string> = new Set(
+  YEARS.flatMap((year) => playoffTeamsOf(year).slice(4).map((t) => t.id)),
+);
+
+// Ids dos SEMIFINALISTAS (3º-4º colocados de cada edição). Usado pra badge de
+// bronze no card. 2011 (4 times) — semis são o 3º-4º também (slice 2..4).
+export const SEMIFINAL_IDS: Set<string> = new Set(
+  YEARS.flatMap((year) => playoffTeamsOf(year).slice(2, 4).map((t) => t.id)),
+);
+
 export const ROLES: Role[] = ["TOP", "JNG", "MID", "BOT", "SUP"];
 
 export const ROLE_LABELS: Record<Role, string> = {

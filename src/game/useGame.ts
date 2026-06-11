@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import type { LineupPlayer, PlayedSeries, Role, Team } from "../types";
 import { DRAFT_TEAMS, ROLES } from "../data/teams";
-import { buildNextSeries, drawAny, lineScore, lineupPicks, rnd, simulateSeries, yy } from "./helpers";
+import { buildNextSeries, drawAny, lineScore, lineupPicks, rnd, simulateSeries, weightedTeam, yy } from "./helpers";
 import { initialState, reducer } from "./reducer";
 import { useAudio } from "./useAudio";
 
@@ -112,7 +112,7 @@ export function useGame() {
     const { rerolls, current, rolling } = stateRef.current;
     if (rolling || rerolls <= 0 || !current) return;
     const pool = DRAFT_TEAMS.filter((t) => t.team !== current.team);
-    const target = rnd(pool.length ? pool : DRAFT_TEAMS);
+    const target = weightedTeam(pool.length ? pool : DRAFT_TEAMS);
     dispatch({ type: "rerollDec" });
     rollSeq(target);
   }, [rollSeq]);

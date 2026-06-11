@@ -1,15 +1,36 @@
 import type { Lineup, LineupPlayer, Opponent, RosterEntry, SeriesSetup, StagePhase, Team } from "../types";
-import { DRAFT_TEAMS, ROLES } from "../data/teams";
+import { DRAFT_TEAMS, QUARTERFINAL_IDS, SEMIFINAL_IDS, ROLES } from "../data/teams";
 
 /** Sorteia um item aleatório de um array. */
 export function rnd<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/** Sorteia qualquer time, evitando repetir o último (excludeId). */
+// Peso de sorteio de cada time no DRAFT. Quanto mais longe foi no Worlds, mais
+// provável de cair: campeão/vice = 1, semi = 0.9, quartas = 0.55.
+const QUARTERFINAL_DRAW_WEIGHT = 0.5;
+const SEMIFINAL_DRAW_WEIGHT = 0.9;
+function drawWeight(t: Team): number {
+  if (QUARTERFINAL_IDS.has(t.id)) return QUARTERFINAL_DRAW_WEIGHT;
+  if (SEMIFINAL_IDS.has(t.id)) return SEMIFINAL_DRAW_WEIGHT;
+  return 1;
+}
+
+/** Sorteio ponderado: cada time com sua chance proporcional ao peso. */
+export function weightedTeam(pool: Team[]): Team {
+  const total = pool.reduce((a, t) => a + drawWeight(t), 0);
+  let r = Math.random() * total;
+  for (const t of pool) {
+    r -= drawWeight(t);
+    if (r < 0) return t;
+  }
+  return pool[pool.length - 1];
+}
+
+/** Sorteia um time pro DRAFT (ponderado), evitando repetir o último (excludeId). */
 export function drawAny(excludeId?: string): Team {
   const pool = DRAFT_TEAMS.filter((t) => t.id !== excludeId);
-  return rnd(pool.length ? pool : DRAFT_TEAMS);
+  return weightedTeam(pool.length ? pool : DRAFT_TEAMS);
 }
 
 /** Média (arredondada) dos overalls de um time. */
