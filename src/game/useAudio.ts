@@ -80,6 +80,17 @@ export function useAudio() {
   const sndDefeat = useCallback(() => {
     [440, 349, 262].forEach((f, i) => tone(f, 0.4, "sine", 0.12, i * 0.16));
   }, [tone]);
+  // pentakill: arpejo ascendente suave (senoidal, clean — no estilo do draft),
+  // 4 notas macias subindo + um remate redondo. Sem aspereza de "beep".
+  const sndPenta = useCallback(() => {
+    [392, 523, 659, 784].forEach((f, i) => tone(f, 0.16, "sine", 0.07, i * 0.08));
+    tone(880, 0.34, "sine", 0.06, 0.34);
+  }, [tone]);
+  // mvp: pequena resolução nobre e macia — duas senoidais graves->médias.
+  const sndMvp = useCallback(() => {
+    tone(523, 0.2, "sine", 0.07);
+    tone(659, 0.3, "sine", 0.055, 0.11);
+  }, [tone]);
 
   const toggleMute = useCallback(() => {
     setMuted((m) => {
@@ -98,7 +109,7 @@ export function useAudio() {
     });
   }, [ensureAudio]);
 
-  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat };
+  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat, sndPenta, sndMvp };
 }
 
 export type AudioApi = ReturnType<typeof useAudio>;

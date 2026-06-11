@@ -67,6 +67,59 @@ export interface SeriesSetup {
   opp: Opponent;
 }
 
+/** Lado de um destaque: seu time ou o adversário. */
+export type Side = "you" | "opp";
+
+/** Referência leve a um jogador (de qualquer lado) num destaque. */
+export interface HighlightRef {
+  side: Side;
+  role: Role;
+  name: string;
+  rating: number;
+  country?: string;
+}
+
+/** Um pentakill ocorrido durante uma série: quem fez, de qual lado e em qual jogo (1-based). */
+export interface Pentakill {
+  side: Side;
+  role: Role;
+  name: string;
+  country?: string;
+  gameNumber: number;
+}
+
+/** MVP de uma única partida da série (do time que venceu aquele jogo). */
+export interface GameMvp extends HighlightRef {
+  gameNumber: number;
+}
+
+/** Resumo ao vivo de uma partida já disputada (histórico em tempo real). */
+export interface LiveGame {
+  gameNumber: number;
+  youWon: boolean;
+  mvp: GameMvp | null;
+  pentakills: Pentakill[];
+  /** rótulo da série/fase a que esta partida pertence (ex.: "Quartas de final"). */
+  stageLabel?: string;
+  /** índice da série na campanha (pra agrupar/numerar no histórico). */
+  seriesIndex?: number;
+  /** formato da série (Bo1 / Bo3 / Bo5). */
+  format?: string;
+  /** nome curto do adversário daquela série. */
+  oppShort?: string;
+  /** ano do adversário (sufixo do card). */
+  oppYear?: number;
+  /** rodada da Fase Suíça (1..n) — só preenchido em séries suíças. */
+  swissRound?: number;
+}
+
+/** Destaques de uma série: pentakills, MVP de cada partida e o MVP eleito ao fim. */
+export interface SeriesHighlight {
+  pentakills: Pentakill[];
+  gameMvps: GameMvp[];
+  mvp: HighlightRef | null;
+}
+
 /** Resultado de uma série já disputada (entra no histórico da jornada). */
 export interface PlayedSeries {
   stageKey: StageKey;

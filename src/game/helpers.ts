@@ -1,4 +1,4 @@
-import type { Lineup, LineupPlayer, Opponent, RosterEntry, SeriesSetup, StagePhase, Team } from "../types";
+import type { GameMvp, HighlightRef, Lineup, LineupPlayer, Opponent, Pentakill, Role, RosterEntry, SeriesHighlight, SeriesSetup, StagePhase, Team } from "../types";
 import { DRAFT_TEAMS, QUARTERFINAL_IDS, SEMIFINAL_IDS, ROLES } from "../data/teams";
 
 /** Sorteia um item aleatório de um array. */
@@ -79,6 +79,115 @@ export function simulateSeries(target: number, yourAvg: number, oppAvg: number):
     else ow++;
   }
   return { games, yourGames: yw, oppGames: ow, won: yw >= target };
+}
+
+// ============================================================
+// Destaques da série: pentakills + MVP
+// ============================================================
+
+/**
+ * Chance de um pentakill rolar PARA UM TIME numa partida. Independente por time
+ * e por partida: pode haver penta seu, do rival, dos dois ou de nenhum no mesmo
+ * jogo. ~12% por time/partida — bem no meio da faixa 10-15%. Não depende do
+ * resultado da partida (até num jogo perdido alguém seu pode fechar um penta).
+ */
+const PENTA_CHANCE = 0.12;
+
+type HighlightPlayer = HighlightRef;
+
+// Propensão de pentakill por lane (realista): carries fecham penta, suporte quase
+// nunca. Aplicado ANTES do overall — multiplica a chance de cada lane levar o penta.
+//   ADC 1.0 · MID 0.6 · TOP 0.3 · JNG 0.12 · SUP 0.02
+const PENTA_ROLE_WEIGHT: Record<Role, number> = { BOT: 1.0, MID: 0.6, TOP: 0.3, JNG: 0.12, SUP: 0.02 };
+
+// peso de pentakill por jogador: propensão da lane (dominante) × força (jogador
+// melhor carrega mais dentro da mesma lane).
+const pentaWeight = (p: HighlightPlayer) => PENTA_ROLE_WEIGHT[p.role] * Math.pow(Math.max(1, p.rating - 60), 1.6);
+
+function pickByWeight(list: HighlightPlayer[], weight: (p: HighlightPlayer) => number): HighlightPlayer {
+  const tot = list.reduce((a, p) => a + weight(p), 0);
+  let r = Math.random() * tot;
+  for (const p of list) {
+    r -= weight(p);
+    if (r < 0) return p;
+  }
+  return list[list.length - 1];
+}
+
+/**
+ * Gera os destaques de uma série, jogo a jogo:
+ *  - pentakills: cada partida, cada time tenta independentemente (~12%) um penta
+ *    de um jogador (ponderado por overall).
+ *  - MVP de partida: em cada jogo, o time que VENCEU aquela partida elege um MVP
+ *    (ponderado por overall + bônus por penta naquele jogo).
+ *  - MVP da série: no time vencedor da série, ponderado por quantas vezes o
+ *    jogador foi MVP de partida (peso forte) + overall + pentakills.
+ */
+export function rollSeriesHighlights(
+  games: boolean[],
+  yourList: LineupPlayer[],
+  oppPlayers: RosterEntry[],
+  seriesWon: boolean,
+): SeriesHighlight {
+  if (!yourList.length) return { pentakills: [], gameMvps: [], mvp: null };
+
+  const youSide: HighlightPlayer[] = yourList.map((p) => ({
+    side: "you",
+    role: p.role,
+    name: p.name,
+    rating: p.rating,
+    country: p.country,
+  }));
+  const oppSide: HighlightPlayer[] = oppPlayers.map((p) => ({
+    side: "opp",
+    role: p[0],
+    name: p[1],
+    rating: p[2],
+    country: p[3],
+  }));
+
+  const pentakills: Pentakill[] = [];
+  const gameMvps: GameMvp[] = [];
+
+  games.forEach((youWon, idx) => {
+    const gameNumber = idx + 1;
+    // cada time tenta seu pentakill de forma independente nesta partida.
+    for (const side of [youSide, oppSide]) {
+      if (Math.random() < PENTA_CHANCE) {
+        const hero = pickByWeight(side, pentaWeight);
+        pentakills.push({ side: hero.side, role: hero.role, name: hero.name, country: hero.country, gameNumber });
+      }
+    }
+    // MVP da partida: time que venceu ESTE jogo. Sorteio ponderado por overall,
+    // com pentakill dando um bônus FORTE (~3x por penta) — quem fez penta vira
+    // favorito, mas não garantido (senão ADC, que faz mais penta, monopolizaria).
+    const winner = youWon ? youSide : oppSide;
+    const pentaHere = (p: HighlightPlayer) =>
+      pentakills.filter((k) => k.gameNumber === gameNumber && k.side === p.side && k.role === p.role).length;
+    const gameMvpWeight = (p: HighlightPlayer) =>
+      Math.pow(Math.max(1, p.rating - 55), 1.5) * Math.pow(3, pentaHere(p));
+    const gm = pickByWeight(winner, gameMvpWeight);
+    gameMvps.push({ side: gm.side, role: gm.role, name: gm.name, rating: gm.rating, country: gm.country, gameNumber });
+  });
+
+  // MVP da série: do time VENCEDOR da série. Critério PRINCIPAL = quem foi MVP de
+  // mais partidas; desempate por (overall + bônus de pentakills na série). É
+  // determinístico — quem mais carregou os jogos leva, sem sorteio.
+  const winnerSide = seriesWon ? youSide : oppSide;
+  const gameMvpCount = (p: HighlightPlayer) =>
+    gameMvps.filter((m) => m.side === p.side && m.role === p.role).length;
+  const pentaCount = (p: HighlightPlayer) =>
+    pentakills.filter((k) => k.side === p.side && k.role === p.role).length;
+  // pontuação de desempate: overall + cada pentakill vale ~3 pontos de overall.
+  const tieScore = (p: HighlightPlayer) => p.rating + 3 * pentaCount(p);
+  const mvpP = winnerSide.reduce((best, p) => {
+    const c = gameMvpCount(p);
+    const cb = gameMvpCount(best);
+    if (c !== cb) return c > cb ? p : best;
+    return tieScore(p) > tieScore(best) ? p : best;
+  }, winnerSide[0]);
+  const mvp: HighlightRef = { side: mvpP.side, role: mvpP.role, name: mvpP.name, rating: mvpP.rating, country: mvpP.country };
+  return { pentakills, gameMvps, mvp };
 }
 
 // Média do pool de adversários — referência pra ponderar o sorteio por força.

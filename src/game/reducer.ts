@@ -1,11 +1,16 @@
 import type {
   CampaignEnd,
   Difficulty,
+  GameMvp,
+  HighlightRef,
+  LiveGame,
   Lineup,
   LineupPlayer,
+  Pentakill,
   PlayedSeries,
   Phase,
   Role,
+  SeriesHighlight,
   SeriesSetup,
   StagePhase,
   Team,
@@ -35,6 +40,12 @@ export interface GameState {
   yourGames: number;
   oppGames: number;
   seriesResult: "win" | "loss" | null;
+  highlight: SeriesHighlight | null; // pentakills + MVPs (preenchido no reveal)
+  pentaFlash: Pentakill | null; // pentakill a exibir agora (durante a animação)
+  gameMvpFlash: GameMvp | null; // MVP da partida atual (durante a animação)
+  liveGames: LiveGame[]; // partidas da série ATUAL (pra detectar fim de série)
+  campaignGames: LiveGame[]; // todas as partidas da campanha (histórico persistente)
+  finalsMvp: HighlightRef | null; // MVP da Grande Final (campeão) — preservado pro ResultScreen
   finished: CampaignEnd | null;
 
   // share / meta
@@ -58,6 +69,12 @@ const freshCampaign = {
   yourGames: 0,
   oppGames: 0,
   seriesResult: null as "win" | "loss" | null,
+  highlight: null as SeriesHighlight | null,
+  pentaFlash: null as Pentakill | null,
+  gameMvpFlash: null as GameMvp | null,
+  liveGames: [] as LiveGame[],
+  campaignGames: [] as LiveGame[],
+  finalsMvp: null as HighlightRef | null,
   finished: null as CampaignEnd | null,
 };
 
@@ -84,8 +101,9 @@ export type Action =
   | { type: "rerollDec" }
   | { type: "startCampaign"; series: SeriesSetup; usedOppIds: string[] }
   | { type: "playBegin" }
-  | { type: "gameStep"; yourGames: number; oppGames: number }
-  | { type: "seriesReveal"; result: "win" | "loss" }
+  | { type: "gameStep"; yourGames: number; oppGames: number; penta: Pentakill | null; gameMvp: GameMvp | null; liveGame: LiveGame }
+  | { type: "clearFlashes" }
+  | { type: "seriesReveal"; result: "win" | "loss"; highlight: SeriesHighlight }
   | {
       type: "nextSeriesAdvance";
       played: PlayedSeries;
@@ -96,7 +114,7 @@ export type Action =
       koIndex: number;
       usedOppIds: string[];
     }
-  | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean }
+  | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean; finalsMvp: HighlightRef | null }
   | { type: "restart" }
   | { type: "setCopied"; copied: boolean };
 
@@ -141,13 +159,35 @@ export function reducer(state: GameState, action: Action): GameState {
       };
 
     case "playBegin":
-      return { ...state, seriesPlaying: true, revealed: false, yourGames: 0, oppGames: 0, seriesResult: null };
+      return {
+        ...state,
+        seriesPlaying: true,
+        revealed: false,
+        yourGames: 0,
+        oppGames: 0,
+        seriesResult: null,
+        highlight: null,
+        pentaFlash: null,
+        gameMvpFlash: null,
+        liveGames: [],
+      };
 
     case "gameStep":
-      return { ...state, yourGames: action.yourGames, oppGames: action.oppGames };
+      return {
+        ...state,
+        yourGames: action.yourGames,
+        oppGames: action.oppGames,
+        pentaFlash: action.penta ?? state.pentaFlash,
+        gameMvpFlash: action.gameMvp ?? state.gameMvpFlash,
+        liveGames: [...state.liveGames, action.liveGame],
+        campaignGames: [...state.campaignGames, action.liveGame],
+      };
+
+    case "clearFlashes":
+      return { ...state, pentaFlash: null, gameMvpFlash: null };
 
     case "seriesReveal":
-      return { ...state, seriesPlaying: false, revealed: true, seriesResult: action.result };
+      return { ...state, seriesPlaying: false, revealed: true, seriesResult: action.result, highlight: action.highlight, pentaFlash: null, gameMvpFlash: null };
 
     case "nextSeriesAdvance":
       return {
@@ -164,6 +204,10 @@ export function reducer(state: GameState, action: Action): GameState {
         yourGames: 0,
         oppGames: 0,
         seriesResult: null,
+        highlight: null,
+        pentaFlash: null,
+        gameMvpFlash: null,
+        liveGames: [],
       };
 
     case "finishCampaign":
@@ -174,6 +218,7 @@ export function reducer(state: GameState, action: Action): GameState {
         finished: action.finished,
         record: action.record,
         isNewRecord: action.isNewRecord,
+        finalsMvp: action.finalsMvp,
       };
 
     case "restart":
