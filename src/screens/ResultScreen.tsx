@@ -2,7 +2,9 @@ import type { Game } from "../game/useGame";
 import { lineScore, lineupPicks, tierFor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
-import type { PlayedSeries } from "../types";
+import type { PlayedSeries, Role } from "../types";
+
+const ROLE_LABEL: Record<Role, string> = { TOP: "TOP", JNG: "JNG", MID: "MID", BOT: "ADC", SUP: "SUP" };
 
 function eliminationCopy(last: PlayedSeries | undefined, wins: number, losses: number) {
   switch (last?.stageKey) {
@@ -18,7 +20,7 @@ function eliminationCopy(last: PlayedSeries | undefined, wins: number, losses: n
 }
 
 export function ResultScreen({ game }: { game: Game }) {
-  const { lineup, history, record, isNewRecord, copied, finished } = game.state;
+  const { lineup, history, record, isNewRecord, copied, finished, finalsMvp } = game.state;
   const picks = lineupPicks(lineup);
   const avg = lineScore(lineup);
   const champs = picks.filter((p) => p.champion).length;
@@ -60,6 +62,33 @@ export function ResultScreen({ game }: { game: Game }) {
           <p className="mt-1 font-mono text-[12px] text-dim">Sua line tinha cara de {tier}.</p>
         )}
       </div>
+
+      {/* MVP das Finais — exclusivo do campeão */}
+      {isChampion && finalsMvp && (
+        <div className="anim-pop mb-[30px] flex justify-center">
+          <div
+            className="inline-flex items-center gap-3.5 rounded-[16px] px-6 py-4"
+            style={{
+              background: "linear-gradient(135deg,rgba(201,162,75,0.26),rgba(120,80,24,0.18))",
+              border: "1.5px solid rgba(232,206,134,0.7)",
+              boxShadow: "0 0 30px rgba(201,162,75,0.32)",
+            }}
+          >
+            <span className="text-[30px]">🏆</span>
+            <span className="flex flex-col items-start leading-tight">
+              <span className="font-display text-[12px] font-bold uppercase tracking-[3px] text-gold-bright">
+                MVP das Finais
+              </span>
+              <span className="mt-1 flex items-center gap-2">
+                <Flag cc={finalsMvp.country} size={15} />
+                <span className="font-display text-[24px] font-bold text-cream">{finalsMvp.name}</span>
+                <span className="font-mono text-[13px] text-muted">{ROLE_LABEL[finalsMvp.role]}</span>
+                <span className="font-mono text-[18px] font-bold text-gold-bright">{finalsMvp.rating}</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* stats */}
       <div className="mb-[34px] flex flex-wrap justify-center gap-6">

@@ -1,8 +1,93 @@
-import type { CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
 import type { Game } from "../game/useGame";
+import type { LiveGame, Role, Side } from "../types";
 import { lineScore, lineupPicks, seriesFlavor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
+import { ROLE_SVG } from "../components/roleIcons";
+
+interface SeriesBlock {
+  seriesIndex: number;
+  games: LiveGame[];
+}
+
+/** Agrupa as partidas por série (mantém ordem cronológica dentro do bloco);
+ *  retorna os blocos com o mais RECENTE primeiro (pro histórico de cima pra baixo). */
+function groupSeries(games: LiveGame[]): SeriesBlock[] {
+  const blocks: SeriesBlock[] = [];
+  for (const g of games) {
+    const idx = g.seriesIndex ?? 0;
+    const last = blocks[blocks.length - 1];
+    if (last && last.seriesIndex === idx) last.games.push(g);
+    else blocks.push({ seriesIndex: idx, games: [g] });
+  }
+  return blocks.reverse();
+}
+
+/** Título + subtítulo do cabeçalho de um bloco de série. */
+function seriesHeader(blk: SeriesBlock): { title: string; sub: string } {
+  const g = blk.games[0];
+  const stage = g.stageLabel ?? "Série";
+  const opp = g.oppShort ? `vs ${g.oppShort}${g.oppYear ? ` '${yy(g.oppYear)}` : ""}` : "";
+  if (g.swissRound) {
+    return { title: `Fase Suíça · Rodada ${g.swissRound}`, sub: [g.format, opp].filter(Boolean).join(" · ") };
+  }
+  return { title: stage, sub: [g.format, opp].filter(Boolean).join(" · ") };
+}
+
+/**
+ * MVP da série de um bloco (só Bo3/Bo5): mesma regra do motor — quem foi MVP de
+ * mais partidas; desempate por overall + pentakills. Calculado a partir dos jogos
+ * do bloco. Retorna null em Bo1 (não há "MVP da série" num jogo único).
+ */
+function seriesMvp(blk: SeriesBlock): { role: Role; name: string; country?: string; side: Side } | null {
+  if (blk.games.length < 2) return null; // Bo1 → sem MVP de série
+  // só após a série ACABAR: alguém precisa ter atingido o nº de vitórias do formato.
+  const target = blk.games[0].format === "Bo5" ? 3 : blk.games[0].format === "Bo3" ? 2 : 1;
+  const yourW = blk.games.filter((g) => g.youWon).length;
+  const oppW = blk.games.length - yourW;
+  if (yourW < target && oppW < target) return null; // série ainda em andamento
+  const won = yourW > oppW;
+  const winnerSide: Side = won ? "you" : "opp";
+  // candidatos = MVPs de partida do lado vencedor da série
+  const cand = blk.games.map((g) => g.mvp).filter((m): m is NonNullable<typeof m> => !!m && m.side === winnerSide);
+  if (!cand.length) return null;
+  const mvpCount = (role: Role) => cand.filter((m) => m.role === role).length;
+  const pentaCount = (role: Role) =>
+    blk.games.reduce((a, g) => a + g.pentakills.filter((k) => k.side === winnerSide && k.role === role).length, 0);
+  const ratingOf = (role: Role) => cand.find((m) => m.role === role)?.rating ?? 0;
+  const tie = (role: Role) => ratingOf(role) + 3 * pentaCount(role);
+  const best = cand.reduce((b, m) => {
+    const c = mvpCount(m.role);
+    const cb = mvpCount(b.role);
+    if (c !== cb) return c > cb ? m : b;
+    return tie(m.role) > tie(b.role) ? m : b;
+  }, cand[0]);
+  return { role: best.role, name: best.name, country: best.country, side: best.side };
+}
+
+/** Só o ícone da lane (sem texto), herda a cor via currentColor. */
+function LaneIcon({ role, className = "h-[15px] w-[15px]" }: { role: Role; className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`${className} inline-block shrink-0 [&>svg]:h-full [&>svg]:w-full`}
+      dangerouslySetInnerHTML={{ __html: ROLE_SVG[role] }}
+    />
+  );
+}
+
+/** Badge compacto de destaque: ícone da lane · bandeira · nome. */
+function HighlightName({ role, name, country, side }: { role: Role; name: string; country?: string; side: Side }) {
+  const color = side === "you" ? "text-gold-bright" : "text-red-soft";
+  return (
+    <span className="flex items-center gap-1.5">
+      <LaneIcon role={role} className={`h-[14px] w-[14px] ${color}`} />
+      <Flag cc={country} size={11} />
+      <span className={`font-display text-[14px] font-bold ${color}`}>{name}</span>
+    </span>
+  );
+}
 
 const dotGreen: CSSProperties = {
   background: "linear-gradient(180deg,#86d79a,#5fae72)",
@@ -50,7 +135,19 @@ export function SeriesScreen({ game }: { game: Game }) {
     difficulty,
     lineup,
     history,
+    highlight,
+    pentaFlash,
+    gameMvpFlash,
+    campaignGames,
   } = game.state;
+
+  // os flashes (penta / MVP de partida) somem sozinhos após um tempo.
+  useEffect(() => {
+    if (!pentaFlash && !gameMvpFlash) return;
+    const id = setTimeout(() => game.clearFlashes(), 1700);
+    return () => clearTimeout(id);
+  }, [pentaFlash, gameMvpFlash, game]);
+
   if (!series) return null;
 
   const showRatings = difficulty !== "especialista";
@@ -171,6 +268,56 @@ export function SeriesScreen({ game }: { game: Game }) {
                 <span className="text-red-soft">{oppGames}</span>
               </div>
               <div className="mt-2 font-mono text-[11px] tracking-[3px] text-muted">EM JOGO…</div>
+              {pentaFlash && (
+                <div key={`${pentaFlash.side}-${pentaFlash.role}-${pentaFlash.gameNumber}`} className="anim-penta mt-3">
+                  <div
+                    className="mx-auto inline-flex flex-col items-center rounded-[12px] px-4 py-2"
+                    style={
+                      pentaFlash.side === "you"
+                        ? {
+                            background: "linear-gradient(180deg,rgba(201,162,75,0.22),rgba(140,90,30,0.18))",
+                            border: "1.5px solid rgba(232,206,134,0.7)",
+                            boxShadow: "0 0 22px rgba(201,162,75,0.45)",
+                          }
+                        : {
+                            background: "linear-gradient(180deg,rgba(210,122,104,0.2),rgba(80,40,40,0.18))",
+                            border: "1.5px solid rgba(224,154,135,0.6)",
+                            boxShadow: "0 0 18px rgba(210,122,104,0.35)",
+                          }
+                    }
+                  >
+                    <span
+                      className={`font-display text-[18px] font-extrabold uppercase tracking-[3px] ${pentaFlash.side === "you" ? "text-gold-bright" : "text-red-soft"}`}
+                    >
+                      ⚔ Pentakill!
+                    </span>
+                    <span className="mt-1 flex items-center gap-1">
+                      <HighlightName role={pentaFlash.role} name={pentaFlash.name} country={pentaFlash.country} side={pentaFlash.side} />
+                      <span className="ml-1 font-mono text-[10px] text-muted">
+                        {pentaFlash.side === "you" ? "(você)" : "(rival)"}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              )}
+              {gameMvpFlash && !pentaFlash && (
+                <div key={`gm-${gameMvpFlash.gameNumber}`} className="anim-penta mt-3">
+                  <div
+                    className="mx-auto inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5"
+                    style={
+                      gameMvpFlash.side === "you"
+                        ? { background: "rgba(201,162,75,0.16)", border: "1px solid rgba(232,206,134,0.5)" }
+                        : { background: "rgba(210,122,104,0.14)", border: "1px solid rgba(224,154,135,0.45)" }
+                    }
+                  >
+                    <span className="text-[13px]">⭐</span>
+                    <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">
+                      MVP Jogo {gameMvpFlash.gameNumber}
+                    </span>
+                    <HighlightName role={gameMvpFlash.role} name={gameMvpFlash.name} country={gameMvpFlash.country} side={gameMvpFlash.side} />
+                  </div>
+                </div>
+              )}
               <div className="mt-4 flex flex-col items-center gap-1.5">
                 <div className="flex items-center gap-2">
                   <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Você</span>
@@ -204,7 +351,37 @@ export function SeriesScreen({ game }: { game: Game }) {
               >
                 {isWin ? "Vitória" : "Derrota"}
               </div>
-              <div className="mx-auto mt-2 mb-[18px] max-w-[260px] text-[13px] text-[#BFC4CD]">{flavor}</div>
+              <div className="mx-auto mt-2 mb-3 max-w-[260px] text-[13px] text-[#BFC4CD]">{flavor}</div>
+
+              {highlight?.mvp && series.target > 1 && (
+                <div
+                  className="anim-pop mx-auto mb-2.5 inline-flex items-center gap-2 rounded-[11px] px-3.5 py-2"
+                  style={
+                    highlight.mvp.side === "you"
+                      ? {
+                          background: "linear-gradient(180deg,rgba(201,162,75,0.18),rgba(40,48,60,0.5))",
+                          border: "1px solid rgba(232,206,134,0.55)",
+                        }
+                      : {
+                          background: "linear-gradient(180deg,rgba(210,122,104,0.16),rgba(40,32,34,0.5))",
+                          border: "1px solid rgba(224,154,135,0.5)",
+                        }
+                  }
+                >
+                  <span className="font-display text-[16px]">🏅</span>
+                  <span className="flex flex-col items-start leading-tight">
+                    <span className="font-mono text-[9px] uppercase tracking-[2px] text-muted">
+                      MVP da série{highlight.mvp.side === "opp" ? ` · ${series.opp.short}` : ""}
+                    </span>
+                    <span className="mt-0.5">
+                      <HighlightName role={highlight.mvp.role} name={highlight.mvp.name} country={highlight.mvp.country} side={highlight.mvp.side} />
+                    </span>
+                  </span>
+                </div>
+              )}
+
+              <div className="mb-1" />
+
               <button
                 onClick={game.nextSeries}
                 className={
@@ -248,6 +425,112 @@ export function SeriesScreen({ game }: { game: Game }) {
           </div>
         </div>
       </div>
+
+      {/* histórico da campanha — agrupado por série, bloco mais recente no topo */}
+      {campaignGames.length > 0 && (
+        <div className="anim-fade-fast mx-auto mt-6 max-w-[880px]">
+          <div className="mb-3 text-center font-mono text-[10px] uppercase tracking-[3px] text-muted">
+            Histórico de partidas
+          </div>
+          <div className="flex flex-col gap-5">
+            {groupSeries(campaignGames).map((blk, bi) => {
+              const yourW = blk.games.filter((g) => g.youWon).length;
+              const oppW = blk.games.length - yourW;
+              const head = seriesHeader(blk);
+              const sMvp = seriesMvp(blk);
+              return (
+                <div key={blk.seriesIndex} className={bi === 0 ? "anim-fade-fast" : ""}>
+                  {/* cabeçalho do bloco da série */}
+                  <div className="mb-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 px-1">
+                    <span className="font-display text-[13px] font-bold uppercase tracking-[1.5px] text-gold-bright">
+                      {head.title}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-dim">{head.sub}</span>
+                    {sMvp && (
+                      <span
+                        className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5"
+                        style={
+                          sMvp.side === "you"
+                            ? { background: "rgba(201,162,75,0.14)", border: "1px solid rgba(232,206,134,0.45)" }
+                            : { background: "rgba(210,122,104,0.13)", border: "1px solid rgba(224,154,135,0.4)" }
+                        }
+                      >
+                        <span className="text-[11px]">🏅</span>
+                        <span className="font-mono text-[8.5px] uppercase tracking-[1px] text-muted">MVP da série</span>
+                        <HighlightName role={sMvp.role} name={sMvp.name} country={sMvp.country} side={sMvp.side} />
+                      </span>
+                    )}
+                    <span className="h-px flex-1" style={{ background: "rgba(201,162,75,0.18)" }} />
+                    <span className={`font-mono text-[13px] font-bold tracking-[1px] ${yourW > oppW ? "text-win" : "text-red"}`}>
+                      {yourW}–{oppW}
+                    </span>
+                  </div>
+
+                  {/* jogos da série */}
+                  <div className="flex flex-col gap-1.5">
+                    {blk.games
+                      .slice()
+                      .reverse()
+                      .map((g, gi) => (
+                        <div
+                          key={gi}
+                          className="flex items-center gap-3 rounded-[11px] border px-3.5 py-2.5"
+                          style={{
+                            background: g.youWon ? "rgba(30,40,33,0.55)" : "rgba(44,32,33,0.5)",
+                            borderColor: g.youWon ? "rgba(126,208,143,0.24)" : "rgba(210,122,104,0.26)",
+                          }}
+                        >
+                          {/* badge resultado (à esquerda) + nº do jogo */}
+                          <span
+                            className={`w-[78px] flex-none rounded-[6px] px-2 py-1 text-center font-mono text-[10px] font-bold uppercase tracking-[1px] ${g.youWon ? "text-win" : "text-red-soft"}`}
+                            style={{
+                              background: g.youWon ? "rgba(126,208,143,0.14)" : "rgba(210,122,104,0.14)",
+                              border: `1px solid ${g.youWon ? "rgba(126,208,143,0.4)" : "rgba(210,122,104,0.4)"}`,
+                            }}
+                          >
+                            {g.youWon ? "Vitória" : "Derrota"}
+                          </span>
+                          <span className="w-[52px] flex-none font-mono text-[11px] font-bold tracking-[1px] text-muted">
+                            Jogo {g.gameNumber}
+                          </span>
+
+                          {/* MVP da partida */}
+                          <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                            {g.mvp && (
+                              <>
+                                <span className="text-[12px]">⭐</span>
+                                <HighlightName role={g.mvp.role} name={g.mvp.name} country={g.mvp.country} side={g.mvp.side} />
+                              </>
+                            )}
+                          </span>
+
+                          {/* todos os pentakills do jogo, à direita */}
+                          {g.pentakills.length > 0 && (
+                            <span className="flex flex-wrap items-center justify-end gap-1.5">
+                              {g.pentakills.map((k, idx) => (
+                                <span
+                                  key={idx}
+                                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.5px] ${k.side === "you" ? "text-gold-bright" : "text-red-soft"}`}
+                                  style={
+                                    k.side === "you"
+                                      ? { background: "rgba(201,162,75,0.14)", border: "1px solid rgba(201,162,75,0.3)" }
+                                      : { background: "rgba(210,122,104,0.13)", border: "1px solid rgba(210,122,104,0.3)" }
+                                  }
+                                >
+                                  ⚔ <LaneIcon role={k.role} className="h-[11px] w-[11px]" /> {k.name}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
