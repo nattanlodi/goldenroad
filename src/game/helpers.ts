@@ -164,6 +164,38 @@ export function yy(year: number): string {
 }
 
 // ============================================================
+// Raridade do jogador (visual dos cards) — por overall
+// ============================================================
+
+export type Rarity = "lendario" | "epico" | "raro" | "comum";
+
+export interface RaritySkin {
+  rarity: Rarity;
+  /** classe CSS (em index.css) com a moldura/gradiente/glow do tier. */
+  cls: string;
+  /** cor da nota (overall) pra combinar com o tier. */
+  ratingColor: string;
+}
+
+const RARITY_SKINS: Record<Rarity, RaritySkin> = {
+  lendario: { rarity: "lendario", cls: "card-lendario", ratingColor: "#f5d77a" },
+  epico: { rarity: "epico", cls: "card-epico", ratingColor: "#d2a0e8" },
+  raro: { rarity: "raro", cls: "card-raro", ratingColor: "#8fb8ec" },
+  comum: { rarity: "comum", cls: "card-comum", ratingColor: "#cfd3cb" },
+};
+
+/**
+ * Raridade pela nota do jogador. Calibrada ao pool (média ~81, teto 96):
+ *   lendário 92+ · épico 86-91 · raro 80-85 · comum <80 (79 ou menos).
+ */
+export function rarityFor(overall: number): RaritySkin {
+  if (overall >= 92) return RARITY_SKINS.lendario;
+  if (overall >= 86) return RARITY_SKINS.epico;
+  if (overall >= 80) return RARITY_SKINS.raro;
+  return RARITY_SKINS.comum;
+}
+
+// ============================================================
 // Narração
 // ============================================================
 

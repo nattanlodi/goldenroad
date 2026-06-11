@@ -21,7 +21,7 @@ export function Flag({ cc, size = 13, className = "" }: Props) {
       alt={code.toUpperCase()}
       loading="lazy"
       className={`inline-block shrink-0 rounded-[2px] object-cover ${className}`}
-      style={{ height: `${size}px`, width: `${Math.round(size * 1.5)}px`, boxShadow: "0 0 0 1px rgba(0,0,0,0.35)" }}
+      style={{ height: `${size}px`, width: `${Math.round(size * 1.5)}px` }}
     />
   );
 }

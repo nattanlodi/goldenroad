@@ -1,5 +1,6 @@
 import { DRAFT_TEAMS } from "./data/teams";
 import { useGame } from "./game/useGame";
+import { AppBackground } from "./components/AppBackground";
 import { MuteButton } from "./components/MuteButton";
 import { StartScreen } from "./screens/StartScreen";
 import { DraftScreen } from "./screens/DraftScreen";
@@ -15,6 +16,7 @@ export function App() {
       className="bg-app flex min-h-screen w-full flex-col items-center font-body text-cream"
       style={{ padding: "clamp(18px,4vw,40px)" }}
     >
+      <AppBackground dim={phase === "play"} />
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
       {phase === "start" && <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={game.begin} />}

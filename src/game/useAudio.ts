@@ -53,10 +53,18 @@ export function useAudio() {
     [ensureAudio],
   );
 
-  const sndTick = useCallback(() => tone(720, 0.035, "square", 0.05), [tone]);
+  // tick do sorteio: onda senoidal curta e suave (clean), em vez da square áspera.
+  const sndTick = useCallback(() => tone(640, 0.045, "sine", 0.045), [tone]);
   const sndPick = useCallback(() => {
-    tone(523, 0.09, "triangle", 0.15);
-    tone(784, 0.13, "triangle", 0.11, 0.05);
+    // pick de jogador: confirmação suave (senoidal, volume contido, intervalo macio).
+    tone(523, 0.11, "sine", 0.08);
+    tone(698, 0.16, "sine", 0.06, 0.05);
+  }, [tone]);
+  // fim do sorteio da roleta: revelação clean e grave — duas senoidais macias,
+  // frequências baixas pra soar "redondo" em vez de beep agudo.
+  const sndReveal = useCallback(() => {
+    tone(330, 0.2, "sine", 0.08);
+    tone(440, 0.28, "sine", 0.06, 0.08);
   }, [tone]);
   const sndWin = useCallback(() => {
     tone(659, 0.1, "triangle", 0.13);
@@ -90,7 +98,7 @@ export function useAudio() {
     });
   }, [ensureAudio]);
 
-  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndWin, sndLose, sndTrophy, sndDefeat };
+  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat };
 }
 
 export type AudioApi = ReturnType<typeof useAudio>;

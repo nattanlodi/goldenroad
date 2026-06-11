@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
-import { DRAFT_TEAMS, ROLES, ROLE_LABELS } from "../data/teams";
-import { yy } from "../game/helpers";
+import { DRAFT_TEAMS, ROLES } from "../data/teams";
+import { lineScore, lineupPicks, rarityFor, tierFor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 import { Logo6x0 } from "../components/Logo6x0";
@@ -32,6 +32,9 @@ export function DraftScreen({ game }: { game: Game }) {
 
   const filledCount = ROLES.filter((r) => lineup[r]).length;
   const complete = filledCount === 5;
+  const picks = lineupPicks(lineup);
+  const avg = lineScore(lineup);
+  const tier = tierFor(avg);
   const hasTeam = !!current;
   const predraftFirst = !hasTeam && !rolling && filledCount === 0;
   const readyRoll = !hasTeam && !rolling && filledCount > 0 && !complete;
@@ -79,6 +82,38 @@ export function DraftScreen({ game }: { game: Game }) {
       <div className="flex flex-col items-stretch gap-[18px] wide:flex-row wide:gap-[26px]">
         {/* esquerda */}
         <div className="w-full wide:w-[344px] wide:flex-none">
+          {/* card MÉDIA DO ELENCO — reflete a line em montagem (só no clássico) */}
+          {showRatings && picks.length > 0 && (
+            <div
+              className="anim-fade-fast mb-[18px] overflow-hidden rounded-2xl border border-gold/30"
+              style={{ background: "linear-gradient(150deg,rgba(58,48,22,0.5),rgba(30,37,49,0.7))" }}
+            >
+              <div className="flex items-center justify-between px-[18px] pt-3.5">
+                <div className="font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">★ Média do elenco</div>
+                {/* diamantes: um por lane, preenchido = já escolhida */}
+                <div className="flex gap-[5px]">
+                  {ROLES.map((r) => (
+                    <span
+                      key={r}
+                      className="inline-block h-[9px] w-[9px] rotate-45 rounded-[2px]"
+                      style={
+                        lineup[r]
+                          ? { background: "#e8ce86", boxShadow: "0 0 6px rgba(232,206,134,0.5)" }
+                          : { border: "1px solid rgba(201,162,75,0.4)" }
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 px-[18px] pb-3.5 pt-1.5">
+                <span className="font-mono text-[44px] font-bold leading-none text-gold-bright">{avg}</span>
+                <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-cream">
+                  {tier.tier}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* (a) pré-draft */}
           {predraftFirst && (
             <>
@@ -123,7 +158,7 @@ export function DraftScreen({ game }: { game: Game }) {
                 onClick={game.rollStart}
                 className="btn-gold mt-3.5 w-full cursor-pointer rounded-[12px] border-none px-4 py-4 font-display text-[18px] font-semibold uppercase tracking-[2px]"
               >
-                🎲 Iniciar · rolar 1º time
+                Iniciar draft
               </button>
             </>
           )}
@@ -164,15 +199,18 @@ export function DraftScreen({ game }: { game: Game }) {
                       </div>
                     ) : (
                       <>
-                        <div className="font-display text-[24px] leading-none font-bold text-gold-bright">'{c.year}</div>
+                        <div className="font-display text-[24px] leading-none font-bold text-gold-bright">{c.year}</div>
                         {c.champion ? (
-                          <div className="mt-1 inline-block rounded-[4px] bg-gold-bright px-[7px] py-0.5 font-mono text-[10px] tracking-[1px] text-ink">
+                          <div
+                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px] text-gold-bright"
+                            style={{ background: "rgba(18,22,29,0.55)", border: "1px solid rgba(232,206,134,0.55)" }}
+                          >
                             ★ CAMPEÃO
                           </div>
                         ) : c.finalist ? (
                           <div
-                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] tracking-[1px] text-ink"
-                            style={{ background: "#c4c9d2" }}
+                            className="mt-1 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px]"
+                            style={{ background: "rgba(18,22,29,0.55)", border: "1px solid rgba(196,201,210,0.55)", color: "#c4c9d2" }}
                           >
                             🥈 VICE
                           </div>
@@ -181,36 +219,46 @@ export function DraftScreen({ game }: { game: Game }) {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 p-3">
-                  {c.players.map((p) => {
-                    const role = p[0];
-                    const taken = !!lineup[role];
-                    return (
-                      <button
-                        key={role}
-                        onClick={() => game.pick(role)}
-                        disabled={taken || rolling}
-                        className={`player-row panel-raised flex w-full items-center gap-3 rounded-[12px] border border-gold/20 px-3.5 py-3 text-left text-cream ${
-                          taken
-                            ? "cursor-not-allowed border-dashed opacity-[0.34] [filter:grayscale(0.7)]"
-                            : rolling
-                              ? "cursor-default"
+                {/* a lista de jogadores só aparece com o time já definido — durante
+                    o sorteio quem "embaralha" é só o cabeçalho do card (nome do time). */}
+                {!rolling && (
+                  <div className="flex flex-col gap-3 p-3">
+                    {c.players.map((p, i) => {
+                      const role = p[0];
+                      const taken = !!lineup[role];
+                      const skin = rarityFor(p[2]);
+                      // só revela a moldura de raridade quando as notas estão visíveis
+                      const surface = showRatings ? skin.cls : "panel-raised";
+                      return (
+                        <button
+                          key={role}
+                          onClick={() => game.pick(role)}
+                          disabled={taken}
+                          style={{ "--i": i } as CSSProperties}
+                          className={`player-row row-in ${surface} flex w-full items-center gap-3 rounded-[12px] border border-gold/20 px-3.5 py-[21px] text-left text-cream ${
+                            taken
+                              ? "cursor-not-allowed border-dashed opacity-[0.34] [filter:grayscale(0.7)]"
                               : "cursor-pointer"
-                        }`}
-                      >
-                        <RoleBadge role={role} />
-                        <span className="flex min-w-0 flex-1 flex-col gap-px">
-                          <span className="flex min-w-0 items-center gap-1.5">
-                            <Flag cc={p[3]} />
+                          }`}
+                        >
+                          <RoleBadge role={role} variant="neutral" />
+                          <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                            <Flag cc={p[3]} size={10} />
                             <span className="truncate font-display text-[17px] font-semibold text-cream">{p[1]}</span>
                           </span>
-                          <span className="text-[11px] text-muted">{ROLE_LABELS[role]}</span>
-                        </span>
-                        {showRatings && <span className="font-mono text-[18px] font-bold text-gold-bright">{p[2]}</span>}
-                      </button>
-                    );
-                  })}
-                </div>
+                          {showRatings && (
+                            <span
+                              className="mr-1.5 font-mono text-[26px] font-bold leading-none"
+                              style={{ color: skin.ratingColor }}
+                            >
+                              {p[2]}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <div className="mt-3.5 flex gap-2.5">

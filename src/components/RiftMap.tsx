@@ -19,8 +19,8 @@ const POS: Record<Role, [number, number]> = {
 };
 
 const circleBase: CSSProperties = {
-  width: "clamp(52px,10.2vw,68px)",
-  height: "clamp(52px,10.2vw,68px)",
+  width: "clamp(64px,12.4vw,84px)",
+  height: "clamp(64px,12.4vw,84px)",
   borderRadius: "50%",
   display: "flex",
   flexDirection: "column",
@@ -45,12 +45,59 @@ const circleEmpty: CSSProperties = {
   animation: "scPulse 2.6s ease-in-out infinite",
 };
 
+/**
+ * Base de um time: a plataforma do CANTO do mapa, como no jogo — um setor de
+ * 90° ancorado no vértice, com a borda interna arredondada virada pro centro.
+ * `corner` diz qual canto ocupar; `color` é o acento do nexus (azul/vermelho).
+ *   raio do setor = R; o vértice fica no canto da arena (x0,y0).
+ */
+function Nexus({
+  corner,
+  color,
+}: {
+  corner: "bl" | "tr";
+  color: string;
+}) {
+  // lo = recuo a partir da borda da arena (4). Um pouquinho pra DENTRO pra a
+  // base ficar por dentro do traçado dourado mais externo, sem cair em cima.
+  const lo = 7;
+  const R = 27;
+  const cr = 5; // raio do canto arredondado (acompanha a curva do mapa)
+  const hi = lo + R;
+  // os dois pontos onde o arco grande (frente da base) encosta nas bordas
+  const a = corner === "bl" ? { x: lo, y: 100 - hi } : { x: 100 - lo, y: hi };
+  const b = corner === "bl" ? { x: hi, y: 100 - lo } : { x: 100 - hi, y: lo };
+  // pontos onde começa/termina o arredondamento do canto (recuados de cr)
+  const b2 = corner === "bl" ? { x: lo + cr, y: 100 - lo } : { x: 100 - lo - cr, y: lo };
+  const a2 = corner === "bl" ? { x: lo, y: 100 - lo - cr } : { x: 100 - lo, y: lo + cr };
+  const d =
+    `M ${a.x} ${a.y}` +
+    ` A ${R} ${R} 0 0 1 ${b.x} ${b.y}` + // frente da base (arco grande)
+    ` L ${b2.x} ${b2.y}` + // segue a borda até o início do canto
+    ` A ${cr} ${cr} 0 0 1 ${a2.x} ${a2.y}` + // canto arredondado (igual à arena)
+    ` Z`; // fecha pela borda de volta até a
+  // centro aproximado do piso (≈ 0.38·R do vértice na diagonal)
+  const off = R * 0.38;
+  const c = corner === "bl" ? { x: lo + off, y: 100 - lo - off } : { x: 100 - lo - off, y: lo + off };
+  return (
+    <g>
+      {/* piso da base: SÓLIDO (muralha escura) sobreposto às lanes */}
+      <path d={d} fill="#2b3530" />
+      {/* cristal do nexus ao centro do piso */}
+      <g transform={`translate(${c.x} ${c.y})`}>
+        <rect x="-1.8" y="-1.8" width="3.6" height="3.6" rx="0.5" transform="rotate(45)" fill={color} />
+        <circle r="0.9" fill="#fff" opacity="0.6" />
+      </g>
+    </g>
+  );
+}
+
 /** Painel direito do draft: o Summoner's Rift estilizado + bolinhas das lanes. */
 export function RiftMap({ lineup, showRatings, filledCount }: Props) {
   return (
     <div
-      className="flex h-full flex-col rounded-2xl border border-gold/25 p-[clamp(14px,2.5vw,22px)]"
-      style={{ background: "radial-gradient(120% 120% at 50% 0%, rgba(48,62,48,0.4), rgba(28,34,45,0.92))" }}
+      className="flex h-full flex-col rounded-2xl border border-gold/25 p-[clamp(14px,2.5vw,22px)] [backdrop-filter:blur(7px)]"
+      style={{ background: "radial-gradient(120% 120% at 50% 0%, rgba(58,66,78,0.34), rgba(28,34,45,0.8))" }}
     >
       <div className="mb-3 flex items-center justify-between">
         <div className="font-mono text-[11px] uppercase tracking-[3px] text-muted">Summoner's Rift</div>
@@ -73,25 +120,31 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
               <stop offset="0.6" stopColor="rgba(201,162,75,0.04)" />
               <stop offset="1" stopColor="rgba(201,162,75,0)" />
             </radialGradient>
-            <linearGradient id="riverGrad" x1="0" y1="0" x2="1" y2="1">
+            {/* degradê do rio em coordenadas do mapa (userSpaceOnUse):
+                assim o fill dos covis casa EXATAMENTE com a cor do rio naquele
+                ponto, parecendo parte dele. Eixo = mesma diagonal do rio (19→81). */}
+            <linearGradient id="riverGradUser" x1="19" y1="19" x2="81" y2="81" gradientUnits="userSpaceOnUse">
               <stop offset="0" stopColor="rgba(96,150,210,0.1)" />
               <stop offset="0.5" stopColor="rgba(128,182,232,0.42)" />
               <stop offset="1" stopColor="rgba(96,150,210,0.1)" />
             </linearGradient>
-            <pattern id="jungleTex" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
-              <path d="M0,4 q2,-3 4,0 t4,0" fill="none" stroke="rgba(201,162,75,0.055)" strokeWidth="0.5" />
-              <path d="M0,7.4 q2,-2.6 4,0 t4,0" fill="none" stroke="rgba(201,162,75,0.04)" strokeWidth="0.45" />
-              <circle cx="1.6" cy="2" r="0.45" fill="rgba(201,162,75,0.05)" />
-            </pattern>
           </defs>
 
           <rect x="2.5" y="2.5" width="95" height="95" rx="6" fill="none" stroke="rgba(201,162,75,0.1)" strokeWidth="2.6" />
           <rect x="4" y="4" width="92" height="92" rx="5" fill="url(#riftFill)" stroke="rgba(201,162,75,0.5)" strokeWidth="0.8" />
-          <rect x="4" y="4" width="92" height="92" rx="5" fill="url(#jungleTex)" />
-          <rect x="4" y="4" width="92" height="92" rx="5" fill="url(#riftGlow)" />
+          <rect className="rift-ambient" x="4" y="4" width="92" height="92" rx="5" fill="url(#riftGlow)" />
 
-          {/* rio (canto a canto) */}
-          <line x1="19" y1="19" x2="81" y2="81" stroke="url(#riverGrad)" strokeWidth="10.5" strokeLinecap="round" />
+          {/* rio (canto a canto). Os covis são bojos do PRÓPRIO rio: meios-círculos
+              com o mesmo fill, encostados na linha — um pro lado do Baron (acima),
+              outro pro lado do Dragão (abaixo). A base reta cola no leito. */}
+          <g fill="url(#riverGradUser)" stroke="none">
+            {/* covil do Baron: base na borda superior do rio (centro ~37.15,31.85),
+                bojo encostado na água, saltando pro lado de cima. */}
+            <path d="M 32.20 26.90 A 7 7 0 0 1 42.10 36.80 Z" />
+            {/* covil do Dragão: base na borda inferior do rio (centro ~62.85,68.15). */}
+            <path d="M 67.80 73.10 A 7 7 0 0 1 57.90 63.20 Z" />
+          </g>
+          <line x1="19" y1="19" x2="81" y2="81" stroke="url(#riverGradUser)" strokeWidth="7.5" strokeLinecap="round" />
 
           {/* leitos opacos pras lanes passarem por cima do rio */}
           <rect x="15" y="15" width="70" height="70" rx="9" fill="none" stroke="#202c25" strokeWidth="9.5" strokeLinejoin="round" />
@@ -100,28 +153,24 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
           {/* anel de lanes */}
           <rect x="15" y="15" width="70" height="70" rx="9" fill="none" stroke="rgba(201,162,75,0.26)" strokeWidth="9.5" strokeLinejoin="round" />
           <rect x="15" y="15" width="70" height="70" rx="9" fill="none" stroke="rgba(201,162,75,0.34)" strokeWidth="5" />
-          <rect x="15" y="15" width="70" height="70" rx="9" fill="none" stroke="rgba(236,210,140,0.55)" strokeWidth="1.2" />
+          <rect x="15" y="15" width="70" height="70" rx="9" fill="none" stroke="rgba(236,210,140,0.3)" strokeWidth="1.2" />
 
           {/* mid lane (diagonal) */}
           <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(201,162,75,0.26)" strokeWidth="9.5" strokeLinecap="round" />
           <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(201,162,75,0.34)" strokeWidth="5" strokeLinecap="round" />
-          <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(236,210,140,0.55)" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(236,210,140,0.3)" strokeWidth="1.2" strokeLinecap="round" />
 
-          {/* covas */}
-          <circle cx="36" cy="31" r="3.6" fill="rgba(154,114,201,0.2)" stroke="#9a72c9" strokeWidth="0.7" />
-          <circle cx="36" cy="31" r="1.2" fill="#9a72c9" opacity="0.75" />
-          <circle cx="64" cy="69" r="3.6" fill="rgba(210,129,74,0.2)" stroke="#d2814a" strokeWidth="0.7" />
-          <circle cx="64" cy="69" r="1.2" fill="#d2814a" opacity="0.75" />
+          {/* covil do Baron (roxo, acima do rio) e do Dragão (laranja, abaixo) */}
+          <circle cx="38.4" cy="30.6" r="2.1" fill="rgba(154,114,201,0.22)" stroke="#9a72c9" strokeWidth="0.7" />
+          <circle className="rift-pit" cx="38.4" cy="30.6" r="1" fill="#9a72c9" />
+          <circle cx="61.6" cy="69.4" r="2.1" fill="rgba(210,129,74,0.22)" stroke="#d2814a" strokeWidth="0.7" />
+          <circle className="rift-pit rift-pit-dragon" cx="61.6" cy="69.4" r="1" fill="#d2814a" />
 
           {/* base azul (canto inferior-esquerdo) */}
-          <circle cx="12" cy="88" r="9" fill="rgba(96,150,210,0.1)" stroke="rgba(96,150,210,0.32)" strokeWidth="0.5" />
-          <circle cx="12" cy="88" r="4.4" fill="rgba(96,150,210,0.24)" stroke="#6096d2" strokeWidth="1.1" />
-          <rect x="9.4" y="85.4" width="5.2" height="5.2" transform="rotate(45 12 88)" fill="#6096d2" />
+          <Nexus corner="bl" color="#6096d2" />
 
           {/* base vermelha (canto superior-direito) */}
-          <circle cx="88" cy="12" r="9" fill="rgba(210,122,104,0.1)" stroke="rgba(210,122,104,0.32)" strokeWidth="0.5" />
-          <circle cx="88" cy="12" r="4.4" fill="rgba(210,122,104,0.24)" stroke="#d27a68" strokeWidth="1.1" />
-          <rect x="85.4" y="9.4" width="5.2" height="5.2" transform="rotate(45 88 12)" fill="#d27a68" />
+          <Nexus corner="tr" color="#d27a68" />
         </svg>
 
         {ROLES.map((r) => {
@@ -139,21 +188,21 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
                   <>
                     <span
                       className="font-display font-semibold leading-none text-cream"
-                      style={{ fontSize: "clamp(10px,1.9vw,13px)", padding: "0 2px", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+                      style={{ fontSize: "clamp(14px,2.7vw,19px)", padding: "0 3px", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
                     >
                       {f.name}
                     </span>
                     {showRatings && (
-                      <span className="mt-0.5 font-mono text-[9px] font-bold text-gold-bright">{f.rating}</span>
+                      <span className="mt-1 font-mono text-[15px] font-bold text-gold-bright">{f.rating}</span>
                     )}
                   </>
                 ) : (
-                  <span className="font-mono text-[11px] tracking-[1px]" style={{ color: "rgba(232,206,134,0.75)" }}>
+                  <span className="font-mono text-[13px] tracking-[1px]" style={{ color: "rgba(232,206,134,0.75)" }}>
                     {disp}
                   </span>
                 )}
               </div>
-              <span className="min-h-[13px] font-mono text-[10px] text-muted">
+              <span className="min-h-[14px] font-mono text-[11px] text-muted">
                 {f ? `${f.short} '${yy(f.year)}` : ""}
               </span>
             </div>
@@ -161,9 +210,6 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
         })}
       </div>
 
-      <div className="mt-auto pt-3.5 text-center font-mono text-[12px] text-dim-2">
-        Escolha um jogador à esquerda para preencher uma lane
-      </div>
     </div>
   );
 }

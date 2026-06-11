@@ -22,7 +22,7 @@ function loadRecord(): number {
 export function useGame() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const audio = useAudio();
-  const { sndTick, sndPick, sndWin, sndLose, sndTrophy, sndDefeat } = audio;
+  const { sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat } = audio;
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -60,7 +60,7 @@ export function useGame() {
       const step = () => {
         i++;
         if (i >= total) {
-          sndPick();
+          sndReveal();
           dispatch({ type: "rollEnd", team: finalTeam });
           return;
         }
@@ -71,7 +71,7 @@ export function useGame() {
       };
       rollTimer.current = setTimeout(step, 60);
     },
-    [sndPick, sndTick],
+    [sndReveal, sndTick],
   );
 
   const rollStart = useCallback(() => {
@@ -340,13 +340,13 @@ export function useGame() {
     x.lineTo(W / 2 + 46, 150);
     x.stroke();
     x.fillStyle = "#9097A1";
-    x.font = "400 28px 'Space Mono', monospace";
+    x.font = "400 28px 'Geist', sans-serif";
     x.fillText(subtitle, W / 2, 332);
     x.fillStyle = "#E8CE86";
-    x.font = "700 124px 'Space Mono', monospace";
+    x.font = "700 124px 'Geist', sans-serif";
     x.fillText(String(avg), W / 2, 476);
     x.fillStyle = "#9097A1";
-    x.font = "400 24px 'Space Mono', monospace";
+    x.font = "400 24px 'Geist', sans-serif";
     x.fillText("NOTA DA LINE  ·  " + champs + "/5 CAMPEÕES MUNDIAIS", W / 2, 514);
     let y = 600;
     picks.forEach((p) => {
@@ -354,20 +354,20 @@ export function useGame() {
       x.fillRect(150, y - 40, W - 300, 66);
       x.textAlign = "left";
       x.fillStyle = "#E8CE86";
-      x.font = "700 26px 'Space Mono', monospace";
+      x.font = "700 26px 'Geist', sans-serif";
       x.fillText(p.role === "BOT" ? "ADC" : p.role, 178, y + 5);
       x.fillStyle = "#F2ECDE";
       x.font = "600 40px 'Oswald', sans-serif";
       x.fillText(p.name, 300, y + 8);
       x.textAlign = "right";
       x.fillStyle = "#9097A1";
-      x.font = "400 24px 'Space Mono', monospace";
+      x.font = "400 24px 'Geist', sans-serif";
       x.fillText(p.short + " '" + yy(p.year), W - 178, y + 4);
       y += 84;
     });
     x.textAlign = "center";
     x.fillStyle = "#777E89";
-    x.font = "400 24px 'Space Mono', monospace";
+    x.font = "400 24px 'Geist', sans-serif";
     x.fillText(footer, W / 2, H - 72);
     try {
       const a = document.createElement("a");
