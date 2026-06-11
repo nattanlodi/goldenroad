@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(EDG-DK) SF1(T1-DK) SF2(EDG-GEN) QF1(T1-HLE) QF2(RNG-EDG) QF3(DK-MAD) QF4(GEN-C9)
 merge("2021", {
   // EDward Gaming campeão (base 88). Scout/Viper carregaram; sem transcendente único.
-  Flandre: { base:88, geral:62.0, playoff:[70,63,66] },
-  Jiejie:  { base:88, geral:58.0, playoff:[63,57,61] },
-  Scout:   { base:88, geral:62.0, playoff:[58,65,64] },
-  Viper:   { base:88, geral:58.0, playoff:[51,62,54] },
-  Meiko:   { base:88, geral:65.0, playoff:[63,65,71] },
+  Flandre: { base:86, geral:62.0, playoff:[70,63,66] },
+  Jiejie:  { base:86, geral:58.0, playoff:[63,57,61] },
+  Scout:   { base:86, geral:62.0, playoff:[58,65,64] , mvp:true },
+  Viper:   { base:86, geral:58.0, playoff:[51,62,54] },
+  Meiko:   { base:86, geral:65.0, playoff:[63,65,71] },
   // DAMWON KIA vice (base 84). ShowMaker/Canyon/BeryL fortes.
   Khan:    { base:84, geral:60.0, playoff:[57,63,73] },
   Canyon:  { base:84, geral:64.0, playoff:[53,66,75] },

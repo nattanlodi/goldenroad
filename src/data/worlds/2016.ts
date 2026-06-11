@@ -8,28 +8,28 @@ import type { Team } from "../../types";
 export const WORLDS_2016: Team[] = [
   // 1º — Campeão (base 88). Line equilibrada e dominante; todos altos no playoff.
   { id: "skt-2016", team: "SK Telecom T1", short: "SKT", year: 2016, league: "LCK", champion: true,
-    players: [["TOP", "Duke", 93, "kr"], ["JNG", "Bengi", 92, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Bang", 91, "kr"], ["SUP", "Wolf", 92, "kr"]] },
+    players: [["TOP", "Duke", 92, "kr"], ["JNG", "Bengi", 91, "kr"], ["MID", "Faker", 98, "kr"], ["BOT", "Bang", 89, "kr"], ["SUP", "Wolf", 90, "kr"]] },
   // 2º — Vice (base 84). Crown explodiu (84 na semi); CuVee forte. Núcleo campeão em 2017.
   { id: "samsung-2016", team: "Samsung Galaxy", short: "SSG", year: 2016, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "CuVee", 89, "kr"], ["JNG", "Ambition", 87, "kr"], ["MID", "Crown", 93, "kr"], ["BOT", "Ruler", 85, "kr"], ["SUP", "CoreJJ", 85, "kr"]] },
+    players: [["TOP", "CuVee", 90, "kr"], ["JNG", "Ambition", 87, "kr"], ["MID", "Crown", 94, "kr"], ["BOT", "Ruler", 85, "kr"], ["SUP", "CoreJJ", 86, "kr"]] },
   // 3º-4º — Semifinal (base 81). O lendário ROX, semi épica de 5 jogos contra a SKT.
   { id: "rox-2016", team: "ROX Tigers", short: "ROX", year: 2016, league: "LCK", champion: false,
-    players: [["TOP", "Smeb", 89, "kr"], ["JNG", "Peanut", 85, "kr"], ["MID", "Kuro", 86, "kr"], ["BOT", "PraY", 82, "kr"], ["SUP", "GorillA", 85, "kr"]] },
+    players: [["TOP", "Smeb", 90, "kr"], ["JNG", "Peanut", 86, "kr"], ["MID", "Kuro", 87, "kr"], ["BOT", "PraY", 82, "kr"], ["SUP", "GorillA", 86, "kr"]] },
   // 3º-4º — Semifinal (base 81). Odoamne gigante na QF (90 vs ANX). Melhor semi europeia em anos.
   { id: "h2k-2016", team: "H2K", short: "H2K", year: 2016, league: "EU", champion: false,
-    players: [["TOP", "Odoamne", 91, "ro"], ["JNG", "Jankos", 85, "pl"], ["MID", "Ryu", 82, "kr"], ["BOT", "FORG1VEN", 83, "gr"], ["SUP", "Vander", 84, "pl"]] },
+    players: [["TOP", "Odoamne", 93, "ro"], ["JNG", "Jankos", 86, "pl"], ["MID", "Ryu", 82, "kr"], ["BOT", "FORG1VEN", 83, "gr"], ["SUP", "Vander", 85, "pl"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra ROX; RFT modesto.
   { id: "edg-2016", team: "EDward Gaming", short: "EDG", year: 2016, league: "LPL", champion: false,
-    players: [["TOP", "Koro1", 74, "cn"], ["JNG", "Clearlove", 71, "cn"], ["MID", "Scout", 76, "kr"], ["BOT", "Deft", 77, "kr"], ["SUP", "Meiko", 74, "cn"]] },
+    players: [["TOP", "Koro1", 74, "cn"], ["JNG", "Clearlove", 68, "cn"], ["MID", "Scout", 76, "kr"], ["BOT", "Deft", 76, "kr"], ["SUP", "Meiko", 73, "cn"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra SKT; Looper o destaque. Uzi/Mata apagados.
   { id: "rng-2016", team: "Royal Never Give Up", short: "RNG", year: 2016, league: "LPL", champion: false,
-    players: [["TOP", "Looper", 82, "kr"], ["JNG", "Mlxg", 71, "cn"], ["MID", "Xiaohu", 78, "cn"], ["BOT", "Uzi", 75, "cn"], ["SUP", "Mata", 74, "kr"]] },
+    players: [["TOP", "Looper", 83, "kr"], ["JNG", "Mlxg", 70, "cn"], ["MID", "Xiaohu", 78, "cn"], ["BOT", "Uzi", 74, "cn"], ["SUP", "Mata", 74, "kr"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela SSG; Jensen o destaque.
   { id: "c9-2016", team: "Cloud9", short: "C9", year: 2016, league: "NA", champion: false,
-    players: [["TOP", "Impact", 77, "kr"], ["JNG", "Meteos", 73, "us"], ["MID", "Jensen", 83, "dk"], ["BOT", "Sneaky", 69, "us"], ["SUP", "Smoothie", 71, "ca"]] },
+    players: [["TOP", "Impact", 77, "kr"], ["JNG", "Meteos", 73, "us"], ["MID", "Jensen", 84, "dk"], ["BOT", "Sneaky", 67, "us"], ["SUP", "Smoothie", 70, "ca"]] },
   // 5º-8º — Quartas (base 78). Wildcard russo herói dos grupos, mas varrido 0-3 na QF.
   { id: "anx-2016", team: "Albus NoX Luna", short: "ANX", year: 2016, league: "LCL", champion: false,
-    players: [["TOP", "Smurf", 67, "ru"], ["JNG", "PvPStejos", 66, "ua"], ["MID", "Kira", 71, "ua"], ["BOT", "aMiracle", 70, "ua"], ["SUP", "Likkrit", 74, "ru"]] },
+    players: [["TOP", "Smurf", 66, "ru"], ["JNG", "PvPStejos", 66, "ua"], ["MID", "Kira", 70, "ua"], ["BOT", "aMiracle", 69, "ua"], ["SUP", "Likkrit", 73, "ru"]] },
   // 9º-16º — Fase de grupos (base 72).
   { id: "fw-2016", team: "Flash Wolves", short: "FW", year: 2016, league: "LMS", champion: false,
     players: [["TOP", "MMD", 73, "tw"], ["JNG", "Karsa", 75, "tw"], ["MID", "Maple", 74, "tw"], ["BOT", "NL", 73, "tw"], ["SUP", "SwordArT", 74, "tw"]] },

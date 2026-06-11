@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(T1-DRX) SF1(JDG-T1) SF2(GEN-DRX) QF1(JDG-RGE) QF2(T1-RNG) QF3(GEN-DWG) QF4(DRX-EDG)
 merge("2022", {
   // DRX campeão (base 88). Cinderela (4a seed); Kingen MVP da final, Zeka destaque.
-  Kingen:  { base:88, geral:60.0, playoff:[73,63,61] },
-  Pyosik:  { base:88, geral:60.0, playoff:[61,68,60] },
-  Zeka:    { base:88, geral:64.0, playoff:[66,67,65] },
-  Deft:    { base:88, geral:58.0, playoff:[56,60,65] },
-  BeryL:   { base:88, geral:62.0, playoff:[63,64,64] },
+  Kingen:  { base:86, geral:60.0, playoff:[73,63,61] , mvp:true },
+  Pyosik:  { base:86, geral:60.0, playoff:[61,68,60] },
+  Zeka:    { base:86, geral:64.0, playoff:[66,67,65] },
+  Deft:    { base:86, geral:58.0, playoff:[56,60,65] },
+  BeryL:   { base:86, geral:62.0, playoff:[63,64,64] },
   // T1 vice (base 84). Trio jovem + Faker; final em 5 jogos.
   Zeus:    { base:84, geral:66.0, playoff:[58,71,78] },
   Oner:    { base:84, geral:62.0, playoff:[60,61,73] },

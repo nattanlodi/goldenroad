@@ -7,7 +7,7 @@ import type { Team } from "../../types";
 export const WORLDS_2011: Team[] = [
   // 1º — Campeão (base 88). Shushei foi o MVP do torneio.
   { id: "fnatic-2011", team: "Fnatic", short: "FNC", year: 2011, league: "EU", champion: true,
-    players: [["TOP", "xPeke", 92, "es"], ["JNG", "CyanideFI", 91, "fi"], ["MID", "Shushei", 96, "pl"], ["BOT", "LaMiaZealot", 89, "de"], ["SUP", "Mellisan", 88, "de"]] },
+    players: [["TOP", "xPeke", 92, "es"], ["JNG", "CyanideFI", 91, "fi"], ["MID", "Shushei", 97, "pl"], ["BOT", "LaMiaZealot", 89, "de"], ["SUP", "Mellisan", 88, "de"]] },
   // 2º — Vice (base 84).
   { id: "aaa-2011", team: "against All authority", short: "aAa", year: 2011, league: "EU", champion: false, finalist: true,
     players: [["TOP", "sOAZ", 88, "fr"], ["JNG", "Linak", 85, "fr"], ["MID", "MoMa", 86, "de"], ["BOT", "YellOwStaR", 89, "fr"], ["SUP", "kujaa", 84, "fr"]] },

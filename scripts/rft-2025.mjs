@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(T1-KT) SF1(GEN-KT) SF2(T1-TES) QF1(GEN-HLE) QF2(KT-CFO) QF3(G2-TES) QF4(AL-T1)
 merge("2025", {
   // T1 campeão (base 88). Tricampeonato seguido (6o titulo); Gumayusi MVP da final. Faker 94 curadoria.
-  Doran:   { base:88, geral:68.0, playoff:[65,78,66] },
-  Oner:    { base:88, geral:70.0, playoff:[64,89,65] },
-  Faker:   { base:88, geral:68.0, playoff:[64,81,66], cura:94 },
-  Gumayusi:{ base:88, geral:74.0, playoff:[70,79,74] },
-  Keria:   { base:88, geral:76.0, playoff:[71,84,73] },
+  Doran:   { base:86, geral:68.0, playoff:[65,78,66] },
+  Oner:    { base:86, geral:70.0, playoff:[64,89,65] },
+  Faker:   { base:86, geral:68.0, playoff:[64,81,66] },
+  Gumayusi:{ base:86, geral:74.0, playoff:[70,79,74] , mvp:true },
+  Keria:   { base:86, geral:76.0, playoff:[71,84,73] },
   // KT Rolster vice (base 84). Bdd/Cuzz/Peter monstruosos na QF (92/90/91).
   PerfecT: { base:84, geral:72.0, playoff:[63,71,80] },
   Cuzz:    { base:84, geral:78.0, playoff:[74,76,90] },

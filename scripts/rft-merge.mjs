@@ -1,11 +1,13 @@
-// Mescla RFT (playoff 70% + geral 30%), normalizada por z-score por evento.
-// overall = clamp( base_colocação + round(zFinal * SPREAD), caps[base] )
-// Times de quartas que não têm página de série usam só o RFT geral (zPlayoff = zGeral).
+// Mescla RFT (playoff 80% + geral 20%), normalizada por z-score por evento.
+// overall = clamp( base_colocação + round(zFinal * SPREAD), caps[base] ) + (mvp ? 1 : 0)
+// SPREAD 7 => o RFT pesa ~57% e a base ~43% na variação. Bases: campeão 86 · vice 84
+// · semi 81 · quartas 78. Sem curadoria; o único ajuste manual é +1 pro MVP da final
+// (flag mvp:true). Times de quartas sem página de série usam só o RFT geral.
 
-const SPREAD = 6;
-const W_PLAYOFF = 0.7;
-const W_GERAL = 0.3;
-const caps = { 88: [80, 96], 84: [73, 95], 81: [70, 94], 78: [66, 90] };
+const SPREAD = 7;
+const W_PLAYOFF = 0.8;
+const W_GERAL = 0.2;
+const caps = { 86: [78, 97], 84: [72, 95], 81: [70, 94], 78: [66, 91] };
 
 function z(val, mean, sd) { return sd ? (val - mean) / sd : 0; }
 function stats(arr) {
@@ -14,7 +16,7 @@ function stats(arr) {
   return { m, sd };
 }
 
-// players: { name: { base, geral, playoff:[...series ratings] (vazio = sem playoff), cura? } }
+// players: { name: { base, geral, playoff:[...series ratings] (vazio = sem playoff), mvp? } }
 export function merge(label, players) {
   const geralVals = Object.values(players).map((p) => p.geral);
   const playoffPlayers = Object.values(players).filter((p) => p.playoff && p.playoff.length);
@@ -30,9 +32,9 @@ export function merge(label, players) {
     const zF = W_PLAYOFF * zP + W_GERAL * zG;
     const [lo, hi] = caps[p.base];
     let ov = Math.max(lo, Math.min(hi, p.base + Math.round(zF * SPREAD)));
-    if (p.cura) ov = p.cura; // override de curadoria (teto transcendente)
+    if (p.mvp) ov = Math.min(99, ov + 1); // +1 pro MVP da final
     out[name] = ov;
-    const tag = p.cura ? ` (curadoria ${p.cura})` : "";
+    const tag = p.mvp ? ` (MVP +1)` : "";
     console.log(`  ${name.padEnd(12)} base ${p.base} zP ${zP.toFixed(2)} zG ${zG.toFixed(2)} => ${ov}${tag}`);
   }
   return out;

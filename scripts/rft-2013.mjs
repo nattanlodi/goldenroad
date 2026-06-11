@@ -4,11 +4,11 @@ import { merge } from "./rft-merge.mjs";
 //         QF1 (C9-Fnatic), QF2 (NaJin-Gambit), QF3 (Gamania-SKT), QF4 (Royal-OMG).
 merge("2013", {
   // SKT campeão (base 88): F + S1 + QF3
-  Impact:    { base:88, geral:66.6, playoff:[61,51,81], cura:96 },
-  Bengi:     { base:88, geral:56.2, playoff:[59,74,60] },
-  Faker:     { base:88, geral:60.8, playoff:[73,58,63], cura:96 },
-  Piglet:    { base:88, geral:59.3, playoff:[35,68,63] },
-  PoohManDu: { base:88, geral:57.0, playoff:[55,55,70] },
+  Impact:    { base:86, geral:66.6, playoff:[61,51,81] },
+  Bengi:     { base:86, geral:56.2, playoff:[59,74,60] },
+  Faker:     { base:86, geral:60.8, playoff:[73,58,63] , mvp:true },
+  Piglet:    { base:86, geral:59.3, playoff:[35,68,63] },
+  PoohManDu: { base:86, geral:57.0, playoff:[55,55,70] },
   // Royal Club vice (base 84): F + S2 + QF4
   GoDlike:   { base:84, geral:53.5, playoff:[49,41,61] }, // Ackerman
   Lucky:     { base:84, geral:50.0, playoff:[37,37,58] },

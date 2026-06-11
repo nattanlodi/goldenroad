@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(WBG-T1) SF1(BLG-WBG) SF2(JDG-T1) QF1(NRG-WBG) QF2(GEN-BLG) QF3(JDG-KT) QF4(LNG-T1)
 merge("2023", {
   // T1 campeão (base 88). Tetra do Faker; Zeus monstro (95 na final). Faker 95 curadoria (lenda em casa).
-  Zeus:    { base:88, geral:80.0, playoff:[95,70,86] },
-  Oner:    { base:88, geral:70.0, playoff:[81,59,73] },
-  Faker:   { base:88, geral:68.0, playoff:[68,69,69], cura:95 },
-  Gumayusi:{ base:88, geral:64.0, playoff:[66,64,62] },
-  Keria:   { base:88, geral:74.0, playoff:[78,77,66] },
+  Zeus:    { base:86, geral:80.0, playoff:[95,70,86] , mvp:true },
+  Oner:    { base:86, geral:70.0, playoff:[81,59,73] },
+  Faker:   { base:86, geral:68.0, playoff:[68,69,69] },
+  Gumayusi:{ base:86, geral:64.0, playoff:[66,64,62] },
+  Keria:   { base:86, geral:74.0, playoff:[78,77,66] },
   // Weibo Gaming vice (base 84). TheShy de volta a uma final.
   TheShy:  { base:84, geral:70.0, playoff:[39,77,82] },
   Weiwei:  { base:84, geral:55.0, playoff:[50,53,67] },

@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(SN-DWG) SF1(G2-DWG) SF2(TES-SN) QF1(DWG-DRX) QF2(SN-JDG) QF3(TES-FNC) QF4(GEN-G2)
 merge("2020", {
   // DAMWON campeão (base 88). Canyon perto do teto (81 na QF, MVP-tier); ShowMaker forte.
-  Nuguri:  { base:88, geral:70.0, playoff:[73,73,68] },
-  Canyon:  { base:88, geral:78.0, playoff:[78,77,81] },
-  ShowMaker:{ base:88, geral:70.0, playoff:[65,67,71] },
-  Ghost:   { base:88, geral:62.0, playoff:[63,57,64] },
-  BeryL:   { base:88, geral:65.0, playoff:[63,67,69] },
+  Nuguri:  { base:86, geral:70.0, playoff:[73,73,68] },
+  Canyon:  { base:86, geral:78.0, playoff:[78,77,81] , mvp:true },
+  ShowMaker:{ base:86, geral:70.0, playoff:[65,67,71] },
+  Ghost:   { base:86, geral:62.0, playoff:[63,57,64] },
+  BeryL:   { base:86, geral:65.0, playoff:[63,67,69] },
   // Suning vice (base 84). SofM o jungler vietnamita; Bin o destaque.
   Bin:     { base:84, geral:66.0, playoff:[52,77,71] },
   SofM:    { base:84, geral:64.0, playoff:[54,67,71] },

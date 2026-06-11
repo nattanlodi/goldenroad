@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // Séries: F(SSW-RYL) SF1(SSW-SSB) SF2(RYL-OMG) QF1(SSW-TSM) QF2(SSB-C9) QF3(RYL-EDG) QF4(NJWS-OMG)
 merge("2014", {
   // Samsung White campeão (base 88): F + SF1 + QF1. Mata 99 curadoria (MVP transcendente).
-  Looper:  { base:88, geral:79.9, playoff:[76,90,87] },
-  DanDy:   { base:88, geral:74.3, playoff:[72,79,84] },
-  PawN:    { base:88, geral:82.8, playoff:[83,98,84], cura:96 },
-  imp:     { base:88, geral:62.6, playoff:[58,55,36] },
-  Mata:    { base:88, geral:79.8, playoff:[80,85,84], cura:99 },
+  Looper:  { base:86, geral:79.9, playoff:[76,90,87] },
+  DanDy:   { base:86, geral:74.3, playoff:[72,79,84] },
+  PawN:    { base:86, geral:82.8, playoff:[83,98,84] },
+  imp:     { base:86, geral:62.6, playoff:[58,55,36] },
+  Mata:    { base:86, geral:79.8, playoff:[80,85,84] , mvp:true },
   // Star Horn Royal Club vice (base 84): F + SF2 + QF3
   Cola:    { base:84, geral:50.4, playoff:[44,45,45] },
   inSec:   { base:84, geral:48.1, playoff:[32,46,46] },

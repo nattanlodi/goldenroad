@@ -6,28 +6,28 @@ import type { Team } from "../../types";
 export const WORLDS_2023: Team[] = [
   // 1º — Campeão (base 88). Tetra do Faker em casa. Zeus monstro (95 na final, top do evento).
   { id: "t1-2023", team: "T1", short: "T1", year: 2023, league: "LCK", champion: true,
-    players: [["TOP", "Zeus", 96, "kr"], ["JNG", "Oner", 96, "kr"], ["MID", "Faker", 95, "kr"], ["BOT", "Gumayusi", 92, "kr"], ["SUP", "Keria", 96, "kr"]] },
+    players: [["TOP", "Zeus", 98, "kr"], ["JNG", "Oner", 95, "kr"], ["MID", "Faker", 94, "kr"], ["BOT", "Gumayusi", 90, "kr"], ["SUP", "Keria", 97, "kr"]] },
   // 2º — Vice (base 84). TheShy de volta a uma final; Crisp 92 na QF, ascensão até a final.
   { id: "wbg-2023", team: "Weibo Gaming", short: "WBG", year: 2023, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "TheShy", 90, "kr"], ["JNG", "Weiwei", 82, "cn"], ["MID", "Xiaohu", 88, "cn"], ["BOT", "Light", 85, "cn"], ["SUP", "Crisp", 87, "cn"]] },
+    players: [["TOP", "TheShy", 90, "kr"], ["JNG", "Weiwei", 82, "cn"], ["MID", "Xiaohu", 88, "cn"], ["BOT", "Light", 85, "cn"], ["SUP", "Crisp", 88, "cn"]] },
   // 3º-4º — Semifinal (base 81). ON o destaque (89); Bin/Elk.
   { id: "blg-2023", team: "Bilibili Gaming", short: "BLG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "Bin", 81, "cn"], ["JNG", "XUN", 87, "cn"], ["MID", "Yagao", 85, "cn"], ["BOT", "Elk", 86, "cn"], ["SUP", "ON", 89, "cn"]] },
+    players: [["TOP", "Bin", 81, "cn"], ["JNG", "XUN", 87, "cn"], ["MID", "Yagao", 85, "cn"], ["BOT", "Elk", 87, "cn"], ["SUP", "ON", 91, "cn"]] },
   // 3º-4º — Semifinal (base 81). 1º colocado da LPL; Ruler/MISSING.
   { id: "jdg-2023", team: "JD Gaming", short: "JDG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "369", 82, "cn"], ["JNG", "Kanavi", 82, "kr"], ["MID", "knight", 82, "cn"], ["BOT", "Ruler", 85, "kr"], ["SUP", "MISSING", 84, "cn"]] },
+    players: [["TOP", "369", 82, "cn"], ["JNG", "Kanavi", 83, "kr"], ["MID", "knight", 82, "cn"], ["BOT", "Ruler", 86, "kr"], ["SUP", "MISSING", 85, "cn"]] },
   // 5º-8º — Quartas (base 78). Perderam 2-3 pra BLG; Chovy o destaque.
   { id: "geng-2023", team: "Gen.G Esports", short: "GEN", year: 2023, league: "LCK", champion: false,
-    players: [["TOP", "Doran", 77, "kr"], ["JNG", "Peanut", 74, "kr"], ["MID", "Chovy", 79, "kr"], ["BOT", "Peyz", 77, "kr"], ["SUP", "Delight", 76, "kr"]] },
+    players: [["TOP", "Doran", 77, "kr"], ["JNG", "Peanut", 74, "kr"], ["MID", "Chovy", 79, "kr"], ["BOT", "Peyz", 76, "kr"], ["SUP", "Delight", 76, "kr"]] },
   // 5º-8º — Quartas (base 78). A surpresa norte-americana; varridos 0-3 pela WBG.
   { id: "nrg-2023", team: "NRG", short: "NRG", year: 2023, league: "LCS", champion: false,
-    players: [["TOP", "Dhokla", 73, "us"], ["JNG", "Contractz", 71, "us"], ["MID", "Palafox", 71, "us"], ["BOT", "FBI", 68, "au"], ["SUP", "IgNar", 68, "kr"]] },
+    players: [["TOP", "Dhokla", 73, "us"], ["JNG", "Contractz", 69, "us"], ["MID", "Palafox", 70, "us"], ["BOT", "FBI", 66, "au"], ["SUP", "IgNar", 66, "kr"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra JDG; Bdd o destaque.
   { id: "kt-2023", team: "KT Rolster", short: "KT", year: 2023, league: "LCK", champion: false,
-    players: [["TOP", "Kiin", 78, "kr"], ["JNG", "Cuzz", 74, "kr"], ["MID", "Bdd", 80, "kr"], ["BOT", "Aiming", 77, "kr"], ["SUP", "Lehends", 74, "kr"]] },
+    players: [["TOP", "Kiin", 79, "kr"], ["JNG", "Cuzz", 73, "kr"], ["MID", "Bdd", 81, "kr"], ["BOT", "Aiming", 77, "kr"], ["SUP", "Lehends", 73, "kr"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Scout/Tarzan tiveram um Worlds ruim.
   { id: "lng-2023", team: "LNG Esports", short: "LNG", year: 2023, league: "LPL", champion: false,
-    players: [["TOP", "Zika", 71, "cn"], ["JNG", "Tarzan", 68, "kr"], ["MID", "Scout", 74, "kr"], ["BOT", "GALA", 69, "cn"], ["SUP", "Hang", 72, "cn"]] },
+    players: [["TOP", "Zika", 71, "cn"], ["JNG", "Tarzan", 66, "kr"], ["MID", "Scout", 74, "kr"], ["BOT", "GALA", 67, "cn"], ["SUP", "Hang", 71, "cn"]] },
   // 9º-18º — Fase suíça eliminados (base 72). Caps/Hans Sama.
   { id: "g2-2023", team: "G2 Esports", short: "G2", year: 2023, league: "LEC", champion: false,
     players: [["TOP", "BrokenBlade", 73, "de"], ["JNG", "Yike", 73, "se"], ["MID", "Caps", 76, "dk"], ["BOT", "Hans Sama", 74, "fr"], ["SUP", "Mikyx", 73, "si"]] },

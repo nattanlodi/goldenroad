@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(G2-FPX) SF1(IG-FPX) SF2(G2-T1) QF1(GRF-IG) QF2(FPX-FNC) QF3(T1-SPY) QF4(DWG-G2)
 merge("2019", {
   // FunPlus Phoenix campeão (base 88). Tian MVP da final; Doinb o cérebro. Sem transcendente.
-  GimGoon: { base:88, geral:62.0, playoff:[68,64,59] },
-  Tian:    { base:88, geral:70.0, playoff:[66,69,75] },
-  Doinb:   { base:88, geral:72.0, playoff:[79,65,77] },
-  Lwx:     { base:88, geral:66.0, playoff:[73,62,62] },
-  Crisp:   { base:88, geral:72.0, playoff:[74,80,74] },
+  GimGoon: { base:86, geral:62.0, playoff:[68,64,59] },
+  Tian:    { base:86, geral:70.0, playoff:[66,69,75] , mvp:true },
+  Doinb:   { base:86, geral:72.0, playoff:[79,65,77] },
+  Lwx:     { base:86, geral:66.0, playoff:[73,62,62] },
+  Crisp:   { base:86, geral:72.0, playoff:[74,80,74] },
   // G2 vice (base 84). A super-G2.
   Wunder:  { base:84, geral:60.0, playoff:[53,56,74] },
   Jankos:  { base:84, geral:58.0, playoff:[48,58,66] },

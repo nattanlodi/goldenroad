@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(BLG-T1) SF1(WBG-BLG) SF2(T1-GEN) QF1(LNG-WBG) QF2(HLE-BLG) QF3(TES-T1) QF4(GEN-FLY)
 merge("2024", {
   // T1 campeão (base 88). 4o titulo; Faker MVP da final. Keria 86 na QF3.
-  Zeus:    { base:88, geral:70.0, playoff:[66,65,79] },
-  Oner:    { base:88, geral:69.0, playoff:[66,71,71] },
-  Faker:   { base:88, geral:67.0, playoff:[60,63,78], cura:94 },
-  Gumayusi:{ base:88, geral:73.0, playoff:[71,67,82] },
-  Keria:   { base:88, geral:71.0, playoff:[61,67,86] },
+  Zeus:    { base:86, geral:70.0, playoff:[66,65,79] },
+  Oner:    { base:86, geral:69.0, playoff:[66,71,71] },
+  Faker:   { base:86, geral:67.0, playoff:[60,63,78] , mvp:true },
+  Gumayusi:{ base:86, geral:73.0, playoff:[71,67,82] },
+  Keria:   { base:86, geral:71.0, playoff:[61,67,86] },
   // Bilibili Gaming vice (base 84). Bin/Elk/Knight monstruosos; final em 5 jogos.
   Bin:     { base:84, geral:68.0, playoff:[63,68,75] },
   Xun:     { base:84, geral:66.0, playoff:[59,69,74] },

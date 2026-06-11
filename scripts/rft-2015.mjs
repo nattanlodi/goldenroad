@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(SKT-ROX) SF1(OG-SKT) SF2(FNC-ROX) QF1(FW-OG) QF2(SKT-ahq) QF3(FNC-EDG) QF4(KT-ROX)
 merge("2015", {
   // SKT campeão (base 88): F+SF1+QF2. Faker 96 curadoria (tri-MVP, line histórica).
-  MaRin:   { base:88, geral:64.0, playoff:[66,72,67] },
-  Bengi:   { base:88, geral:52.0, playoff:[51,58,54] },
-  Faker:   { base:88, geral:72.0, playoff:[75,77,75], cura:96 },
-  Bang:    { base:88, geral:62.0, playoff:[60,55,66] },
-  Wolf:    { base:88, geral:60.0, playoff:[62,62,66] },
+  MaRin:   { base:86, geral:64.0, playoff:[66,72,67] , mvp:true },
+  Bengi:   { base:86, geral:52.0, playoff:[51,58,54] },
+  Faker:   { base:86, geral:72.0, playoff:[75,77,75] },
+  Bang:    { base:86, geral:62.0, playoff:[60,55,66] },
+  Wolf:    { base:86, geral:60.0, playoff:[62,62,66] },
   // KOO Tigers vice (base 84): F+SF2+QF4 (ROX no RFT)
   Smeb:    { base:84, geral:64.0, playoff:[55,78,66] },
   Hojin:   { base:84, geral:52.0, playoff:[55,50,54] },

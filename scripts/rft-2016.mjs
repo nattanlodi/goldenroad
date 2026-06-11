@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(SKT-SSG) SF1(SKT-ROX) SF2(SSG-H2K) QF1(SSG-C9) QF2(SKT-RNG) QF3(ROX-EDG) QF4(H2K-ANX)
 merge("2016", {
   // SKT campeão (base 88): F+SF1+QF2. Faker 96 curadoria (tri-campeão).
-  Duke:   { base:88, geral:62.0, playoff:[66,64,60] },
-  Bengi:  { base:88, geral:60.0, playoff:[63,57,65] },
-  Faker:  { base:88, geral:71.0, playoff:[73,73,73], cura:96 },
-  Bang:   { base:88, geral:60.0, playoff:[63,51,64] },
-  Wolf:   { base:88, geral:60.0, playoff:[65,56,63] },
+  Duke:   { base:86, geral:62.0, playoff:[66,64,60] },
+  Bengi:  { base:86, geral:60.0, playoff:[63,57,65] },
+  Faker:  { base:86, geral:71.0, playoff:[73,73,73] , mvp:true },
+  Bang:   { base:86, geral:60.0, playoff:[63,51,64] },
+  Wolf:   { base:86, geral:60.0, playoff:[65,56,63] },
   // Samsung Galaxy vice (base 84): F+SF2+QF1. Crown e Ruler em ascensão.
   CuVee:  { base:84, geral:62.0, playoff:[56,65,69] },
   Ambition:{ base:84, geral:60.0, playoff:[49,65,62] },

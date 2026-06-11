@@ -21,23 +21,24 @@ import { WORLDS_2025 } from "./worlds/2025";
 //
 // ── RÉGUA DE OVERALL ──
 //   A nota mescla ATÉ ONDE O TIME FOI + COMO O JOGADOR JOGOU (desempenho individual real).
-//   Base pela colocação (âncora):  Campeão 88 · Vice 84 · Semi 81 · Quartas 78 · Grupos/Suíça 72 · Play-in 66
+//   Base pela colocação (âncora):  Campeão 86 · Vice 84 · Semi 81 · Quartas 78 · Grupos/Suíça 72 · Play-in 66
 //
 //   2013-2025 (times de PLAYOFF): mescla com o RFT 1.0 do rft.gg —
-//     overall = clamp( base + round(zFinal * 6), caps[base] ),  zFinal = 0.7*zPlayoff + 0.3*zGeral
-//     (z-score por evento; 70% do peso vem do RFT DOS PLAYOFFS — quartas/semi/final, agregado por
-//      série — e 30% do RFT geral do torneio). Caps por colocação evitam quebrar a coerência.
-//     Scripts versionados: scripts/rft-merge.mjs + rft-<ano>.mjs. Times fora dos playoffs (grupos/
-//     suíça/play-in) e 2011-2012 (sem página RFT) seguem só a régua de colocação abaixo.
+//     overall = clamp( base + round(zFinal * 7), caps[base] ) + (MVP da final ? +1 : 0)
+//     zFinal = 0.8*zPlayoff + 0.2*zGeral  (z-score por evento; 80% do peso vem do RFT DOS PLAYOFFS
+//     — quartas/semi/final, agregado por série — e 20% do RFT geral do torneio). SPREAD 7 => o RFT
+//     pesa ~57% e a colocação ~43% na variação. Caps por colocação evitam quebrar a coerência.
+//     SEM curadoria: o único ajuste manual é +1 pro MVP da grande final. Scripts versionados:
+//     scripts/rft-merge.mjs + rft-<ano>.mjs. Times fora dos playoffs (grupos/suíça/play-in) e
+//     2011-2012 (sem página RFT) seguem só a régua de colocação abaixo.
 //
-//   Régua de colocação (modificador individual sobre a base, piso ~56 / teto 99):
+//   Régua de colocação (modificador individual sobre a base, piso ~56 / teto 97):
 //     transcendente / MVP do evento  +6 a +8     destaque forte / melhor da posição  +3 a +5
 //     sólido (esperado)  0 a +2     apagado/abaixo  −3 a −5     peso-morto  −6 a −10
-//   TETO 96-99: reservado a performances TRANSCENDENTES. Pelo RFT, quem domina o mata-mata sendo
-//     campeão/vice chega lá (Zeus'23 96, Mata'14 99 por curadoria). Curadoria fixa o Faker em anos
-//     de título e os MVPs lendários, independentemente do ruído de uma série.
-//   Ex.: Mata'14=99 · Zeus'23/CuVee'17/Rookie'18=96 · campeão sólido ~88-92 · astro de vice ~88-93 ·
-//        carry de quartas ~82-85 · time varrido no mata-mata ~66-74 · play-in winless ~61-64.
+//   MVP da final: +1 sobre o resultado da fórmula (todas as edições; em 2011/2012, sem RFT, soma
+//     direto na régua de colocação — Shushei'11 97, Toyz'12 95).
+//   Ex.: Mata'14=98 · Tian'19/Canyon'20/Zeus'23=98 (campeão+MVP) · campeão sólido ~88-93 ·
+//        astro de vice ~86-92 · carry de quartas ~83-87 · time varrido no mata-mata ~66-73.
 export const TEAMS: Team[] = [
   ...WORLDS_2011,
   ...WORLDS_2012,

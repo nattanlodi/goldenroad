@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(FNC-IG) SF1(G2-IG) SF2(C9-FNC) QF1(KT-IG) QF2(RNG-G2) QF3(AF-C9) QF4(FNC-EDG)
 merge("2018", {
   // Invictus Gaming campeão (base 88). Superequipe equilibrada; Rookie/TheShy destaques.
-  TheShy:    { base:88, geral:70.0, playoff:[80,76,64] },
-  Ning:      { base:88, geral:66.0, playoff:[76,66,65] },
-  Rookie:    { base:88, geral:78.0, playoff:[85,76,75] },
-  JackeyLove:{ base:88, geral:68.0, playoff:[76,60,61] },
-  Baolan:    { base:88, geral:70.0, playoff:[85,68,66] },
+  TheShy:    { base:86, geral:70.0, playoff:[80,76,64] },
+  Ning:      { base:86, geral:66.0, playoff:[76,66,65] , mvp:true },
+  Rookie:    { base:86, geral:78.0, playoff:[85,76,75] },
+  JackeyLove:{ base:86, geral:68.0, playoff:[76,60,61] },
+  Baolan:    { base:86, geral:70.0, playoff:[85,68,66] },
   // Fnatic vice (base 84). Massacrados 0-3 na final, mas demolidores na semi (Bwipo 86).
   Bwipo:     { base:84, geral:62.0, playoff:[43,86,63] },
   Broxah:    { base:84, geral:60.0, playoff:[51,77,63] },

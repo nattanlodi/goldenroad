@@ -6,7 +6,7 @@ import type { Team } from "../../types";
 export const WORLDS_2012: Team[] = [
   // 1º — Campeão (base 88). Toyz carregou o mid.
   { id: "tpa-2012", team: "Taipei Assassins", short: "TPA", year: 2012, league: "GPL", champion: true,
-    players: [["TOP", "Stanley", 90, "tw"], ["JNG", "Lilballz", 89, "tw"], ["MID", "Toyz", 94, "hk"], ["BOT", "bebe", 91, "tw"], ["SUP", "MiSTakE", 90, "tw"]] },
+    players: [["TOP", "Stanley", 90, "tw"], ["JNG", "Lilballz", 89, "tw"], ["MID", "Toyz", 95, "hk"], ["BOT", "bebe", 91, "tw"], ["SUP", "MiSTakE", 90, "tw"]] },
   // 2º — Vice (base 84). MadLife, o suporte lendário.
   { id: "frost-2012", team: "Azubu Frost", short: "AzF", year: 2012, league: "OGN", champion: false, finalist: true,
     players: [["TOP", "Shy", 88, "kr"], ["JNG", "CloudTemplar", 87, "kr"], ["MID", "RapidStar", 86, "kr"], ["BOT", "Woong", 86, "kr"], ["SUP", "MadLife", 89, "kr"]] },

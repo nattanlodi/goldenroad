@@ -3,11 +3,11 @@ import { merge } from "./rft-merge.mjs";
 // F(SKT-SSG) SF1(SKT-RNG) SF2(SSG-WE) QF1(LZ-SSG) QF2(SKT-MSF) QF3(RNG-FNC) QF4(WE-C9)
 merge("2017", {
   // Samsung Galaxy campeão (base 88). Sem transcendente; Ruler/CoreJJ destaques. Sem cura.
-  CuVee:   { base:88, geral:66.0, playoff:[70,63,81] },
-  Ambition:{ base:88, geral:62.0, playoff:[69,52,70] },
-  Crown:   { base:88, geral:63.0, playoff:[63,63,73] },
-  Ruler:   { base:88, geral:66.0, playoff:[70,59,71] },
-  CoreJJ:  { base:88, geral:66.0, playoff:[70,65,74] },
+  CuVee:   { base:86, geral:66.0, playoff:[70,63,81] },
+  Ambition:{ base:86, geral:62.0, playoff:[69,52,70] , mvp:true },
+  Crown:   { base:86, geral:63.0, playoff:[63,63,73] },
+  Ruler:   { base:86, geral:66.0, playoff:[70,59,71] },
+  CoreJJ:  { base:86, geral:66.0, playoff:[70,65,74] },
   // SKT vice (base 84). Faker ainda elite na derrota.
   Huni:    { base:84, geral:60.0, playoff:[65,64,65] },
   Peanut:  { base:84, geral:50.0, playoff:[46,50,55] },
