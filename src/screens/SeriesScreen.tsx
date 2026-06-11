@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import { lineScore, lineupPicks, seriesFlavor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
+import { RoleBadge } from "../components/RoleBadge";
 
 const dotGreen: CSSProperties = {
   background: "linear-gradient(180deg,#86d79a,#5fae72)",
@@ -134,9 +135,7 @@ export function SeriesScreen({ game }: { game: Game }) {
                 className="flex items-center gap-2.5 rounded-[9px] px-[9px] py-[7px]"
                 style={{ background: "rgba(28,34,45,0.5)" }}
               >
-                <span className="min-w-[36px] rounded-[4px] bg-gold-bright px-[5px] py-[3px] text-center font-mono text-[9px] text-ink">
-                  {p.role}
-                </span>
+                <RoleBadge role={p.role} size="sm" />
                 <span className="flex min-w-0 flex-1 items-center gap-1.5">
                   <Flag cc={p.country} size={12} />
                   <span className="truncate font-display text-[15px] font-semibold text-cream">{p.name}</span>
@@ -238,12 +237,7 @@ export function SeriesScreen({ game }: { game: Game }) {
                 className="flex items-center gap-2.5 rounded-[9px] px-[9px] py-[7px]"
                 style={{ background: "rgba(34,28,30,0.5)" }}
               >
-                <span
-                  className="min-w-[36px] rounded-[4px] px-[5px] py-[3px] text-center font-mono text-[9px] text-cream"
-                  style={{ background: "rgba(210,122,104,0.35)" }}
-                >
-                  {p[0]}
-                </span>
+                <RoleBadge role={p[0]} variant="red" size="sm" />
                 <span className="flex min-w-0 flex-1 items-center gap-1.5">
                   <Flag cc={p[3]} size={12} />
                   <span className="truncate font-display text-[15px] font-semibold text-[#E7E0D6]">{p[1]}</span>

@@ -3,6 +3,7 @@ import type { Game } from "../game/useGame";
 import { DRAFT_TEAMS, ROLES, ROLE_LABELS } from "../data/teams";
 import { yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
+import { RoleBadge } from "../components/RoleBadge";
 import { Logo6x0 } from "../components/Logo6x0";
 import { RiftMap } from "../components/RiftMap";
 
@@ -197,9 +198,7 @@ export function DraftScreen({ game }: { game: Game }) {
                               : "cursor-pointer"
                         }`}
                       >
-                        <span className="min-w-[42px] rounded-[5px] bg-gold-bright px-[7px] py-1 text-center font-mono text-[10px] tracking-[1px] text-ink">
-                          {role}
-                        </span>
+                        <RoleBadge role={role} />
                         <span className="flex min-w-0 flex-1 flex-col gap-px">
                           <span className="flex min-w-0 items-center gap-1.5">
                             <Flag cc={p[3]} />
@@ -261,9 +260,7 @@ export function DraftScreen({ game }: { game: Game }) {
                         className="flex items-center gap-2.5 rounded-[10px] px-[11px] py-2"
                         style={{ background: "rgba(28,34,45,0.6)" }}
                       >
-                        <span className="min-w-[40px] rounded-[5px] bg-gold-bright px-1.5 py-[3px] text-center font-mono text-[10px] tracking-[1px] text-ink">
-                          {p.role}
-                        </span>
+                        <RoleBadge role={p.role} />
                         <span className="flex min-w-0 flex-1 items-center gap-1.5">
                           <Flag cc={p.country} size={12} />
                           <span className="truncate font-display text-[16px] font-semibold text-cream">{p.name}</span>

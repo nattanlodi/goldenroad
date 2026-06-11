@@ -1,6 +1,7 @@
 import type { Game } from "../game/useGame";
 import { lineScore, lineupPicks, tierFor, yy } from "../game/helpers";
 import { Flag } from "../components/Flag";
+import { RoleBadge } from "../components/RoleBadge";
 import type { PlayedSeries } from "../types";
 
 function eliminationCopy(last: PlayedSeries | undefined, wins: number, losses: number) {
@@ -89,9 +90,7 @@ export function ResultScreen({ game }: { game: Game }) {
           <div className="flex flex-col gap-2">
             {picks.map((p) => (
               <div key={p.role} className="panel-raised flex items-center gap-3 rounded-[12px] border border-gold/25 px-3.5 py-3">
-                <span className="min-w-[42px] rounded-[5px] bg-gold-bright px-[7px] py-1 text-center font-mono text-[10px] tracking-[1px] text-ink">
-                  {p.role}
-                </span>
+                <RoleBadge role={p.role} />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     <Flag cc={p.country} size={12} />
