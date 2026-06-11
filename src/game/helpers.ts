@@ -7,9 +7,9 @@ export function rnd<T>(arr: T[]): T {
 }
 
 // Peso de sorteio de cada time no DRAFT. Quanto mais longe foi no Worlds, mais
-// provável de cair: campeão/vice = 1, semi = 0.9, quartas = 0.55.
-const QUARTERFINAL_DRAW_WEIGHT = 0.5;
-const SEMIFINAL_DRAW_WEIGHT = 0.9;
+// provável de cair: campeão/vice = 1, semi = 0.75, quartas = 0.4.
+const QUARTERFINAL_DRAW_WEIGHT = 0.4;
+const SEMIFINAL_DRAW_WEIGHT = 0.75;
 function drawWeight(t: Team): number {
   if (QUARTERFINAL_IDS.has(t.id)) return QUARTERFINAL_DRAW_WEIGHT;
   if (SEMIFINAL_IDS.has(t.id)) return SEMIFINAL_DRAW_WEIGHT;
@@ -188,7 +188,7 @@ export function yy(year: number): string {
 // Raridade do jogador (visual dos cards) — por overall
 // ============================================================
 
-export type Rarity = "lendario" | "epico" | "raro" | "comum";
+export type Rarity = "mitico" | "lendario" | "epico" | "raro" | "comum";
 
 export interface RaritySkin {
   rarity: Rarity;
@@ -199,6 +199,7 @@ export interface RaritySkin {
 }
 
 const RARITY_SKINS: Record<Rarity, RaritySkin> = {
+  mitico: { rarity: "mitico", cls: "card-mitico", ratingColor: "#ff8d7a" },
   lendario: { rarity: "lendario", cls: "card-lendario", ratingColor: "#f5d77a" },
   epico: { rarity: "epico", cls: "card-epico", ratingColor: "#d2a0e8" },
   raro: { rarity: "raro", cls: "card-raro", ratingColor: "#8fb8ec" },
@@ -206,10 +207,11 @@ const RARITY_SKINS: Record<Rarity, RaritySkin> = {
 };
 
 /**
- * Raridade pela nota do jogador. Calibrada ao pool (média ~81, teto 96):
- *   lendário 92+ · épico 86-91 · raro 80-85 · comum <80 (79 ou menos).
+ * Raridade pela nota do jogador. Calibrada ao pool (média ~81, teto 98):
+ *   mítico 97+ · lendário 92-96 · épico 86-91 · raro 80-85 · comum <80.
  */
 export function rarityFor(overall: number): RaritySkin {
+  if (overall >= 97) return RARITY_SKINS.mitico;
   if (overall >= 92) return RARITY_SKINS.lendario;
   if (overall >= 86) return RARITY_SKINS.epico;
   if (overall >= 80) return RARITY_SKINS.raro;

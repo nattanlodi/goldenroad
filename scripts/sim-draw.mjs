@@ -2,8 +2,8 @@
 // a distribuição por colocação: campeão / vice / semi / quartas.
 import { DRAFT_TEAMS, QUARTERFINAL_IDS, SEMIFINAL_IDS } from "../src/data/teams.ts";
 
-const W_QUARTER = 0.5;
-const W_SEMI = 0.9;
+const W_QUARTER = 0.4;
+const W_SEMI = 0.75;
 const weight = (t) => (QUARTERFINAL_IDS.has(t.id) ? W_QUARTER : SEMIFINAL_IDS.has(t.id) ? W_SEMI : 1);
 
 function weightedTeam(pool) {
