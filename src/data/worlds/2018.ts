@@ -6,9 +6,10 @@ import type { Team } from "../../types";
 // ⚠ Times de play-in eliminados: rosters best-effort (fonte furada na cauda) — arquivo, não gameplay.
 export const WORLDS_2018: Team[] = [
   // 1º — Campeão (base 88). Superequipe que dominou o playoff (Rookie/TheShy/Baolan no teto);
-  // -1 geral porque a final foi um 3-0 tranquilo sobre uma Fnatic mais fraca.
+  // -2 geral (vs o cálculo bruto) porque o campo de 2018 era mais fraco e o IG não
+  // achou resistência real — final 3-0 tranquila sobre uma Fnatic abaixo.
   { id: "ig-2018", team: "Invictus Gaming", short: "IG", year: 2018, league: "LPL", champion: true,
-    players: [["TOP", "TheShy", 96, "kr"], ["JNG", "Ning", 95, "cn"], ["MID", "Rookie", 96, "kr"], ["BOT", "JackeyLove", 92, "cn"], ["SUP", "Baolan", 96, "cn"]] },
+    players: [["TOP", "TheShy", 95, "kr"], ["JNG", "Ning", 94, "cn"], ["MID", "Rookie", 95, "kr"], ["BOT", "JackeyLove", 91, "cn"], ["SUP", "Baolan", 95, "cn"]] },
   // 2º — Vice (base 84). Demolidores na semi (Bwipo 86) mas massacrados 0-3 na final — bot/mid caíram.
   { id: "fnatic-2018", team: "Fnatic", short: "FNC", year: 2018, league: "EU", champion: false, finalist: true,
     players: [["TOP", "Bwipo", 89, "be"], ["JNG", "Broxah", 88, "dk"], ["MID", "Caps", 84, "dk"], ["BOT", "Rekkles", 84, "se"], ["SUP", "Hylissang", 84, "bg"]] },

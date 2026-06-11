@@ -81,11 +81,39 @@ export function simulateSeries(target: number, yourAvg: number, oppAvg: number):
   return { games, yourGames: yw, oppGames: ow, won: yw >= target };
 }
 
-/** Sorteia um adversário (evitando os já enfrentados) com a média pronta. */
-export function drawOpponent(usedIds: string[]): Opponent {
+// Média do pool de adversários — referência pra ponderar o sorteio por força.
+const POOL_AVG = DRAFT_TEAMS.reduce((a, t) => a + teamAvg(t.players), 0) / DRAFT_TEAMS.length;
+
+// "Intensidade" da escalada por fase: peso(time) = exp(intensidade * (médiaTime
+// - médiaPool)). Os valores foram calibrados (scripts/calib-k.mjs) pra a média do
+// adversário sorteado bater no ALVO de cada fase: suíça 79 · quartas 83 · semi
+// 86 · final 90. (suíça negativa → favorece levemente os fracos, média < pool.)
+const STAGE_INTENSITY: Record<string, number> = {
+  swiss: -0.035,
+  quarter: 0.039,
+  semi: 0.097,
+  final: 0.203,
+};
+
+/**
+ * Sorteia um adversário (evitando os já enfrentados), ponderado pela força do
+ * time conforme a fase — fases mais avançadas tendem a adversários mais fortes.
+ */
+export function drawOpponent(usedIds: string[], stageKey: string = "swiss"): Opponent {
   let pool = DRAFT_TEAMS.filter((t) => !usedIds.includes(t.id));
   if (!pool.length) pool = DRAFT_TEAMS;
-  const t = rnd(pool);
+  const k = STAGE_INTENSITY[stageKey] ?? 0;
+  const weights = pool.map((t) => Math.exp(k * (teamAvg(t.players) - POOL_AVG)));
+  const total = weights.reduce((a, w) => a + w, 0);
+  let r = Math.random() * total;
+  let t = pool[pool.length - 1];
+  for (let i = 0; i < pool.length; i++) {
+    r -= weights[i];
+    if (r < 0) {
+      t = pool[i];
+      break;
+    }
+  }
   return {
     id: t.id,
     team: t.team,
@@ -120,10 +148,8 @@ export function buildNextSeries(
   koIndex: number,
   usedIds: string[],
 ): NextSeries {
-  const opp = drawOpponent(usedIds);
-  const usedOppIds = [...usedIds, opp.id];
-
   if (stagePhase === "swiss") {
+    const opp = drawOpponent(usedIds, "swiss");
     const decisive = swissWins === 2 || swissLosses === 2;
     return {
       series: {
@@ -134,14 +160,15 @@ export function buildNextSeries(
         decisive,
         opp,
       },
-      usedOppIds,
+      usedOppIds: [...usedIds, opp.id],
     };
   }
 
   const ko = KO_STAGES[koIndex];
+  const opp = drawOpponent(usedIds, ko.stageKey);
   return {
     series: { stageKey: ko.stageKey, stageLabel: ko.stageLabel, format: "Bo5", target: 3, decisive: true, opp },
-    usedOppIds,
+    usedOppIds: [...usedIds, opp.id],
   };
 }
 
