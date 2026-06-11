@@ -20,7 +20,7 @@ export function StartScreen({ poolCount, onBegin }: Props) {
 
       <Logo6x0
         className="mx-auto mt-1.5 block h-auto"
-        style={{ width: "clamp(240px,62vw,460px)", filter: "drop-shadow(0 6px 30px rgba(201,162,75,0.32))" }}
+        style={{ width: "clamp(280px,68vw,520px)", filter: "drop-shadow(0 6px 30px rgba(201,162,75,0.32))" }}
       />
 
       <h1 className="mt-[18px] mb-2 font-display text-[clamp(22px,4.5vw,38px)] font-semibold uppercase tracking-[1px] text-cream">
@@ -31,6 +31,54 @@ export function StartScreen({ poolCount, onBegin }: Props) {
         <b className="text-cream">um jogador por rodada</b> e preencha as 5 lanes. Depois, vença as 6 séries dos
         playoffs <b className="text-cream">uma a uma</b> e erga a taça com um 6–0 perfeito.
       </p>
+
+      {/* seleção de modo de jogo */}
+      <div className="mb-[30px]">
+        <div className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-muted">Escolha o modo</div>
+        <div className="grid grid-cols-1 gap-3.5 text-left wide:grid-cols-2">
+          {/* Só Worlds — modo atual, selecionado */}
+          <div
+            className="relative overflow-hidden rounded-[16px] p-[20px]"
+            style={{
+              border: "1.5px solid #E8CE86",
+              background: "linear-gradient(160deg,rgba(58,48,22,0.5),rgba(32,39,51,0.8))",
+              boxShadow: "0 0 0 3px rgba(201,162,75,0.1)",
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-gold-bright">Só Worlds</span>
+              <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>
+            </div>
+            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
+              Monte sua line com astros do Mundial e vença os playoffs rumo ao 6–0.
+            </p>
+          </div>
+
+          {/* GOLDENROAD — em breve, desabilitado */}
+          <div
+            className="relative overflow-hidden rounded-[16px] p-[20px]"
+            style={{
+              border: "1px solid rgba(201,162,75,0.18)",
+              background: "linear-gradient(160deg,rgba(40,46,58,0.5),rgba(26,32,42,0.6))",
+              opacity: 0.6,
+              cursor: "not-allowed",
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-cream">GOLDENROAD</span>
+              <span
+                className="rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[1px] text-gold-bright"
+                style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(201,162,75,0.35)" }}
+              >
+                Em breve
+              </span>
+            </div>
+            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#9097A1]">
+              Modo carreira completo — a estrada dourada até a lenda. Em desenvolvimento.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <div className="mb-[38px] grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-3.5 text-left">
         {RULES.map((r) => (
