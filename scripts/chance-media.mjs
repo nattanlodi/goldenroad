@@ -5,8 +5,8 @@
 import { DRAFT_TEAMS, QUARTERFINAL_IDS, SEMIFINAL_IDS } from "../src/data/teams.ts";
 
 const ROLES = ["TOP", "JNG", "MID", "BOT", "SUP"];
-const ALVO = 90;
-const RR_FLOOR = 88; // rerola se o melhor pick disponível for < isto (e tiver reroll)
+const ALVO = 92;
+const RR_FLOOR = 91; // rerola se o melhor pick disponível for < isto (e tiver reroll)
 
 const weight = (t) => (QUARTERFINAL_IDS.has(t.id) ? 0.4 : SEMIFINAL_IDS.has(t.id) ? 0.75 : 1);
 function drawTeam(usedId) {
