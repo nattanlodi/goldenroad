@@ -319,9 +319,9 @@ export function useGame() {
     const header =
       S.finished === "champion"
         ? losses === 0
-          ? "🏆 6X0 Worlds — 6-0 PERFEITO, campeão do mundo!"
-          : `🏆 6X0 Worlds — CAMPEÃO DO MUNDO (${wins}-${losses})!`
-        : `6X0 Worlds — minha campanha terminou em ${wins}-${losses}.`;
+          ? "🏆 GOLDENROAD — 6-0 PERFEITO, campeão do mundo!"
+          : `🏆 GOLDENROAD — CAMPEÃO DO MUNDO (${wins}-${losses})!`
+        : `GOLDENROAD — minha campanha terminou em ${wins}-${losses}.`;
     const fmvp = S.finished === "champion" ? S.finalsMvp : null;
     const mvpLine = fmvp ? `\n🏆 MVP das Finais: ${fmvp.name} (${fmvp.role === "BOT" ? "ADC" : fmvp.role})` : "";
     const txt = `${header}\n${line}\nNota da line: ${avg}.${mvpLine} Consegue superar?`;
@@ -390,33 +390,57 @@ export function useGame() {
     rr(38, 38, W - 76, H - 76, 36);
     x.stroke();
 
+    // ---- logo em duas linhas: GOLDEN (cima) / R[nexus]AD (baixo) ----
+    const logoFont = "400 92px 'Bebas Neue', sans-serif";
+    // linha de cima: GOLDEN
+    x.font = logoFont;
     x.textAlign = "center";
-
-    // ---- logo 6×0 ----
     x.fillStyle = "#e8ce86";
-    x.font = "700 120px 'Bebas Neue', sans-serif";
-    x.fillText("6", W / 2 - 118, 214);
-    x.fillText("0", W / 2 + 118, 214);
+    x.fillText("GOLDEN", W / 2, 166);
+    // linha de baixo: R [nexus] AD, centralizada (próxima da de cima)
+    const ring = 30; // meio-lado do quadrado "0"
+    const arm = 16; // meia-diagonal do X
+    const gap = 12;
+    const baseY = 244; // baseline do texto da linha de baixo
+    const ringCy = baseY - 32; // centro do glifo na altura visual das caps
+    const wR = x.measureText("R").width;
+    const wAD = x.measureText("AD").width;
+    const lineW = wR + gap + ring * 2 + gap + wAD;
+    const lx = W / 2 - lineW / 2;
+    const ringCx = lx + wR + gap + ring;
+    // "R"
+    x.textAlign = "left";
+    x.fillStyle = "#e8ce86";
+    x.fillText("R", lx, baseY);
+    // glifo-nexus: quadrado de cantos arredondados + X (rio azul \ × mid dourada /)
     x.lineCap = "round";
-    x.lineWidth = 15;
+    x.lineJoin = "round";
+    x.strokeStyle = "#d8b45a";
+    x.lineWidth = 11;
+    rr(ringCx - ring, ringCy - ring, ring * 2, ring * 2, ring * 0.32);
+    x.stroke();
     x.strokeStyle = "#6aa0da";
     x.beginPath();
-    x.moveTo(W / 2 - 38, 128);
-    x.lineTo(W / 2 + 38, 208);
+    x.moveTo(ringCx - arm, ringCy - arm);
+    x.lineTo(ringCx + arm, ringCy + arm);
     x.stroke();
-    x.strokeStyle = "#c9a24b";
+    x.strokeStyle = "#d8b45a";
     x.beginPath();
-    x.moveTo(W / 2 - 38, 208);
-    x.lineTo(W / 2 + 38, 128);
+    x.moveTo(ringCx - arm, ringCy + arm);
+    x.lineTo(ringCx + arm, ringCy - arm);
     x.stroke();
+    // "AD"
+    x.fillStyle = "#e8ce86";
+    x.fillText("AD", ringCx + ring + gap, baseY);
+    x.textAlign = "center";
 
     // subtítulo (status da campanha)
     x.fillStyle = isChampion ? "#e8ce86" : "#d2a08e";
     x.font = "700 25px 'Geist', sans-serif";
-    x.fillText(subtitle.toUpperCase(), W / 2, 268);
+    x.fillText(subtitle.toUpperCase(), W / 2, 292);
 
     // ---- bloco da NOTA DA LINE (card destacado, estilo "Média do elenco") ----
-    const nbY = 300;
+    const nbY = 316;
     const nbW = 470;
     const nbX = (W - nbW) / 2;
     const nbGrad = x.createLinearGradient(nbX, nbY, nbX + nbW, nbY + 118);
@@ -451,7 +475,7 @@ export function useGame() {
     const rowGap = 12;
     const rowX = 100;
     const rowW = W - 200;
-    let y = 470;
+    let y = 492;
     picks.forEach((p) => {
       const skin = rarityFor(p.rating);
       const rar = skin.ratingColor;
@@ -530,7 +554,7 @@ export function useGame() {
     x.textAlign = "center";
     x.fillStyle = "#777e89";
     x.font = "400 22px 'Geist', sans-serif";
-    x.fillText(footer + "  ·  6x0worlds", W / 2, H - 64);
+    x.fillText(footer + "  ·  goldenroad", W / 2, H - 64);
     try {
       const a = document.createElement("a");
       a.href = c.toDataURL("image/png");

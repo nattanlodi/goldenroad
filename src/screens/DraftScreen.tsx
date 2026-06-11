@@ -57,7 +57,7 @@ export function DraftScreen({ game }: { game: Game }) {
             title="Voltar ao início"
             className="-m-1 flex cursor-pointer items-center rounded-lg p-1 transition-opacity hover:opacity-70"
           >
-            <Logo6x0 className="h-auto w-[78px]" strokeWidth={11} dotR={6} />
+            <Logo6x0 className="h-auto w-[208px]" layout="inline" strokeWidth={11} />
           </div>
           <span className="font-mono text-[12px] uppercase tracking-[2px] text-muted">Draft · monte sua line</span>
         </div>
