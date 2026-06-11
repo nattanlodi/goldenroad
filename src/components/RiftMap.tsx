@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Lineup, Role } from "../types";
 import { ROLES } from "../data/teams";
 import { yy } from "../game/helpers";
+import { ROLE_SVG, ROLE_TEXT } from "./roleIcons";
 
 interface Props {
   lineup: Lineup;
@@ -11,11 +12,11 @@ interface Props {
 
 // Posições no viewBox 0–100 (espelham o protótipo).
 const POS: Record<Role, [number, number]> = {
-  TOP: [21, 20],
-  JNG: [30, 52],
-  MID: [50, 50],
-  BOT: [84, 85],
-  SUP: [71, 84],
+  TOP: [18.2, 19.3],
+  JNG: [30.75, 40.2],
+  MID: [50, 51],
+  BOT: [71, 84],
+  SUP: [85.8, 86.8],
 };
 
 const circleBase: CSSProperties = {
@@ -31,18 +32,21 @@ const circleBase: CSSProperties = {
 
 const circleFilled: CSSProperties = {
   ...circleBase,
-  background: "radial-gradient(circle at 50% 26%, rgba(240,214,140,0.46), rgba(30,38,32,0.96) 76%)",
+  gap: "2px",
+  background:
+    "radial-gradient(circle at 50% 22%, rgba(245,221,150,0.5), rgba(34,42,36,0.97) 72%)",
   border: "2px solid #E8CE86",
   boxShadow:
-    "0 0 16px rgba(201,162,75,0.38), 0 0 0 3px rgba(201,162,75,0.16), 0 8px 22px rgba(0,0,0,0.5), inset 0 2px 7px rgba(255,255,255,0.24)",
+    "0 0 18px rgba(201,162,75,0.4), 0 0 0 3px rgba(201,162,75,0.18), 0 8px 22px rgba(0,0,0,0.5), inset 0 2px 8px rgba(255,255,255,0.28)",
 };
 
+// slot vazio: disco escuro translúcido com anel pontilhado suave que respira.
 const circleEmpty: CSSProperties = {
   ...circleBase,
-  background: "radial-gradient(circle at 50% 28%, rgba(66,80,70,0.62), rgba(20,26,22,0.9))",
-  border: "1.5px dashed rgba(201,162,75,0.55)",
-  boxShadow: "inset 0 2px 9px rgba(0,0,0,0.45), 0 5px 14px rgba(0,0,0,0.38)",
-  animation: "scPulse 2.6s ease-in-out infinite",
+  gap: "3px",
+  background: "radial-gradient(circle at 50% 30%, rgba(40,48,58,0.55), rgba(18,22,28,0.78))",
+  border: "2.5px dashed rgba(201,162,75,0.45)",
+  boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5), 0 4px 14px rgba(0,0,0,0.35)",
 };
 
 /**
@@ -176,14 +180,24 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
         {ROLES.map((r) => {
           const f = lineup[r];
           const [x, y] = POS[r];
-          const disp = r === "BOT" ? "ADC" : r;
           return (
             <div
               key={r}
               className="absolute z-[2] flex flex-col items-center gap-[5px]"
               style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%,-50%)" }}
             >
-              <div style={f ? circleFilled : circleEmpty}>
+              <div
+                className={f ? "lane-filled" : "lane-empty"}
+                style={
+                  // o JG fica sobre o centro do mapa; deixa o fundo do slot vazio
+                  // mais translúcido pra deixar o mapa transparecer por baixo.
+                  !f && r === "JNG"
+                    ? { ...circleEmpty, background: "radial-gradient(circle at 50% 30%, rgba(40,48,58,0.28), rgba(18,22,28,0.4))" }
+                    : f
+                      ? circleFilled
+                      : circleEmpty
+                }
+              >
                 {f ? (
                   <>
                     <span
@@ -197,9 +211,21 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
                     )}
                   </>
                 ) : (
-                  <span className="font-mono text-[13px] tracking-[1px]" style={{ color: "rgba(232,206,134,0.75)" }}>
-                    {disp}
-                  </span>
+                  <>
+                    {/* ícone da lane grande e sutil + sigla pequena embaixo */}
+                    <span
+                      aria-hidden
+                      className="lane-empty-icon [&>svg]:h-full [&>svg]:w-full"
+                      style={{ width: "clamp(26px,5vw,34px)", height: "clamp(26px,5vw,34px)", color: "rgba(232,206,134,0.55)" }}
+                      dangerouslySetInnerHTML={{ __html: ROLE_SVG[r] }}
+                    />
+                    <span
+                      className="font-mono text-[10px] font-bold tracking-[1.5px]"
+                      style={{ color: "rgba(232,206,134,0.62)" }}
+                    >
+                      {ROLE_TEXT[r]}
+                    </span>
+                  </>
                 )}
               </div>
               <span className="min-h-[14px] font-mono text-[11px] text-muted">
