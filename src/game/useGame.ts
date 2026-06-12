@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
-import type { LineupPlayer, PlayedSeries, Role, Team } from "../types";
+import type { GameMode, LineupPlayer, PlayedSeries, Role, Team } from "../types";
 import { DRAFT_TEAMS, ROLES } from "../data/teams";
 import { buildNextSeries, drawAny, lineScore, lineupPicks, rarityFor, rnd, rollSeriesHighlights, simulateSeries, tierFor, weightedTeam, yy } from "./helpers";
+import { buildMsiSeries, MSI_START, msiNext } from "./msi";
 import { initialState, reducer } from "./reducer";
 import { useAudio } from "./useAudio";
 
@@ -50,10 +51,10 @@ export function useGame() {
     [],
   );
 
-  const begin = useCallback(() => {
+  const begin = useCallback((mode: GameMode = "worlds") => {
     clearTimeout(rollTimer.current);
     lastId.current = undefined;
-    dispatch({ type: "begin" });
+    dispatch({ type: "begin", mode });
   }, []);
 
   const pickClassico = useCallback(() => dispatch({ type: "setDifficulty", difficulty: "classico" }), []);
@@ -137,6 +138,13 @@ export function useGame() {
 
   // ---- campanha / playoffs ----
   const startSeries = useCallback(() => {
+    const S = stateRef.current;
+    // GOLDENROAD começa pelo MSI (bracket double-elim), na Upper Round 1.
+    if (S.mode === "goldenroad") {
+      const { series, usedOppIds } = buildMsiSeries(MSI_START, []);
+      dispatch({ type: "startMsi", series, usedOppIds, node: MSI_START });
+      return;
+    }
     const { series, usedOppIds } = buildNextSeries("swiss", 0, 0, 0, []);
     dispatch({ type: "startCampaign", series, usedOppIds });
   }, []);
@@ -230,6 +238,23 @@ export function useGame() {
       sndDefeat();
       dispatch({ type: "finishCampaign", played, finished: "eliminated", record: loadRecord(), isNewRecord: false, finalsMvp: null });
     };
+
+    // ---- MSI (modo GOLDENROAD): bracket double-elim ----
+    if (S.mode === "goldenroad" && S.careerStage === "msi" && S.msiNode) {
+      const outcome = msiNext(S.msiNode, won);
+      if (outcome.kind === "champion") {
+        // campeão do MSI → segue pro Worlds com a MESMA line (carreira continua).
+        sndTrophy();
+        const { series, usedOppIds } = buildNextSeries("swiss", 0, 0, 0, []);
+        dispatch({ type: "msiToWorlds", series, usedOppIds });
+      } else if (outcome.kind === "eliminated") {
+        finishEliminated();
+      } else {
+        const { series, usedOppIds } = buildMsiSeries(outcome.node, S.usedOppIds);
+        dispatch({ type: "msiAdvance", played, series, node: outcome.node, usedOppIds });
+      }
+      return;
+    }
 
     if (S.stagePhase === "swiss") {
       if (won) {

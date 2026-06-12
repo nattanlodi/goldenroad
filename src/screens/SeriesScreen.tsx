@@ -2,9 +2,25 @@ import { useEffect, type CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import type { LiveGame, Role, Side } from "../types";
 import { lineScore, lineupPicks, seriesFlavor, yy } from "../game/helpers";
+import { MSI_BRACKET } from "../game/msi";
+import type { MsiNode } from "../types";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 import { ROLE_SVG } from "../components/roleIcons";
+
+// nós do bracket do MSI em ordem de exibição (upper em cima, lower embaixo).
+const MSI_UPPER: MsiNode[] = ["UR1", "UR2", "UF"];
+const MSI_LOWER: MsiNode[] = ["LR1", "LR2", "LR3", "LF"];
+const MSI_SHORT: Record<MsiNode, string> = {
+  UR1: "UR1",
+  UR2: "UR2",
+  UF: "UF",
+  LR1: "LR1",
+  LR2: "LR2",
+  LR3: "LR3",
+  LF: "LF",
+  GF: "GF",
+};
 
 interface SeriesBlock {
   seriesIndex: number;
@@ -89,6 +105,53 @@ function HighlightName({ role, name, country, side }: { role: Role; name: string
   );
 }
 
+// ordem linear do caminho (pra saber o que já foi "passado" no destaque visual).
+const MSI_PATH_ORDER: MsiNode[] = ["UR1", "UR2", "UF", "LR1", "LR2", "LR3", "LF", "GF"];
+
+/** Cabeçalho do bracket do MSI: linha da upper, linha da lower e a GF, com o nó atual destacado. */
+function MsiBracketHeader({ node }: { node: MsiNode }) {
+  const side = MSI_BRACKET[node].side;
+  const curIdx = MSI_PATH_ORDER.indexOf(node);
+  const chip = (n: MsiNode) => {
+    const cur = n === node;
+    const passed = MSI_PATH_ORDER.indexOf(n) < curIdx;
+    const style: CSSProperties = cur
+      ? { background: "transparent", color: "#E8CE86", border: "1.5px solid #E8CE86", boxShadow: "0 0 0 4px rgba(201,162,75,0.12)" }
+      : passed
+        ? { background: "linear-gradient(180deg,#86d79a,#5fae72)", color: "#16241a", border: "1px solid rgba(126,208,143,0.5)" }
+        : { background: "rgba(42,51,65,0.6)", color: "#777E89", border: "1px solid rgba(201,162,75,0.14)" };
+    return (
+      <span key={n} className="rounded-[7px] px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[1px]" style={style}>
+        {passed ? "✓ " : ""}
+        {MSI_SHORT[n]}
+      </span>
+    );
+  };
+  return (
+    <div className="inline-flex flex-col items-center gap-2 rounded-[14px] border border-gold/25 px-5 py-3">
+      <div className="flex items-center gap-2">
+        <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Upper</span>
+        {MSI_UPPER.map(chip)}
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Lower</span>
+        {MSI_LOWER.map(chip)}
+      </div>
+      <div className="mt-0.5 flex items-center gap-2">
+        {chip("GF")}
+        <span className="font-display text-[12px] font-semibold uppercase tracking-[1px] text-gold-bright">
+          {MSI_BRACKET[node].label}
+        </span>
+        {side === "lower" && (
+          <span className="rounded-full bg-red/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[1px] text-red-soft">
+            sem mais erros
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const dotGreen: CSSProperties = {
   background: "linear-gradient(180deg,#86d79a,#5fae72)",
   boxShadow: "0 0 10px rgba(126,208,143,0.45)",
@@ -123,6 +186,8 @@ const KO = [
 export function SeriesScreen({ game }: { game: Game }) {
   const {
     series,
+    mode,
+    msiNode,
     stagePhase,
     swissWins,
     swissLosses,
@@ -141,6 +206,8 @@ export function SeriesScreen({ game }: { game: Game }) {
     campaignGames,
   } = game.state;
 
+  const isMsi = mode === "goldenroad" && !!msiNode;
+
   // os flashes (penta / MVP de partida) somem sozinhos após um tempo.
   useEffect(() => {
     if (!pentaFlash && !gameMvpFlash) return;
@@ -157,9 +224,21 @@ export function SeriesScreen({ game }: { game: Game }) {
   const flavor = seriesFlavor(isWin, yourGames, oppGames, history.length);
   const yourList = lineupPicks(lineup);
   const yourAvg = lineScore(lineup);
-  const isLastWin = isWin && stagePhase === "ko" && koIndex >= 2;
+  const isLastWin = isMsi
+    ? isWin && msiNode === "GF"
+    : isWin && stagePhase === "ko" && koIndex >= 2;
 
   const nextLabel = (() => {
+    if (isMsi) {
+      if (isWin) {
+        if (msiNode === "GF") return "Campeão do MSI! Rumo ao Worlds →";
+        if (msiNode === "UF") return "Avançar à Grande Final →";
+        return "Próxima série →";
+      }
+      // derrota: cai pra lower (continua) ou elimina
+      const info = MSI_BRACKET[msiNode!];
+      return info.onLoss === "eliminated" ? "Ver resultado →" : "Cair pra Lower Bracket →";
+    }
     if (isWin) {
       if (stagePhase === "swiss") return swissWins + 1 >= 3 ? "Avançar ao mata-mata →" : "Próxima série →";
       return koIndex >= 2 ? "Erguer a taça 🏆" : "Próxima série →";
@@ -171,9 +250,13 @@ export function SeriesScreen({ game }: { game: Game }) {
     <div className="anim-fade-fast mx-auto w-full max-w-[1040px]">
       {/* header + progresso */}
       <div className="mb-[18px] text-center">
-        <div className="mb-3 font-mono text-[12px] uppercase tracking-[3px] text-muted">Playoffs · rumo ao 6–0</div>
+        <div className="mb-3 font-mono text-[12px] uppercase tracking-[3px] text-muted">
+          {isMsi ? "MSI · GOLDENROAD · Bracket duplo" : "Playoffs · rumo ao 6–0"}
+        </div>
 
-        {stagePhase === "swiss" ? (
+        {isMsi ? (
+          <MsiBracketHeader node={msiNode!} />
+        ) : stagePhase === "swiss" ? (
           <div className="inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-[14px] border border-gold/25 px-5 py-2.5">
             <span className="font-display text-[14px] font-semibold uppercase tracking-[1px] text-gold-bright">
               Fase Suíça

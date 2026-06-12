@@ -46,6 +46,28 @@ export type StageKey = "swiss" | "quarter" | "semi" | "final";
 /** Fase atual da campanha. */
 export type StagePhase = "swiss" | "ko";
 
+// ---- modo GOLDENROAD: MSI (double elimination) ----
+
+/** Nó do bracket do MSI no caminho do JOGADOR (double elim). */
+export type MsiNode =
+  | "UR1" // Upper Round 1
+  | "UR2" // Upper Round 2
+  | "UF" // Upper Final
+  | "LR1" // Lower Round 1
+  | "LR2" // Lower Round 2
+  | "LR3" // Lower Round 3
+  | "LF" // Lower Final
+  | "GF"; // Grand Final
+
+/** Lado do bracket onde o jogador chega à Grand Final (ou em que se encontra). */
+export type MsiSide = "upper" | "lower";
+
+/** Modo de jogo. "worlds" = só o Worlds (atual). "goldenroad" = carreira (MSI → Worlds). */
+export type GameMode = "worlds" | "goldenroad";
+
+/** Etapa atual do modo carreira GOLDENROAD. */
+export type CareerStage = "msi" | "worlds";
+
 /** Time adversário de uma série, já com a média de overall pré-calculada. */
 export interface Opponent {
   id: string;

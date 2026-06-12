@@ -1,11 +1,14 @@
 import type {
   CampaignEnd,
+  CareerStage,
   Difficulty,
+  GameMode,
   GameMvp,
   HighlightRef,
   LiveGame,
   Lineup,
   LineupPlayer,
+  MsiNode,
   Pentakill,
   PlayedSeries,
   Phase,
@@ -18,6 +21,9 @@ import type {
 
 export interface GameState {
   phase: Phase;
+  mode: GameMode; // "worlds" (atual) ou "goldenroad" (carreira MSI→Worlds)
+  careerStage: CareerStage; // etapa do GOLDENROAD: "msi" ou "worlds"
+  msiNode: MsiNode | null; // nó atual do bracket do MSI (só no modo goldenroad/etapa msi)
   difficulty: Difficulty;
   lineup: Lineup;
 
@@ -80,6 +86,9 @@ const freshCampaign = {
 
 export const initialState: GameState = {
   phase: "start",
+  mode: "worlds",
+  careerStage: "msi",
+  msiNode: null,
   difficulty: "classico",
   lineup: emptyLineup(),
   current: null,
@@ -93,13 +102,22 @@ export const initialState: GameState = {
 };
 
 export type Action =
-  | { type: "begin" }
+  | { type: "begin"; mode: GameMode }
   | { type: "setDifficulty"; difficulty: Difficulty }
   | { type: "roll"; display: Team }
   | { type: "rollEnd"; team: Team }
   | { type: "pick"; role: Role; player: LineupPlayer; complete: boolean }
   | { type: "rerollDec" }
   | { type: "startCampaign"; series: SeriesSetup; usedOppIds: string[] }
+  | { type: "startMsi"; series: SeriesSetup; usedOppIds: string[]; node: MsiNode }
+  | {
+      type: "msiAdvance";
+      played: PlayedSeries;
+      series: SeriesSetup;
+      node: MsiNode;
+      usedOppIds: string[];
+    }
+  | { type: "msiToWorlds"; series: SeriesSetup; usedOppIds: string[] }
   | { type: "playBegin" }
   | { type: "gameStep"; yourGames: number; oppGames: number; penta: Pentakill | null; gameMvp: GameMvp | null; liveGame: LiveGame }
   | { type: "clearFlashes" }
@@ -124,6 +142,9 @@ export function reducer(state: GameState, action: Action): GameState {
       return {
         ...state,
         phase: "play",
+        mode: action.mode,
+        careerStage: "msi",
+        msiNode: null,
         lineup: emptyLineup(),
         rerolls: 3,
         current: null,
@@ -153,6 +174,46 @@ export function reducer(state: GameState, action: Action): GameState {
       return {
         ...state,
         phase: "series",
+        ...freshCampaign,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+      };
+
+    case "startMsi":
+      return {
+        ...state,
+        phase: "series",
+        careerStage: "msi",
+        ...freshCampaign,
+        msiNode: action.node,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+      };
+
+    case "msiAdvance":
+      return {
+        ...state,
+        history: [...state.history, action.played],
+        msiNode: action.node,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+        seriesPlaying: false,
+        revealed: false,
+        yourGames: 0,
+        oppGames: 0,
+        seriesResult: null,
+        highlight: null,
+        pentaFlash: null,
+        gameMvpFlash: null,
+        liveGames: [],
+      };
+
+    case "msiToWorlds":
+      // campeão do MSI: mantém a line, parte pro Worlds (etapa worlds da carreira).
+      return {
+        ...state,
+        careerStage: "worlds",
+        msiNode: null,
         ...freshCampaign,
         series: action.series,
         usedOppIds: action.usedOppIds,

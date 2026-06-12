@@ -1,8 +1,11 @@
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import type { GameMode } from "../types";
 import { Logo6x0 } from "../components/Logo6x0";
 
 interface Props {
   poolCount: number;
-  onBegin: () => void;
+  onBegin: (mode: GameMode) => void;
 }
 
 const RULES = [
@@ -11,7 +14,18 @@ const RULES = [
   { label: "03 — 3 RESORTEIOS", text: "Não curtiu? Troque por outro time ou outro Worlds do mesmo time." },
 ];
 
+const cardSelected: CSSProperties = {
+  border: "1.5px solid #E8CE86",
+  background: "linear-gradient(160deg,rgba(58,48,22,0.5),rgba(32,39,51,0.8))",
+  boxShadow: "0 0 0 3px rgba(201,162,75,0.1)",
+};
+const cardIdle: CSSProperties = {
+  border: "1px solid rgba(201,162,75,0.2)",
+  background: "linear-gradient(160deg,rgba(40,46,58,0.5),rgba(26,32,42,0.65))",
+};
+
 export function StartScreen({ poolCount, onBegin }: Props) {
+  const [mode, setMode] = useState<GameMode>("worlds");
   return (
     <div className="anim-fade m-auto w-full max-w-[780px] text-center">
       <div className="mb-[30px] inline-flex items-center gap-2.5 rounded-full border border-gold/40 px-4 py-[7px] font-mono text-[12px] uppercase tracking-[2px] text-gold-bright">
@@ -36,47 +50,50 @@ export function StartScreen({ poolCount, onBegin }: Props) {
       <div className="mb-[30px]">
         <div className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-muted">Escolha o modo</div>
         <div className="grid grid-cols-1 gap-3.5 text-left wide:grid-cols-2">
-          {/* Só Worlds — modo atual, selecionado */}
-          <div
-            className="relative overflow-hidden rounded-[16px] p-[20px]"
-            style={{
-              border: "1.5px solid #E8CE86",
-              background: "linear-gradient(160deg,rgba(58,48,22,0.5),rgba(32,39,51,0.8))",
-              boxShadow: "0 0 0 3px rgba(201,162,75,0.1)",
-            }}
+          {/* Só Worlds — modo atual */}
+          <button
+            type="button"
+            onClick={() => setMode("worlds")}
+            className="relative cursor-pointer overflow-hidden rounded-[16px] p-[20px] text-left transition-all"
+            style={mode === "worlds" ? cardSelected : cardIdle}
           >
             <div className="flex items-center justify-between">
-              <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-gold-bright">Só Worlds</span>
-              <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>
+              <span className={`font-display text-[19px] font-bold uppercase tracking-[1px] ${mode === "worlds" ? "text-gold-bright" : "text-cream"}`}>
+                Só Worlds
+              </span>
+              {mode === "worlds" && <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>}
             </div>
             <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
               Monte sua line com astros do Mundial e vença os playoffs rumo ao 6–0.
             </p>
-          </div>
+          </button>
 
-          {/* GOLDENROAD — em breve, desabilitado */}
-          <div
-            className="relative overflow-hidden rounded-[16px] p-[20px]"
-            style={{
-              border: "1px solid rgba(201,162,75,0.18)",
-              background: "linear-gradient(160deg,rgba(40,46,58,0.5),rgba(26,32,42,0.6))",
-              opacity: 0.6,
-              cursor: "not-allowed",
-            }}
+          {/* GOLDENROAD — modo carreira (MSI → Worlds) */}
+          <button
+            type="button"
+            onClick={() => setMode("goldenroad")}
+            className="relative cursor-pointer overflow-hidden rounded-[16px] p-[20px] text-left transition-all"
+            style={mode === "goldenroad" ? cardSelected : cardIdle}
           >
             <div className="flex items-center justify-between">
-              <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-cream">GOLDENROAD</span>
-              <span
-                className="rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[1px] text-gold-bright"
-                style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(201,162,75,0.35)" }}
-              >
-                Em breve
+              <span className={`font-display text-[19px] font-bold uppercase tracking-[1px] ${mode === "goldenroad" ? "text-gold-bright" : "text-cream"}`}>
+                GOLDENROAD
               </span>
+              {mode === "goldenroad" ? (
+                <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>
+              ) : (
+                <span
+                  className="rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[1px] text-gold-bright"
+                  style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(201,162,75,0.35)" }}
+                >
+                  Novo
+                </span>
+              )}
             </div>
-            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#9097A1]">
-              Modo carreira completo — a estrada dourada até a lenda. Em desenvolvimento.
+            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
+              Modo carreira: comece pelo <b className="text-cream">MSI</b> (bracket duplo) e siga pro Worlds com a mesma line.
             </p>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -94,10 +111,10 @@ export function StartScreen({ poolCount, onBegin }: Props) {
       </div>
 
       <button
-        onClick={onBegin}
+        onClick={() => onBegin(mode)}
         className="btn-gold cursor-pointer rounded-[11px] border-none px-[46px] py-4 font-display text-[18px] font-semibold uppercase tracking-[2px]"
       >
-        Começar campanha
+        {mode === "goldenroad" ? "Começar carreira" : "Começar campanha"}
       </button>
       <div className="mt-[18px] font-mono text-[13px] text-dim-2">
         {poolCount} campanhas no pool · LCK · LPL · LEC · LMS

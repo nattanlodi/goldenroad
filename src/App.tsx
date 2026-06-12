@@ -19,7 +19,7 @@ export function App() {
       <AppBackground dim={phase === "play"} />
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
-      {phase === "start" && <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={game.begin} />}
+      {phase === "start" && <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={(mode) => game.begin(mode)} />}
       {phase === "play" && <DraftScreen game={game} />}
       {phase === "series" && <SeriesScreen game={game} />}
       {phase === "result" && <ResultScreen game={game} />}
