@@ -154,7 +154,7 @@ function LineRow({
   // delta por efeito (carta/forma), ganha um selo +/− no canto (verde sobe, vermelho desce).
   const pill = showRatings && (
     <span
-      className="relative inline-flex min-w-[34px] items-center justify-center rounded-[7px] px-[7px] py-[6px] text-center font-mono text-[17px] font-black leading-none tabular-nums"
+      className="relative inline-flex min-w-[30px] items-center justify-center rounded-[7px] px-[6px] py-[4px] text-center font-mono text-[16px] font-black leading-none tabular-nums sm:min-w-[34px] sm:px-[7px] sm:py-[6px] sm:text-[17px]"
       style={{
         color: skin.ratingColor,
         background: `color-mix(in srgb, ${skin.ratingColor} 16%, rgba(8,9,11,0.85))`,
@@ -189,9 +189,9 @@ function LineRow({
   );
   // bloco bandeira+nome — espelhado no rival (nome à esquerda, bandeira à direita).
   const ident = (
-    <span className={`flex min-w-0 flex-1 items-center gap-3 ${you ? "" : "flex-row-reverse text-right"}`}>
+    <span className={`flex min-w-0 flex-1 items-center gap-2 sm:gap-3 ${you ? "" : "flex-row-reverse text-right"}`}>
       <Flag cc={country} size={15} />
-      <span className={`truncate font-display text-[18px] font-semibold ${you ? "text-cream" : "text-[#E7E0D6]"}`}>
+      <span className={`truncate font-display text-[16px] font-semibold sm:text-[18px] ${you ? "text-cream" : "text-[#E7E0D6]"}`}>
         {name}
       </span>
       {formChip}
@@ -199,7 +199,7 @@ function LineRow({
   );
   return (
     <div
-      className="group/row relative flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 transition-all"
+      className="group/row relative flex items-center gap-2 rounded-[10px] px-2 py-1 transition-all sm:gap-2.5 sm:px-2.5 sm:py-2"
       style={{
         background: you
           ? "linear-gradient(100deg,rgba(42,44,48,0.62),rgba(30,31,34,0.5))"
@@ -560,12 +560,12 @@ export function SeriesScreen({ game }: { game: Game }) {
           className="flex flex-col overflow-hidden rounded-2xl border border-gold/30"
           style={{ background: "linear-gradient(180deg,rgba(40,41,44,0.82),rgba(28,29,31,0.84))" }}
         >
-          <div className="flex min-h-[74px] items-center border-b border-gold/20 px-[18px] py-4">
-            <span className="font-display text-[21px] font-semibold uppercase tracking-[1px] text-gold-bright">
+          <div className="flex items-center border-b border-gold/20 px-[18px] py-2.5 sm:min-h-[74px] sm:py-4">
+            <span className="font-display text-[17px] font-semibold uppercase tracking-[1px] text-gold-bright sm:text-[21px]">
               Sua line
             </span>
           </div>
-          <div className="flex flex-1 flex-col gap-1.5 p-2">
+          <div className="flex flex-1 flex-col gap-1 p-1.5 sm:gap-1.5 sm:p-2">
             {yourList.map((p) => {
               const eff = youByRole.get(p.role) ?? p.rating;
               return (
@@ -593,7 +593,7 @@ export function SeriesScreen({ game }: { game: Game }) {
         </div>
 
         {/* centro */}
-        <div className="flex min-h-[260px] flex-col items-center justify-center px-2.5 py-[18px] text-center">
+        <div className="flex flex-col items-center justify-center px-2.5 py-2.5 text-center sm:min-h-[260px] sm:py-[18px]">
           {/* no MSI/First Stand a etapa+formato ficam embaixo do badge (BracketHeader); aqui só no modo Worlds */}
           {!isMsi && !isFs && (
             <>
@@ -605,7 +605,7 @@ export function SeriesScreen({ game }: { game: Game }) {
           {notStarted && (
             <>
               <div
-                className="my-[20px] font-display text-[64px] leading-none font-extrabold tracking-[4px]"
+                className="my-2 font-display text-[44px] leading-none font-extrabold tracking-[4px] sm:my-[20px] sm:text-[64px]"
                 style={{
                   background: "linear-gradient(180deg,#f0dca0,#c9a24b)",
                   WebkitBackgroundClip: "text",
@@ -781,18 +781,18 @@ export function SeriesScreen({ game }: { game: Game }) {
           }}
         >
           <div
-            className="flex min-h-[74px] items-center justify-between gap-2.5 border-b px-[18px] py-4"
+            className="flex items-center justify-between gap-2.5 border-b px-[18px] py-2.5 sm:min-h-[74px] sm:py-4"
             style={{ borderColor: `color-mix(in srgb, ${oppColor} 30%, transparent)` }}
           >
             <div className="min-w-0">
-              <div className="truncate font-display text-[21px] font-semibold leading-[1.1] text-cream">{series.opp.team}</div>
+              <div className="truncate font-display text-[17px] font-semibold leading-[1.1] text-cream sm:text-[21px]">{series.opp.team}</div>
               <div className="mt-[3px] font-mono text-[11px] tracking-[1px] text-muted">{series.opp.league}</div>
             </div>
-            <div className="font-display text-[24px] leading-none font-bold" style={{ color: oppColor }}>
+            <div className="font-display text-[20px] leading-none font-bold sm:text-[24px]" style={{ color: oppColor }}>
               {series.opp.year}
             </div>
           </div>
-          <div className="flex flex-1 flex-col gap-1.5 p-2">
+          <div className="flex flex-1 flex-col gap-1 p-1.5 sm:gap-1.5 sm:p-2">
             {series.opp.players.map((p) => {
               const eff = oppByRole.get(p[0]) ?? p[2];
               return (

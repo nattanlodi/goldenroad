@@ -159,11 +159,11 @@ export function EventCardOverlay({ game }: { game: Game }) {
       </div>
 
       {/* conteúdo centralizado verticalmente na tela */}
-      <div className="flex flex-1 items-center justify-center py-8">
+      <div className="flex flex-1 items-center justify-center py-4 sm:py-8">
         <div className="w-full max-w-[1000px]">
         {/* fase 1: as 3 cartas */}
         {!sel && (
-          <div className="grid gap-16 [grid-template-columns:1fr] sm:[grid-template-columns:repeat(3,1fr)]">
+          <div className="grid gap-4 [grid-template-columns:1fr] sm:gap-16 sm:[grid-template-columns:repeat(3,1fr)]">
             {pendingEvent.map((card) => {
               const r = pendingHostile
                 ? { label: HOSTILE_TONE[card.rarity].label, accent: HOSTILE_ACCENT, glow: HOSTILE_GLOW }
@@ -174,7 +174,7 @@ export function EventCardOverlay({ game }: { game: Game }) {
                   key={card.id}
                   onClick={() => choose(card)}
                   disabled={locked}
-                  className={`event-card anim-pop group relative flex min-h-[480px] flex-col items-center overflow-hidden rounded-[20px] border px-6 pb-8 pt-11 text-center transition-all duration-300 ${legendary ? "event-card--legendary" : ""} ${locked ? "cursor-default opacity-55" : "cursor-pointer hover:-translate-y-2.5"}`}
+                  className={`event-card anim-pop group relative flex min-h-[168px] flex-col items-center overflow-hidden rounded-[20px] border px-4 pb-4 pt-6 text-center transition-all duration-300 sm:min-h-[480px] sm:px-6 sm:pb-8 sm:pt-11 ${legendary ? "event-card--legendary" : ""} ${locked ? "cursor-default opacity-55" : "cursor-pointer hover:-translate-y-2.5"}`}
                   style={{
                     // fundo escuro tingido pela raridade + borda e glow na cor do tier
                     background: `linear-gradient(180deg, color-mix(in srgb, ${r.accent} 13%, rgba(28,29,33,0.96)), rgba(16,17,20,0.97))`,
@@ -199,14 +199,14 @@ export function EventCardOverlay({ game }: { game: Game }) {
                   />
                   {/* selo de raridade */}
                   <span
-                    className="relative mb-6 inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-[2px]"
-                    style={{ color: r.accent, background: `color-mix(in srgb, ${r.accent} 16%, transparent)`, border: `1px solid color-mix(in srgb, ${r.accent} 45%, transparent)`, boxShadow: `0 0 14px -4px ${r.glow}` }}
+                    className="absolute right-2 top-2 z-10 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-[1.5px] sm:relative sm:right-auto sm:top-auto sm:mb-6 sm:px-3 sm:py-1 sm:text-[9px] sm:tracking-[2px]"
+                    style={{ color: r.accent, background: `color-mix(in srgb, ${r.accent} 16%, rgba(16,17,20,0.9))`, border: `1px solid color-mix(in srgb, ${r.accent} 45%, transparent)`, boxShadow: `0 0 14px -4px ${r.glow}` }}
                   >
                     {pendingHostile ? "⚠ " : legendary ? "✦ " : ""}{r.label}{card.permanent && " · perm"}
                   </span>
                   {/* medalhão do ícone — anel na cor da raridade + glow pulsante */}
                   <span
-                    className="event-card__medal relative my-2 flex h-[104px] w-[104px] items-center justify-center rounded-full text-[54px] leading-none transition-transform duration-300 group-hover:scale-110"
+                    className="event-card__medal relative my-1 flex h-[60px] w-[60px] items-center justify-center rounded-full text-[32px] leading-none transition-transform duration-300 group-hover:scale-110 sm:my-2 sm:h-[104px] sm:w-[104px] sm:text-[54px]"
                     style={{
                       background: `radial-gradient(circle at 50% 38%, color-mix(in srgb, ${r.accent} 22%, rgba(20,21,24,0.9)), rgba(14,15,18,0.95))`,
                       border: `1.5px solid color-mix(in srgb, ${r.accent} 60%, transparent)`,
@@ -216,12 +216,12 @@ export function EventCardOverlay({ game }: { game: Game }) {
                     <span className="event-card__icon drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">{card.icon}</span>
                   </span>
                   <span
-                    className="relative mt-5 font-display text-[22px] font-extrabold uppercase tracking-[1px]"
+                    className="relative mt-2 font-display text-[21px] font-extrabold uppercase tracking-[1px] sm:mt-5 sm:text-[22px]"
                     style={{ color: "#f3ecd8", textShadow: `0 0 18px color-mix(in srgb, ${r.accent} 55%, transparent)` }}
                   >
                     {card.name}
                   </span>
-                  <span className="relative mt-5 text-[13.5px] leading-relaxed text-[#C7CCD4]">{card.desc}</span>
+                  <span className="relative mt-3.5 text-[12.5px] leading-snug text-[#C7CCD4] sm:mt-5 sm:text-[13.5px] sm:leading-relaxed">{card.desc}</span>
                 </button>
               );
             })}
