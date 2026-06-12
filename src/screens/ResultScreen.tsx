@@ -9,6 +9,7 @@ import type { CampaignEnd, CareerStage, PlayedSeries, Role } from "../types";
 const ROLE_LABEL: Record<Role, string> = { TOP: "TOP", JNG: "JNG", MID: "MID", BOT: "ADC", SUP: "SUP" };
 
 const CHAMP_META: Record<CareerStage, { label: string; icon: string }> = {
+  first_stand: { label: "First Stand", icon: "🚩" },
   msi: { label: "MSI", icon: "⚔" },
   worlds: { label: "Worlds", icon: "🏆" },
 };
@@ -49,9 +50,14 @@ function groupByChampionship(history: PlayedSeries[], finished: CampaignEnd | nu
 }
 
 type ResultKind = "title" | "vice" | "out";
+const CHAMP_TITLE: Record<CareerStage, string> = {
+  first_stand: "Campeão do First Stand",
+  msi: "Campeão do MSI",
+  worlds: "Campeão do Mundo",
+};
 function champResult(g: ChampGroup): { text: string; kind: ResultKind } {
   if (g.outcome === "champion") {
-    return { text: g.key === "worlds" ? "Campeão do Mundo" : "Campeão do MSI", kind: "title" };
+    return { text: CHAMP_TITLE[g.key], kind: "title" };
   }
   const last = g.series[g.series.length - 1];
   if (g.key === "worlds") {
@@ -125,7 +131,7 @@ function ChampionshipBlock({ group, bg }: { group: ChampGroup; bg: string }) {
                 </span>
                 <span className="mt-px flex items-center gap-1.5">
                   <span className={`font-display font-semibold ${isGF ? "text-[16px] text-cream" : "text-[15px] text-cream"}`}>vs {h.opp.team}</span>
-                  <span className="font-mono text-[11px]" style={{ color: accent }}>'{yy(h.opp.year)}</span>
+                  <span className="font-mono text-[11px]" style={{ color: accent }}>{h.opp.tournament === "msi" ? "MSI " : ""}'{yy(h.opp.year)}</span>
                 </span>
               </span>
               <span className={`font-mono font-bold tracking-[1px] ${isGF ? "text-[18px]" : "text-[16px]"} ${h.won ? "text-win" : "text-red"}`}>
@@ -152,11 +158,13 @@ export function ResultScreen({ game }: { game: Game }) {
   const isChampion = finished === "champion";
 
   const groups = groupByChampionship(history, finished);
-  const hasMsi = groups.some((g) => g.key === "msi");
+  const hasPrev = groups.length > 1; // disputou mais de um campeonato (carreira)
   const worldsG = groups.find((g) => g.key === "worlds");
   const msiG = groups.find((g) => g.key === "msi");
+  const fsG = groups.find((g) => g.key === "first_stand");
   const worldChampion = worldsG?.outcome === "champion";
   const msiChampion = msiG?.outcome === "champion";
+  const fsChampion = fsG?.outcome === "champion";
   const perfect = isChampion && losses === 0;
 
   // headline adaptável: mostra o MAIOR título conquistado + o desfecho da campanha.
@@ -165,7 +173,7 @@ export function ResultScreen({ game }: { game: Game }) {
   let bigGradient: boolean;
   let desc: string;
   if (worldChampion) {
-    topLabel = perfect ? (hasMsi ? "★ CAMPANHA INVICTA ★" : "★ 6–0 PERFEITO ★") : `★ Campeão do mundo · ${wins}–${losses} ★`;
+    topLabel = perfect ? (hasPrev ? "★ CAMPANHA INVICTA ★" : "★ 6–0 PERFEITO ★") : `★ Campeão do mundo · ${wins}–${losses} ★`;
     bigTitle = tier;
     bigGradient = true;
     desc = tierDesc;
@@ -175,14 +183,21 @@ export function ResultScreen({ game }: { game: Game }) {
     bigTitle = "CAMPEÃO DO MSI";
     bigGradient = true;
     desc = worldsG ? `${champResult(worldsG).text} no Worlds — o título do MSI fica de consolo.` : "Conquistou o MSI.";
+  } else if (fsChampion) {
+    // venceu o First Stand mas caiu antes/no MSI
+    topLabel = `Campanha encerrada · ${wins}–${losses}`;
+    bigTitle = "CAMPEÃO DO FIRST STAND";
+    bigGradient = true;
+    desc = msiG ? `${champResult(msiG).text} no MSI — mas o First Stand já está no bolso.` : "Conquistou o First Stand.";
   } else {
-    // eliminado sem título (cai no MSI, ou modo Worlds avulso)
+    // eliminado sem título (caiu no First Stand/MSI, ou modo Worlds avulso)
     const lastG = groups[groups.length - 1];
     const r = lastG ? champResult(lastG) : { text: "Eliminado", kind: "out" as ResultKind };
     topLabel = `Campanha encerrada · ${wins}–${losses}`;
     bigTitle = r.kind === "vice" ? "VICE-CAMPEÃO" : "ELIMINADO";
     bigGradient = r.kind === "vice";
-    desc = lastG?.key === "msi" ? `Parou no MSI — ${r.text.replace("Eliminado · ", "")}.` : r.text;
+    const stageName = lastG?.key === "first_stand" ? "First Stand" : lastG?.key === "msi" ? "MSI" : null;
+    desc = stageName ? `Parou no ${stageName} — ${r.text.replace("Eliminado · ", "")}.` : r.text;
   }
 
   // na tela de vitória o fundo é DOURADO → cards precisam de fundo escuro SÓLIDO
@@ -205,7 +220,7 @@ export function ResultScreen({ game }: { game: Game }) {
             <div className="font-display text-[clamp(18px,3vw,28px)] font-bold uppercase tracking-[3px]" style={{ color: "#241a08" }}>
               Você conquistou a
             </div>
-            <Logo6x0 layout="inline" fill="#1c1406" className="mt-1 h-[clamp(46px,8vw,78px)] w-auto" />
+            <Logo6x0 fill="#1c1406" className="mt-1 h-[clamp(46px,8vw,78px)] w-auto" />
           </div>
         ) : (
           <>
@@ -272,7 +287,15 @@ export function ResultScreen({ game }: { game: Game }) {
       {/* campeonatos da campanha (MSI, Worlds, futuros) */}
       <div className="mb-[26px]">
         <div className={`${sectionTitleCls} ${isChampion ? "" : "text-muted"}`} style={sectionTitleStyle}>A campanha</div>
-        <div className={`grid items-start gap-6 [grid-template-columns:1fr] ${groups.length > 1 ? "wide:[grid-template-columns:1fr_1fr]" : "mx-auto max-w-[680px]"}`}>
+        <div
+          className={`grid items-start gap-6 [grid-template-columns:1fr] ${
+            groups.length >= 3
+              ? "wide:[grid-template-columns:1fr_1fr_1fr]"
+              : groups.length === 2
+                ? "wide:[grid-template-columns:1fr_1fr]"
+                : "mx-auto max-w-[680px]"
+          }`}
+        >
           {groups.map((g) => (
             <ChampionshipBlock key={g.key} group={g} bg={panelBg} />
           ))}
@@ -291,7 +314,9 @@ export function ResultScreen({ game }: { game: Game }) {
                   <Flag cc={p.country} size={12} />
                   <span className="truncate font-display text-[16px] font-semibold text-cream">{p.name}</span>
                 </span>
-                <span className="block font-mono text-[11px] text-muted">{p.short} '{yy(p.year)}</span>
+                <span className="block font-mono text-[11px] text-muted">
+                  {p.short} {p.tournament === "msi" ? "MSI " : ""}'{yy(p.year)}
+                </span>
               </span>
               <span className="font-mono text-[18px] font-bold text-gold-bright">{p.rating}</span>
             </div>

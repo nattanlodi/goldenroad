@@ -4,9 +4,10 @@ import type { LiveGame, Role, Side } from "../types";
 import { lineupPicks, rarityFor, yy } from "../game/helpers";
 import { effLineScore, effOpp, effOppAvg, effYou } from "../game/effects";
 import { MSI_BRACKET } from "../game/msi";
+import { FS_BRACKET } from "../game/firstStand";
 import { teamColor } from "../data/teamColors";
 import { EventCardOverlay } from "../components/EventCardOverlay";
-import type { MsiNode } from "../types";
+import type { FsNode, MsiNode } from "../types";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 import { ROLE_SVG } from "../components/roleIcons";
@@ -276,6 +277,57 @@ function MsiBracketHeader({ node, format }: { node: MsiNode; format?: string }) 
   );
 }
 
+// ── FIRST STAND: trilha do grupo (upper/lower) + knockout (semi/final) ──
+const FS_PATH_ORDER: FsNode[] = ["USF", "UBF", "LBF", "KSF", "KGF"];
+const FS_GROUP_UPPER: FsNode[] = ["USF", "UBF"];
+const FS_KNOCKOUT: FsNode[] = ["KSF", "KGF"];
+const FS_SHORT: Record<FsNode, string> = { USF: "Semi", UBF: "Final", LBF: "L. Final", KSF: "Semi", KGF: "Final" };
+
+function FsBracketHeader({ node, format }: { node: FsNode; format?: string }) {
+  const side = FS_BRACKET[node].side;
+  const curIdx = FS_PATH_ORDER.indexOf(node);
+  const inKnockout = node === "KSF" || node === "KGF";
+  // na fase de grupos: mostra a trilha upper (USF/UBF) ou, se caiu, a L. Final.
+  const groupLane: FsNode[] = !inKnockout && side === "lower" ? ["LBF"] : FS_GROUP_UPPER;
+  const chip = (n: FsNode) => {
+    const cur = n === node;
+    const passed = FS_PATH_ORDER.indexOf(n) < curIdx;
+    const style: CSSProperties = cur
+      ? { background: "transparent", color: "#E8CE86", border: "1.5px solid #E8CE86", boxShadow: "0 0 0 4px rgba(201,162,75,0.12)" }
+      : passed
+        ? { background: "linear-gradient(180deg,#86d79a,#5fae72)", color: "#16241a", border: "1px solid rgba(126,208,143,0.5)" }
+        : { background: "rgba(42,51,65,0.6)", color: "#777E89", border: "1px solid rgba(201,162,75,0.14)" };
+    return (
+      <span key={n} className="rounded-[7px] px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[1px]" style={style}>
+        {passed ? "✓ " : ""}
+        {FS_SHORT[n]}
+      </span>
+    );
+  };
+  return (
+    <>
+      <div className="inline-flex flex-wrap items-center justify-center gap-2 rounded-[14px] border border-gold/25 px-5 py-3">
+        <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Grupo</span>
+        {groupLane.map(chip)}
+        <span className="mx-1 font-mono text-[12px] text-dim">→</span>
+        <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Knockout</span>
+        {FS_KNOCKOUT.map(chip)}
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <span className="font-display text-[13px] font-semibold uppercase tracking-[1px] text-gold-bright">
+          {FS_BRACKET[node].label}
+        </span>
+        {format && <span className="font-mono text-[11px] tracking-[1px] text-dim">· {format}</span>}
+        {(side === "lower" || inKnockout) && (
+          <span className="rounded-full bg-red/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[1px] text-red-soft">
+            sem mais erros
+          </span>
+        )}
+      </div>
+    </>
+  );
+}
+
 const dotGreen: CSSProperties = {
   background: "linear-gradient(180deg,#86d79a,#5fae72)",
   boxShadow: "0 0 10px rgba(126,208,143,0.45)",
@@ -312,6 +364,7 @@ export function SeriesScreen({ game }: { game: Game }) {
     series,
     mode,
     msiNode,
+    fsNode,
     stagePhase,
     swissWins,
     swissLosses,
@@ -332,9 +385,11 @@ export function SeriesScreen({ game }: { game: Game }) {
     formNotes,
     activeBuffs,
     pendingEvent,
+    pendingHostile,
   } = game.state;
 
   const isMsi = mode === "goldenroad" && !!msiNode;
+  const isFs = mode === "goldenroad" && !!fsNode;
 
   // os flashes (penta / MVP de partida) somem sozinhos após um tempo.
   useEffect(() => {
@@ -361,11 +416,23 @@ export function SeriesScreen({ game }: { game: Game }) {
   // cor principal da org do rival (T1 vermelho, Gen.G amarelo...) — identidade
   // visual do card do adversário. Fallback neutro pra orgs sem cor mapeada.
   const oppColor = teamColor(series.opp.short).accent;
-  const isLastWin = isMsi
-    ? isWin && msiNode === "GF"
-    : isWin && stagePhase === "ko" && koIndex >= 2;
+  const isLastWin = isFs
+    ? isWin && fsNode === "KGF"
+    : isMsi
+      ? isWin && msiNode === "GF"
+      : isWin && stagePhase === "ko" && koIndex >= 2;
 
   const nextLabel = (() => {
+    if (isFs) {
+      if (isWin) {
+        if (fsNode === "KGF") return "Campeão do First Stand! Rumo ao MSI →";
+        if (fsNode === "UBF" || fsNode === "LBF") return "Classificado ao Knockout →";
+        if (fsNode === "KSF") return "Avançar à Grande Final →";
+        return "Próxima série →";
+      }
+      const info = FS_BRACKET[fsNode!];
+      return info.onLoss === "eliminated" ? "Ver resultado →" : "Cair pra Lower Bracket →";
+    }
     if (isMsi) {
       if (isWin) {
         if (msiNode === "GF") return "Campeão do MSI! Rumo ao Worlds →";
@@ -394,7 +461,11 @@ export function SeriesScreen({ game }: { game: Game }) {
               <span
                 key={b.id}
                 className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold tracking-[0.5px]"
-                style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(232,206,134,0.4)", color: "#e8ce86" }}
+                style={
+                  b.bad
+                    ? { background: "rgba(224,88,74,0.14)", border: "1px solid rgba(224,88,74,0.45)", color: "#f0867a" }
+                    : { background: "rgba(201,162,75,0.14)", border: "1px solid rgba(232,206,134,0.4)", color: "#e8ce86" }
+                }
               >
                 <span className="text-[12px]">{b.icon}</span>
                 {b.label}
@@ -404,7 +475,21 @@ export function SeriesScreen({ game }: { game: Game }) {
         )}
         {/* header + progresso */}
         <div className="mb-[18px] text-center">
-        {isMsi ? (
+        {isFs ? (
+          <div className="mb-8 flex items-center justify-center">
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[2px]"
+              style={{
+                color: "#1a1206",
+                background: "linear-gradient(180deg,#e8ce86,#c9a24b)",
+                boxShadow: "0 0 18px rgba(201,162,75,0.45), inset 0 1px 0 rgba(255,255,255,0.4)",
+              }}
+            >
+              🚩 First Stand
+              <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">GOLDENROAD · GRUPO + KNOCKOUT</span>
+            </span>
+          </div>
+        ) : isMsi ? (
           <div className="mb-8 flex items-center justify-center">
             <span
               className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[2px]"
@@ -422,7 +507,9 @@ export function SeriesScreen({ game }: { game: Game }) {
           <div className="mb-3 font-mono text-[12px] uppercase tracking-[3px] text-muted">Playoffs · rumo ao 6–0</div>
         )}
 
-        {isMsi ? (
+        {isFs ? (
+          <FsBracketHeader node={fsNode!} format={series.format} />
+        ) : isMsi ? (
           <MsiBracketHeader node={msiNode!} format={series.format} />
         ) : stagePhase === "swiss" ? (
           <div className="inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-[14px] border border-gold/25 px-5 py-2.5">
@@ -507,8 +594,8 @@ export function SeriesScreen({ game }: { game: Game }) {
 
         {/* centro */}
         <div className="flex min-h-[260px] flex-col items-center justify-center px-2.5 py-[18px] text-center">
-          {/* no MSI a etapa+formato ficam embaixo do badge (MsiBracketHeader); aqui só no modo Worlds */}
-          {!isMsi && (
+          {/* no MSI/First Stand a etapa+formato ficam embaixo do badge (BracketHeader); aqui só no modo Worlds */}
+          {!isMsi && !isFs && (
             <>
               <div className="font-mono text-[11px] uppercase tracking-[2px] text-muted">{series.stageLabel}</div>
               <div className="mt-[3px] font-mono text-[11px] text-dim">{series.format}</div>
@@ -531,9 +618,15 @@ export function SeriesScreen({ game }: { game: Game }) {
               </div>
               {pendingEvent ? (
                 // evento a caminho: trava o início até o jogador escolher uma carta.
-                <div className="flex items-center gap-2 rounded-[10px] border border-gold/30 px-[28px] py-[13px] font-display text-[15px] font-semibold uppercase tracking-[2px] text-gold-bright" style={{ background: "rgba(201,162,75,0.08)" }}>
-                  <span className="animate-pulse">⚡</span> Evento a caminho…
-                </div>
+                pendingHostile ? (
+                  <div className="flex items-center gap-2 rounded-[10px] border border-red/40 px-[28px] py-[13px] font-display text-[15px] font-semibold uppercase tracking-[2px]" style={{ background: "rgba(224,88,74,0.1)", color: "#f0867a" }}>
+                    <span className="animate-pulse">⚠️</span> Evento de azar…
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 rounded-[10px] border border-gold/30 px-[28px] py-[13px] font-display text-[15px] font-semibold uppercase tracking-[2px] text-gold-bright" style={{ background: "rgba(201,162,75,0.08)" }}>
+                    <span className="animate-pulse">⚡</span> Evento a caminho…
+                  </div>
+                )
               ) : (
                 <button
                   onClick={game.playSeries}

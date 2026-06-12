@@ -44,10 +44,13 @@ export interface MsiNextSeries {
   usedOppIds: string[];
 }
 
-/** Monta a série (Bo5) do nó atual do bracket, sorteando o adversário. */
+/** Monta a série (Bo5) do nó atual do bracket, sorteando o adversário.
+ *  GF → sempre finalista (campeão/vice). As finais de bracket (UF/LF) são as
+ *  "semis" do MSI → 60% vice / 40% semifinalista. */
 export function buildMsiSeries(node: MsiNode, usedIds: string[]): MsiNextSeries {
   const info = MSI_BRACKET[node];
-  const opp = drawOpponent(usedIds, info.difficultyKey);
+  const restrict = node === "GF" ? "finalists" : node === "UF" || node === "LF" ? "semifinal" : undefined;
+  const opp = drawOpponent(usedIds, info.difficultyKey, restrict);
   return {
     series: {
       stageKey: "final", // Bo5 (reusa o tipo; o rótulo do MSI vem de stageLabel)

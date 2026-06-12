@@ -6,23 +6,22 @@ interface Props {
   style?: CSSProperties;
   /** espessura das linhas do "X" (mid lane / rio) */
   strokeWidth?: number;
-  /** "stacked" (GOLDEN em cima, R[0]AD embaixo — hero) ou "inline" (tudo numa linha — topo do draft). */
-  layout?: "stacked" | "inline";
   /** cor sólida que substitui o gradiente dourado (ex.: escuro sobre fundo dourado). */
   fill?: string;
-  /** aceito por compatibilidade com chamadas antigas — não usado mais. */
+  /** aceitos por compatibilidade com chamadas antigas — não usados mais. */
+  layout?: "stacked" | "inline";
   dotR?: number;
 }
 
 const FONT = "'Bebas Neue', sans-serif";
 
 /**
- * Logo "GOLDENR0AD": o "0" de R0AD é o símbolo do nexus — um quadrado de cantos
- * arredondados (contorno do mapa do LoL) com um X (mid lane dourada / cruzando o
- * rio azul \). Dois layouts: "stacked" (GOLDEN / R0AD em duas linhas, pra hero) e
- * "inline" (GOLDEN R0AD numa linha só, pro topo do draft).
+ * Logo "GOLDENR0AD": wordmark único numa linha. O "0" de R0AD é o símbolo do
+ * nexus — um quadrado de cantos arredondados (contorno do mapa do LoL) com um X
+ * (mid lane dourada / rio azul \). Gradiente dourado por padrão (ou cor sólida
+ * via `fill`). Versão única — sem layout empilhado.
  */
-export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked", fill }: Props) {
+export function Logo6x0({ className, style, strokeWidth = 11, fill }: Props) {
   const id = useId();
   const word: CSSProperties = { fontFamily: FONT, fontWeight: 400, fontSize: "112px", letterSpacing: "4px" };
 
@@ -40,7 +39,7 @@ export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked"
     </defs>
   );
 
-  // glifo nexus (quadrado + X), reusável nos dois layouts.
+  // glifo nexus (quadrado + X) no lugar do "0".
   const nexus = (sqCx: number, cy: number, half: number, arm: number) => (
     <>
       <rect
@@ -61,57 +60,26 @@ export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked"
 
   const half = 33;
   const arm = 17;
-  const gap = 12;
+  const gap = 6;
 
-  if (layout === "inline") {
-    // GOLDEN R [nexus] AD — tudo numa linha.
-    const base = 96;
-    const cy = base - 38;
-    const wGoldenR = 414; // largura aprox. de "GOLDEN R"
-    const wAD = 104;
-    const x0 = 8;
-    const goldenREndX = x0 + wGoldenR;
-    const sqCx = goldenREndX + gap + half;
-    const adX = sqCx + half + gap;
-    const VW = adX + wAD + 8;
-    return (
-      <svg viewBox={`0 0 ${VW} 124`} className={className} style={{ display: "block", overflow: "visible", ...style }}>
-        {grad}
-        <text x={goldenREndX} y={base} textAnchor="end" fill={ink} style={word}>
-          GOLDEN R
-        </text>
-        {nexus(sqCx, cy, half, arm)}
-        <text x={adX} y={base} textAnchor="start" fill={ink} style={word}>
-          AD
-        </text>
-      </svg>
-    );
-  }
-
-  // stacked: GOLDEN (cima) / R [nexus] AD (baixo)
-  const VW = 460;
-  const cx = VW / 2;
-  const topBase = 96;
-  const botBase = 196;
-  const cy = botBase - 38;
-  const wR = 58;
+  // GOLDENR [nexus] AD — tudo numa linha, sem o espaço entre GOLDEN e R.
+  const base = 96;
+  const cy = base - 38;
+  const wGoldenR = 372; // largura aprox. de "GOLDENR" (sem espaço de palavra)
   const wAD = 104;
-  const lineW = wR + gap + half * 2 + gap + wAD;
-  const x0 = cx - lineW / 2;
-  const rRightX = x0 + wR;
-  const sqCx = rRightX + gap + half;
+  const x0 = 8;
+  const goldenREndX = x0 + wGoldenR;
+  const sqCx = goldenREndX + gap + half;
   const adX = sqCx + half + gap;
+  const VW = adX + wAD + 8;
   return (
-    <svg viewBox={`0 0 ${VW} 232`} className={className} style={{ display: "block", overflow: "visible", ...style }}>
+    <svg viewBox={`0 0 ${VW} 124`} className={className} style={{ display: "block", overflow: "visible", ...style }}>
       {grad}
-      <text x={cx} y={topBase} textAnchor="middle" fill={ink} style={word}>
-        GOLDEN
-      </text>
-      <text x={rRightX} y={botBase} textAnchor="end" fill={ink} style={word}>
-        R
+      <text x={goldenREndX} y={base} textAnchor="end" fill={ink} style={word}>
+        GOLDENR
       </text>
       {nexus(sqCx, cy, half, arm)}
-      <text x={adX} y={botBase} textAnchor="start" fill={ink} style={word}>
+      <text x={adX} y={base} textAnchor="start" fill={ink} style={word}>
         AD
       </text>
     </svg>

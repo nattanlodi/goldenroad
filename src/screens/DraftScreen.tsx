@@ -57,7 +57,7 @@ export function DraftScreen({ game }: { game: Game }) {
             title="Voltar ao início"
             className="-m-1 flex cursor-pointer items-center rounded-lg p-1 transition-opacity hover:opacity-70"
           >
-            <Logo6x0 className="h-auto w-[208px]" layout="inline" strokeWidth={11} />
+            <Logo6x0 className="h-auto w-[208px]" />
           </div>
           <span className="font-mono text-[12px] uppercase tracking-[2px] text-muted">Draft · monte sua line</span>
         </div>
@@ -201,7 +201,13 @@ export function DraftScreen({ game }: { game: Game }) {
                       </div>
                     ) : (
                       <>
-                        <div className="font-display text-[24px] leading-none font-bold text-gold-bright">{c.year}</div>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <span className="rounded-[4px] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[1px]"
+                            style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(201,162,75,0.3)", color: "#c9a24b" }}>
+                            {c.tournament === "msi" ? "MSI" : "Worlds"}
+                          </span>
+                          <div className="font-display text-[24px] leading-none font-bold text-gold-bright">{c.year}</div>
+                        </div>
                         {c.champion ? (
                           <div
                             className="mt-2.5 inline-block rounded-[4px] px-[7px] py-0.5 font-mono text-[10px] font-bold tracking-[1px] text-gold-bright"

@@ -5,6 +5,7 @@ import type {
   Difficulty,
   EventCard,
   FormNote,
+  FsNode,
   GameMode,
   GameMvp,
   HighlightRef,
@@ -29,13 +30,15 @@ export interface PreSeries {
   seriesMods: SeriesMods;
   formNotes: FormNote[];
   pendingEvent: EventCard[] | null;
+  pendingHostile: boolean; // o trio sorteado é todo de cartas ruins (azar)?
   eventDry: number;
 }
 
 export interface GameState {
   phase: Phase;
   mode: GameMode; // "worlds" (atual) ou "goldenroad" (carreira MSI→Worlds)
-  careerStage: CareerStage; // etapa do GOLDENROAD: "msi" ou "worlds"
+  careerStage: CareerStage; // etapa do GOLDENROAD: "first_stand" | "msi" | "worlds"
+  fsNode: FsNode | null; // nó atual do bracket do First Stand (etapa first_stand)
   msiNode: MsiNode | null; // nó atual do bracket do MSI (só no modo goldenroad/etapa msi)
   difficulty: Difficulty;
   lineup: Lineup;
@@ -73,6 +76,7 @@ export interface GameState {
   formNotes: FormNote[]; // badges de forma (fogo/gelado) da série atual
   activeBuffs: ActiveBuff[]; // buffs PERMANENTES acumulados na run (HUD)
   pendingEvent: EventCard[] | null; // 3 cartas a escolher (null = nenhum evento)
+  pendingHostile: boolean; // o evento atual é de AZAR (3 cartas ruins)?
   eventDry: number; // séries seguidas sem evento (pity)
 
   // share / meta
@@ -108,13 +112,15 @@ const freshCampaign = {
   formNotes: [] as FormNote[],
   activeBuffs: [] as ActiveBuff[],
   pendingEvent: null as EventCard[] | null,
+  pendingHostile: false,
   eventDry: 0,
 };
 
 export const initialState: GameState = {
   phase: "start",
   mode: "worlds",
-  careerStage: "msi",
+  careerStage: "first_stand",
+  fsNode: null,
   msiNode: null,
   difficulty: "classico",
   lineup: emptyLineup(),
@@ -136,6 +142,16 @@ export type Action =
   | { type: "pick"; role: Role; player: LineupPlayer; complete: boolean }
   | { type: "rerollDec" }
   | { type: "startCampaign"; series: SeriesSetup; usedOppIds: string[]; pre: PreSeries }
+  | { type: "startFirstStand"; series: SeriesSetup; usedOppIds: string[]; node: FsNode; pre: PreSeries }
+  | {
+      type: "fsAdvance";
+      played: PlayedSeries;
+      series: SeriesSetup;
+      node: FsNode;
+      usedOppIds: string[];
+      pre: PreSeries;
+    }
+  | { type: "fsToMsi"; played: PlayedSeries; series: SeriesSetup; usedOppIds: string[]; node: MsiNode; pre: PreSeries }
   | { type: "startMsi"; series: SeriesSetup; usedOppIds: string[]; node: MsiNode; pre: PreSeries }
   | {
       type: "msiAdvance";
@@ -180,6 +196,7 @@ const applyPre = (pre: PreSeries) => ({
   seriesMods: pre.seriesMods,
   formNotes: pre.formNotes,
   pendingEvent: pre.pendingEvent,
+  pendingHostile: pre.pendingHostile,
   eventDry: pre.eventDry,
 });
 
@@ -190,7 +207,8 @@ export function reducer(state: GameState, action: Action): GameState {
         ...state,
         phase: "play",
         mode: action.mode,
-        careerStage: "msi",
+        careerStage: "first_stand",
+        fsNode: null,
         msiNode: null,
         lineup: emptyLineup(),
         rerolls: 3,
@@ -222,6 +240,55 @@ export function reducer(state: GameState, action: Action): GameState {
         ...state,
         phase: "series",
         ...freshCampaign,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+        ...applyPre(action.pre),
+      };
+
+    case "startFirstStand":
+      return {
+        ...state,
+        phase: "series",
+        careerStage: "first_stand",
+        ...freshCampaign,
+        fsNode: action.node,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+        ...applyPre(action.pre),
+      };
+
+    case "fsAdvance":
+      return {
+        ...state,
+        history: [...state.history, action.played],
+        fsNode: action.node,
+        series: action.series,
+        usedOppIds: action.usedOppIds,
+        seriesPlaying: false,
+        revealed: false,
+        yourGames: 0,
+        oppGames: 0,
+        seriesResult: null,
+        highlight: null,
+        pentaFlash: null,
+        gameMvpFlash: null,
+        liveGames: [],
+        ...applyPre(action.pre),
+      };
+
+    case "fsToMsi":
+      // campeão do First Stand: mantém a line (e buffs), parte pro MSI.
+      // PRESERVA o histórico (séries do First Stand) e zera só o progresso interno.
+      return {
+        ...state,
+        careerStage: "msi",
+        fsNode: null,
+        ...freshCampaign,
+        history: [...state.history, action.played], // First Stand inteiro + a final
+        campaignGames: state.campaignGames, // continuidade dos jogos da run
+        activeBuffs: state.activeBuffs, // preserva buffs permanentes
+        permMods: state.permMods, // preserva deltas permanentes por lane
+        msiNode: action.node,
         series: action.series,
         usedOppIds: action.usedOppIds,
         ...applyPre(action.pre),
@@ -339,6 +406,7 @@ export function reducer(state: GameState, action: Action): GameState {
         formNotes: action.formNotes,
         activeBuffs: action.activeBuffs,
         pendingEvent: null,
+        pendingHostile: false,
       };
 
     case "finishCampaign":

@@ -24,7 +24,7 @@ export function App() {
       {isVictory ? (
         <VictoryBackdrop />
       ) : (
-        <AppBackground dim={phase === "play"} variant={isGame ? "game" : undefined} />
+        <AppBackground variant={isGame ? "game" : undefined} />
       )}
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 

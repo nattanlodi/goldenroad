@@ -6,15 +6,20 @@ export type Role = "TOP" | "JNG" | "MID" | "BOT" | "SUP";
  *  O 4º item é o código ISO 3166-1 alpha-2 minúsculo (ex.: "kr", "br") — opcional. */
 export type RosterEntry = [Role, string, number, string?];
 
-/** Uma campanha (time + ano) do Worlds. */
+/** Torneio de origem de uma campanha. */
+export type Tournament = "worlds" | "msi";
+
+/** Uma campanha (time + ano + torneio). */
 export interface Team {
   id: string;
   team: string;
   short: string;
   year: number;
   league: string;
+  /** torneio de origem. Ausente = "worlds" (default, retrocompat com os arquivos antigos). */
+  tournament?: Tournament;
   champion: boolean;
-  /** Vice-campeão: perdeu a final daquele Worlds. */
+  /** Vice-campeão: perdeu a final daquele torneio. */
   finalist?: boolean;
   players: RosterEntry[];
 }
@@ -31,6 +36,7 @@ export interface LineupPlayer {
   short: string;
   year: number;
   league: string;
+  tournament?: Tournament; // torneio de origem (default worlds)
   champion: boolean;
   finalist?: boolean;
   country?: string;
@@ -65,11 +71,23 @@ export type MsiNode =
 /** Lado do bracket onde o jogador chega à Grand Final (ou em que se encontra). */
 export type MsiSide = "upper" | "lower";
 
-/** Modo de jogo. "worlds" = só o Worlds (atual). "goldenroad" = carreira (MSI → Worlds). */
+/** Nó do bracket do FIRST STAND no caminho do JOGADOR. Fase de grupos (double
+ *  elim de 4 times) → knockout (semi + grande final). Tudo Bo5. */
+export type FsNode =
+  | "USF" // Upper Semifinal (grupo)
+  | "UBF" // Upper Bracket Final (grupo) — vencer = classificado
+  | "LBF" // Lower Bracket Final (grupo) — última chance de classificar
+  | "KSF" // Knockout Semifinal
+  | "KGF"; // Knockout Grand Final
+
+/** Lado do bracket do First Stand (upper/lower) — só pra "vida" na UI. */
+export type FsSide = "upper" | "lower";
+
+/** Modo de jogo. "worlds" = só o Worlds (atual). "goldenroad" = carreira (First Stand → MSI → Worlds). */
 export type GameMode = "worlds" | "goldenroad";
 
 /** Etapa atual do modo carreira GOLDENROAD. */
-export type CareerStage = "msi" | "worlds";
+export type CareerStage = "first_stand" | "msi" | "worlds";
 
 /** Time adversário de uma série, já com a média de overall pré-calculada. */
 export interface Opponent {
@@ -78,6 +96,7 @@ export interface Opponent {
   short: string;
   year: number;
   league: string;
+  tournament?: Tournament; // torneio de origem da campanha (default worlds)
   players: RosterEntry[];
   avg: number;
 }
@@ -205,7 +224,20 @@ export type CardKind =
   | "stealBest" // rouba o MELHOR do rival pro seu time na mesma lane (permanente)
   | "swapOwnRole" // troca um seu por qualquer jogador da mesma role (alvo: tabela)
   | "swapWithOpp" // troca um seu por um do rival na mesma role (alvo: par)
-  | "thaw"; // remove o gelado de um jogador + bônus
+  | "thaw" // remove o gelado de um jogador + bônus
+  // ── cartas RUINS (evento de azar: escolher o mal menor) ──
+  | "injureChoose" // -N temp num jogador SEU à escolha (alvo: sua role)
+  | "teamNerfTemp" // -N temp em TODA a sua line
+  | "slumpRandom" // -N temp num jogador SEU aleatório
+  | "slumpBest" // -N temp no seu MELHOR jogador
+  | "freezeRandom" // aplica 🧊 Gelado (-N) num jogador SEU aleatório
+  | "oppBuffAll" // +N temp em TODO o rival
+  | "oppBuffBest" // +N temp no MELHOR jogador do rival
+  | "oldestNerf" // -N temp no seu jogador de edição mais antiga
+  | "permNerfChoose" // -N PERMANENTE numa lane SUA à escolha (alvo: sua role)
+  | "permNerfBest" // -N PERMANENTE no seu MELHOR jogador
+  | "doubleEdge" // rival +Nopp e sua line -Nyou, só nesta série
+  | "badRoulette"; // roleta ruim: 50% -2 na line / 50% -5 num aleatório
 
 /** Uma carta de evento sorteável. */
 export interface EventCard {
@@ -219,6 +251,10 @@ export interface EventCard {
   permanent: boolean; // efeito vale a run inteira (true) ou só a próxima série (false)
   /** precisa de uma etapa de escolha de alvo após selecionar a carta. */
   needsTarget: boolean;
+  /** carta RUIM — entra no baralho de "evento de azar" (escolher o mal menor). */
+  hostile?: boolean;
+  /** magnitude secundária (ex.: doubleEdge usa value=buff rival, value2=nerf seu). */
+  value2?: number;
 }
 
 /** Buff PERMANENTE ativo na run (só pra exibir no HUD). */
@@ -226,6 +262,8 @@ export interface ActiveBuff {
   id: string;
   icon: string;
   label: string;
+  /** penalidade permanente (carta de azar) — renderiza em vermelho no HUD. */
+  bad?: boolean;
 }
 
 /** Alvo escolhido para uma carta que precisa de seleção. */

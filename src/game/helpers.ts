@@ -214,14 +214,48 @@ const STAGE_INTENSITY: Record<string, number> = {
   msi_lr3: 0.097,
   msi_lf: 0.145,
   msi_gf: 0.21,
+  // FIRST STAND — 1º torneio do ano, um pouco mais fácil que o MSI. Nós de grupo
+  // (USF/UBF/LBF) usam pool normal ponderado; KSF/KGF usam pool restrito
+  // (semifinal/finalists), então o k ali só ajusta dentro do grupo de elite.
+  // Alvos: USF ~77 · UBF ~83 · LBF ~84 · KSF ~85 · KGF ~87. (calib-k.mjs)
+  fs_usf: -0.065,
+  fs_ubf: 0.029,
+  fs_lbf: 0.044,
+  fs_ksf: 0.0,
+  fs_kgf: -0.16,
 };
 
 /**
  * Sorteia um adversário (evitando os já enfrentados), ponderado pela força do
  * time conforme a fase — fases mais avançadas tendem a adversários mais fortes.
  */
-export function drawOpponent(usedIds: string[], stageKey: string = "swiss"): Opponent {
+/** Restrição de pool por colocação histórica do adversário. */
+export type OppRestrict =
+  | "finalists" // só CAMPEÃO ou VICE (grandes finais — MSI/Worlds)
+  | "semifinal"; // 60% VICE · 40% SEMIFINALISTA (semis — UF/LF do MSI e semi do Worlds)
+
+/**
+ * Sorteia um adversário do pool (ponderado por força via STAGE_INTENSITY).
+ * @param restrict limita o pool por colocação (finais/semis enfrentam times de elite).
+ */
+export function drawOpponent(usedIds: string[], stageKey: string = "swiss", restrict?: OppRestrict): Opponent {
   let pool = DRAFT_TEAMS.filter((t) => !usedIds.includes(t.id));
+
+  if (restrict === "finalists") {
+    const finalists = pool.filter((t) => t.champion || t.finalist);
+    if (finalists.length) pool = finalists;
+  } else if (restrict === "semifinal") {
+    // 60% vice (finalist) · 40% semifinalista (3º-4º). Cai pro outro grupo se o
+    // sorteado estiver vazio, e pro pool geral se ambos faltarem.
+    const vices = pool.filter((t) => t.finalist);
+    const semis = pool.filter((t) => SEMIFINAL_IDS.has(t.id));
+    const wantVice = Math.random() < 0.6;
+    const primary = wantVice ? vices : semis;
+    const fallback = wantVice ? semis : vices;
+    if (primary.length) pool = primary;
+    else if (fallback.length) pool = fallback;
+  }
+
   if (!pool.length) pool = DRAFT_TEAMS;
   const k = STAGE_INTENSITY[stageKey] ?? 0;
   const weights = pool.map((t) => Math.exp(k * (teamAvg(t.players) - POOL_AVG)));
@@ -241,6 +275,7 @@ export function drawOpponent(usedIds: string[], stageKey: string = "swiss"): Opp
     short: t.short,
     year: t.year,
     league: t.league,
+    tournament: t.tournament ?? "worlds",
     players: t.players,
     avg: teamAvg(t.players),
   };
@@ -286,7 +321,10 @@ export function buildNextSeries(
   }
 
   const ko = KO_STAGES[koIndex];
-  const opp = drawOpponent(usedIds, ko.stageKey);
+  // Grande Final → sempre finalista. Semifinal → 60% vice / 40% semifinalista.
+  const restrict: OppRestrict | undefined =
+    ko.stageKey === "final" ? "finalists" : ko.stageKey === "semi" ? "semifinal" : undefined;
+  const opp = drawOpponent(usedIds, ko.stageKey, restrict);
   return {
     series: { stageKey: ko.stageKey, stageLabel: ko.stageLabel, format: "Bo5", target: 3, decisive: true, opp },
     usedOppIds: [...usedIds, opp.id],

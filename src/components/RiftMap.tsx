@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Lineup, Role } from "../types";
 import { ROLES } from "../data/teams";
-import { yy } from "../game/helpers";
+import { rarityFor, yy } from "../game/helpers";
 import { ROLE_SVG, ROLE_TEXT } from "./roleIcons";
 
 interface Props {
@@ -9,6 +9,19 @@ interface Props {
   showRatings: boolean;
   filledCount: number;
 }
+
+// poeira luminosa flutuando dentro da arena (posições/tempos fixos pra não
+// recalcular a cada render). Cada uma sobe e some, em loop defasado.
+const SPORES = [
+  { x: 28, y: 70, r: 0.5, d: 0, dur: 7 },
+  { x: 46, y: 60, r: 0.4, d: 1.4, dur: 8.5 },
+  { x: 64, y: 78, r: 0.55, d: 2.6, dur: 6.5 },
+  { x: 36, y: 44, r: 0.42, d: 3.2, dur: 9 },
+  { x: 72, y: 52, r: 0.48, d: 0.8, dur: 7.8 },
+  { x: 54, y: 34, r: 0.4, d: 4.1, dur: 8 },
+  { x: 22, y: 50, r: 0.45, d: 2, dur: 9.5 },
+  { x: 80, y: 38, r: 0.4, d: 5, dur: 7 },
+];
 
 // Posições no viewBox 0–100 (espelham o protótipo).
 const POS: Record<Role, [number, number]> = {
@@ -30,15 +43,27 @@ const circleBase: CSSProperties = {
   textAlign: "center",
 };
 
-const circleFilled: CSSProperties = {
-  ...circleBase,
-  gap: "2px",
-  background:
-    "radial-gradient(circle at 50% 22%, rgba(245,221,150,0.5), rgba(34,42,36,0.97) 72%)",
-  border: "2px solid #E8CE86",
-  boxShadow:
-    "0 0 18px rgba(201,162,75,0.4), 0 0 0 3px rgba(201,162,75,0.18), 0 8px 22px rgba(0,0,0,0.5), inset 0 2px 8px rgba(255,255,255,0.28)",
-};
+/**
+ * Círculo do jogador escolhido, TINGIDO pela cor da raridade do over.
+ * A moldura, o glow externo, o anel e o brilho do topo seguem `c` (a cor do
+ * tier). `c` é a cor base da raridade; derivamos os tons com color-mix pra
+ * casar com a identidade de cada tier (azul/roxo/dourado/rubi…).
+ */
+function circleFilled(c: string): CSSProperties {
+  return {
+    ...circleBase,
+    gap: "2px",
+    // topo brilha na cor da raridade, fundo desce pra grafite bem escuro.
+    background: `radial-gradient(circle at 50% 20%, color-mix(in srgb, ${c} 42%, transparent), rgba(13,16,21,0.98) 70%)`,
+    border: `2px solid ${c}`,
+    boxShadow: [
+      `0 0 20px color-mix(in srgb, ${c} 45%, transparent)`, // glow externo tingido
+      `0 0 0 3px color-mix(in srgb, ${c} 22%, transparent)`, // anel suave
+      "0 8px 22px rgba(0,0,0,0.5)",
+      `inset 0 2px 9px color-mix(in srgb, ${c} 32%, rgba(255,255,255,0.22))`, // brilho interno
+    ].join(", "),
+  };
+}
 
 // slot vazio: disco escuro translúcido com anel pontilhado suave que respira.
 const circleEmpty: CSSProperties = {
@@ -87,9 +112,10 @@ function Nexus({
     <g>
       {/* piso da base: SÓLIDO (muralha escura) sobreposto às lanes */}
       <path d={d} fill="#2b3530" />
-      {/* cristal do nexus ao centro do piso */}
+      {/* cristal do nexus ao centro do piso — pulsa e gira sutil */}
       <g transform={`translate(${c.x} ${c.y})`}>
-        <rect x="-1.8" y="-1.8" width="3.6" height="3.6" rx="0.5" transform="rotate(45)" fill={color} />
+        <circle className="rift-nexus-aura" r="3.2" fill={color} opacity="0.18" />
+        <rect className="rift-nexus-gem" x="-1.8" y="-1.8" width="3.6" height="3.6" rx="0.5" fill={color} />
         <circle r="0.9" fill="#fff" opacity="0.6" />
       </g>
     </g>
@@ -164,6 +190,35 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
           <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(201,162,75,0.34)" strokeWidth="5" strokeLinecap="round" />
           <line x1="15" y1="85" x2="85" y2="15" stroke="rgba(236,210,140,0.3)" strokeWidth="1.2" strokeLinecap="round" />
 
+          {/* ── ENERGIA FLUINDO PELAS LANES ──────────────────────────────────
+              pulsos dourados marchando pelo traçado das três lanes (dash que
+              corre). Dá a sensação de poder circulando o Rift. */}
+          <rect
+            className="rift-flow"
+            x="15" y="15" width="70" height="70" rx="9"
+            fill="none" stroke="rgba(245,221,150,0.55)" strokeWidth="1.6" strokeLinejoin="round"
+            pathLength={100} strokeDasharray="9 91" strokeLinecap="round"
+          />
+          <line
+            className="rift-flow rift-flow-mid"
+            x1="15" y1="85" x2="85" y2="15"
+            stroke="rgba(245,221,150,0.55)" strokeWidth="1.6"
+            pathLength={100} strokeDasharray="8 92" strokeLinecap="round"
+          />
+
+          {/* poeira luminosa flutuando dentro da arena */}
+          {SPORES.map((s, i) => (
+            <circle
+              key={i}
+              className="rift-spore"
+              cx={s.x}
+              cy={s.y}
+              r={s.r}
+              fill="rgba(232,206,134,0.6)"
+              style={{ animationDelay: `${s.d}s`, animationDuration: `${s.dur}s` }}
+            />
+          ))}
+
           {/* covil do Baron (roxo, acima do rio) e do Dragão (laranja, abaixo) */}
           <circle cx="38.4" cy="30.6" r="2.1" fill="rgba(154,114,201,0.22)" stroke="#9a72c9" strokeWidth="0.7" />
           <circle className="rift-pit" cx="38.4" cy="30.6" r="1" fill="#9a72c9" />
@@ -180,34 +235,61 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
         {ROLES.map((r) => {
           const f = lineup[r];
           const [x, y] = POS[r];
+          // cor da raridade do over (no especialista o over fica oculto → usa
+          // o dourado padrão pra não vazar a informação da nota).
+          const skin = f ? rarityFor(f.rating) : null;
+          const rarColor = skin && showRatings ? skin.ratingColor : "#e8ce86";
           return (
             <div
               key={r}
               className="absolute z-[2] flex flex-col items-center gap-[5px]"
               style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%,-50%)" }}
             >
-              <div
-                className={f ? "lane-filled" : "lane-empty"}
-                style={
-                  // o JG fica sobre o centro do mapa; deixa o fundo do slot vazio
-                  // mais translúcido pra deixar o mapa transparecer por baixo.
-                  !f && r === "JNG"
-                    ? { ...circleEmpty, background: "radial-gradient(circle at 50% 30%, rgba(40,48,58,0.28), rgba(18,22,28,0.4))" }
-                    : f
-                      ? circleFilled
-                      : circleEmpty
-                }
-              >
+              <div className="relative">
+                {/* anel de energia girando atrás do círculo pickado, na cor do
+                    tier — dá um "aura" viva ao jogador escolhido. */}
+                {f && (
+                  <span
+                    aria-hidden
+                    className="lane-aura"
+                    style={
+                      {
+                        "--rar": rarColor,
+                      } as CSSProperties
+                    }
+                  />
+                )}
+                <div
+                  className={f ? "lane-filled lane-live" : "lane-empty"}
+                  style={
+                    // o JG fica sobre o centro do mapa; deixa o fundo do slot vazio
+                    // mais translúcido pra deixar o mapa transparecer por baixo.
+                    !f && r === "JNG"
+                      ? { ...circleEmpty, background: "radial-gradient(circle at 50% 30%, rgba(40,48,58,0.28), rgba(18,22,28,0.4))" }
+                      : f
+                        ? circleFilled(rarColor)
+                        : circleEmpty
+                  }
+                >
                 {f ? (
                   <>
                     <span
                       className="font-display font-semibold leading-none text-cream"
-                      style={{ fontSize: "clamp(14px,2.7vw,19px)", padding: "0 3px", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+                      style={{ fontSize: "clamp(12.5px,2.4vw,17px)", padding: "0 3px", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
                     >
                       {f.name}
                     </span>
                     {showRatings && (
-                      <span className="mt-1 font-mono text-[15px] font-bold text-gold-bright">{f.rating}</span>
+                      <span
+                        className="mt-1 font-mono font-bold leading-none"
+                        style={{
+                          fontSize: "clamp(20px,3.6vw,26px)",
+                          color: rarColor,
+                          textShadow: `0 0 9px color-mix(in srgb, ${rarColor} 50%, transparent)`,
+                        }}
+                      >
+                        {f.rating}
+                      </span>
                     )}
                   </>
                 ) : (
@@ -227,10 +309,25 @@ export function RiftMap({ lineup, showRatings, filledCount }: Props) {
                     </span>
                   </>
                 )}
+                </div>
               </div>
-              <span className="min-h-[14px] font-mono text-[11px] text-muted">
-                {f ? `${f.short} '${yy(f.year)}` : ""}
-              </span>
+              {f ? (
+                <span
+                  className="font-mono text-[10.5px] font-bold tracking-[0.5px]"
+                  style={{
+                    padding: "2px 9px",
+                    borderRadius: "999px",
+                    color: rarColor,
+                    background: `color-mix(in srgb, ${rarColor} 14%, rgba(18,22,28,0.82))`,
+                    border: `1px solid color-mix(in srgb, ${rarColor} 42%, transparent)`,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {f.short} '{yy(f.year)}
+                </span>
+              ) : (
+                <span className="min-h-[14px]" />
+              )}
             </div>
           );
         })}

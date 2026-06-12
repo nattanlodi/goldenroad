@@ -18,6 +18,17 @@ const RARITY: Record<CardRarity, { label: string; accent: string; glow: string }
   lendaria: { label: "Lendária", accent: "#e8b53a", glow: "rgba(232,181,58,0.55)" },
 };
 
+// paleta do EVENTO DE AZAR — todas as cartas viram vermelho-sangue, com o selo
+// indicando a gravidade (em vez da raridade boa). A magnitude do estrago define
+// o "tier" visual: leve → grave → severo.
+const HOSTILE_TONE: Record<CardRarity, { label: string }> = {
+  comum: { label: "Leve" },
+  rara: { label: "Grave" },
+  lendaria: { label: "Severo" },
+};
+const HOSTILE_ACCENT = "#e0584a";
+const HOSTILE_GLOW = "rgba(224,88,74,0.5)";
+
 const ROLE_LABEL: Record<Role, string> = { TOP: "TOP", JNG: "JNG", MID: "MID", BOT: "ADC", SUP: "SUP" };
 
 // atraso antes do overlay surgir — dá tempo de ver o rival que vai enfrentar.
@@ -26,7 +37,7 @@ const REVEAL_DELAY = 1300;
 const PICK_LOCK = 1500;
 
 export function EventCardOverlay({ game }: { game: Game }) {
-  const { pendingEvent, series, lineup } = game.state;
+  const { pendingEvent, pendingHostile, series, lineup } = game.state;
   const [sel, setSel] = useState<EventCard | null>(null);
   const [swapRole, setSwapRole] = useState<Role | null>(null);
   const [query, setQuery] = useState("");
@@ -128,15 +139,22 @@ export function EventCardOverlay({ game }: { game: Game }) {
       <div className="shrink-0 text-center">
           <div
             className="mx-auto mb-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[3px]"
-            style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)", boxShadow: "0 0 22px rgba(201,162,75,0.5)" }}
+            style={
+              pendingHostile
+                ? { color: "#1a0606", background: "linear-gradient(180deg,#f07a6c,#c0392b)", boxShadow: "0 0 22px rgba(224,88,74,0.55)" }
+                : { color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)", boxShadow: "0 0 22px rgba(201,162,75,0.5)" }
+            }
           >
-            ⚡ Evento
+            {pendingHostile ? "⚠️ Evento de Azar" : "⚡ Evento"}
           </div>
-          <div className="font-display text-[26px] font-bold uppercase tracking-[2px] text-gold-bright">
-            {!sel ? "Escolha uma carta" : sel.needsTarget && !swapRole ? sel.name : sel.name}
+          <div
+            className="font-display text-[26px] font-bold uppercase tracking-[2px]"
+            style={{ color: pendingHostile ? "#f0867a" : "#e8ce86" }}
+          >
+            {!sel ? (pendingHostile ? "Escolha o mal menor" : "Escolha uma carta") : sel.name}
           </div>
           <div className="mt-1 font-mono text-[11px] uppercase tracking-[2px] text-muted">
-            {sel ? targetHint(sel, swapRole) : locked ? "leia as opções…" : "antes de enfrentar o rival"}
+            {sel ? targetHint(sel, swapRole) : locked ? "leia as opções…" : pendingHostile ? "não dá pra escapar — só escolher o quê" : "antes de enfrentar o rival"}
           </div>
       </div>
 
@@ -147,13 +165,16 @@ export function EventCardOverlay({ game }: { game: Game }) {
         {!sel && (
           <div className="grid gap-16 [grid-template-columns:1fr] sm:[grid-template-columns:repeat(3,1fr)]">
             {pendingEvent.map((card) => {
-              const r = RARITY[card.rarity];
+              const r = pendingHostile
+                ? { label: HOSTILE_TONE[card.rarity].label, accent: HOSTILE_ACCENT, glow: HOSTILE_GLOW }
+                : RARITY[card.rarity];
+              const legendary = !pendingHostile && card.rarity === "lendaria";
               return (
                 <button
                   key={card.id}
                   onClick={() => choose(card)}
                   disabled={locked}
-                  className={`event-card anim-pop group relative flex min-h-[480px] flex-col items-center overflow-hidden rounded-[20px] border px-6 pb-8 pt-11 text-center transition-all duration-300 ${card.rarity === "lendaria" ? "event-card--legendary" : ""} ${locked ? "cursor-default opacity-55" : "cursor-pointer hover:-translate-y-2.5"}`}
+                  className={`event-card anim-pop group relative flex min-h-[480px] flex-col items-center overflow-hidden rounded-[20px] border px-6 pb-8 pt-11 text-center transition-all duration-300 ${legendary ? "event-card--legendary" : ""} ${locked ? "cursor-default opacity-55" : "cursor-pointer hover:-translate-y-2.5"}`}
                   style={{
                     // fundo escuro tingido pela raridade + borda e glow na cor do tier
                     background: `linear-gradient(180deg, color-mix(in srgb, ${r.accent} 13%, rgba(28,29,33,0.96)), rgba(16,17,20,0.97))`,
@@ -181,7 +202,7 @@ export function EventCardOverlay({ game }: { game: Game }) {
                     className="relative mb-6 inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-[2px]"
                     style={{ color: r.accent, background: `color-mix(in srgb, ${r.accent} 16%, transparent)`, border: `1px solid color-mix(in srgb, ${r.accent} 45%, transparent)`, boxShadow: `0 0 14px -4px ${r.glow}` }}
                   >
-                    {card.rarity === "lendaria" ? "✦ " : ""}{r.label}{card.permanent && " · perm"}
+                    {pendingHostile ? "⚠ " : legendary ? "✦ " : ""}{r.label}{card.permanent && " · perm"}
                   </span>
                   {/* medalhão do ícone — anel na cor da raridade + glow pulsante */}
                   <span
@@ -240,28 +261,38 @@ export function EventCardOverlay({ game }: { game: Game }) {
             )}
 
             {/* escolher uma lane SUA pra aplicar o efeito (resolve direto) */}
-            {(sel.kind === "roleBuffChoose" || sel.kind === "captainChoose" || sel.kind === "igniteChoose") && (
-              <div className="mx-auto max-w-[560px] rounded-2xl border border-gold/30 p-3" style={{ background: "rgba(30,30,33,0.7)" }}>
-                <div className="mb-2 px-1 font-mono text-[10px] uppercase tracking-[2px] text-muted">
-                  {sel.kind === "captainChoose" ? "Quem será o capitão (+6)?" : sel.kind === "igniteChoose" ? "Quem entra em chamas? 🔥" : `Qual lane recebe o +${sel.value}?`}
+            {(sel.kind === "roleBuffChoose" || sel.kind === "captainChoose" || sel.kind === "igniteChoose" || sel.kind === "injureChoose" || sel.kind === "permNerfChoose") && (() => {
+              const bad = sel.kind === "injureChoose" || sel.kind === "permNerfChoose";
+              const prompt =
+                sel.kind === "captainChoose" ? "Quem será o capitão (+6)?"
+                : sel.kind === "igniteChoose" ? "Quem entra em chamas? 🔥"
+                : sel.kind === "injureChoose" ? `Quem vai aguentar o -${sel.value}?`
+                : sel.kind === "permNerfChoose" ? `Qual lane leva o -${sel.value} PERMANENTE?`
+                : `Qual lane recebe o +${sel.value}?`;
+              return (
+                <div
+                  className={`mx-auto max-w-[560px] rounded-2xl border p-3 ${bad ? "border-red/40" : "border-gold/30"}`}
+                  style={{ background: bad ? "rgba(30,22,22,0.72)" : "rgba(30,30,33,0.7)" }}
+                >
+                  <div className="mb-2 px-1 font-mono text-[10px] uppercase tracking-[2px] text-muted">{prompt}</div>
+                  <div className="flex flex-col gap-1.5">
+                    {picks.map((p) => (
+                      <button
+                        key={p.role}
+                        onClick={() => game.resolveEventCard(sel, { role: p.role })}
+                        className={`flex cursor-pointer items-center gap-3 rounded-[10px] border border-transparent px-3 py-2 text-left transition-all ${bad ? "hover:border-red/40 hover:bg-[rgba(224,88,74,0.12)]" : "hover:border-gold/40 hover:bg-[rgba(201,162,75,0.1)]"}`}
+                      >
+                        <RoleBadge role={p.role} variant={bad ? "red" : "gold"} size="sm" />
+                        <Flag cc={p.country} size={16} />
+                        <span className="flex-1 truncate font-display text-[16px] font-semibold text-cream">{p.name}</span>
+                        <span className="font-mono text-[10px] uppercase tracking-[1px] text-dim">{p.short} '{yy(p.year)}</span>
+                        {ratingPill(p.rating)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  {picks.map((p) => (
-                    <button
-                      key={p.role}
-                      onClick={() => game.resolveEventCard(sel, { role: p.role })}
-                      className="flex cursor-pointer items-center gap-3 rounded-[10px] border border-transparent px-3 py-2 text-left transition-all hover:border-gold/40 hover:bg-[rgba(201,162,75,0.1)]"
-                    >
-                      <RoleBadge role={p.role} variant="gold" size="sm" />
-                      <Flag cc={p.country} size={16} />
-                      <span className="flex-1 truncate font-display text-[16px] font-semibold text-cream">{p.name}</span>
-                      <span className="font-mono text-[10px] uppercase tracking-[1px] text-dim">{p.short} '{yy(p.year)}</span>
-                      {ratingPill(p.rating)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* curinga: 1º escolhe a lane a trocar, depois a tabela de jogadores */}
             {sel.kind === "swapOwnRole" && !swapRole && (
@@ -339,5 +370,7 @@ function targetHint(card: EventCard, swapRole: Role | null): string {
   if (card.kind === "roleBuffChoose") return "escolha a lane que vai receber o buff";
   if (card.kind === "captainChoose") return "escolha o capitão (+6 nele, -1 nos outros)";
   if (card.kind === "igniteChoose") return "escolha quem vai entrar em chamas";
+  if (card.kind === "injureChoose") return "escolha quem da sua line vai levar o nerf";
+  if (card.kind === "permNerfChoose") return "escolha onde aplicar o dano PERMANENTE";
   return "";
 }

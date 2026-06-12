@@ -1,4 +1,5 @@
-import type { Role, Team } from "../types";
+import type { Role, Team, Tournament } from "../types";
+import { MSI_TEAMS } from "./msi";
 import { WORLDS_2011 } from "./worlds/2011";
 import { WORLDS_2012 } from "./worlds/2012";
 import { WORLDS_2013 } from "./worlds/2013";
@@ -39,55 +40,77 @@ import { WORLDS_2025 } from "./worlds/2025";
 //     direto na régua de colocação — Shushei'11 97, Toyz'12 95).
 //   Ex.: Mata'14=98 · Tian'19/Canyon'20/Zeus'23=98 (campeão+MVP) · campeão sólido ~88-93 ·
 //        astro de vice ~86-92 · carry de quartas ~83-87 · time varrido no mata-mata ~66-73.
+// Normaliza o torneio: arquivos de Worlds não trazem o campo → default "worlds".
+// Os de MSI vêm com tournament:"msi". Assim o agrupamento separa as campanhas.
+const norm = (teams: Team[], tournament: Tournament): Team[] =>
+  teams.map((t) => ({ ...t, tournament: t.tournament ?? tournament }));
+
 export const TEAMS: Team[] = [
-  ...WORLDS_2011,
-  ...WORLDS_2012,
-  ...WORLDS_2013,
-  ...WORLDS_2014,
-  ...WORLDS_2015,
-  ...WORLDS_2016,
-  ...WORLDS_2017,
-  ...WORLDS_2018,
-  ...WORLDS_2019,
-  ...WORLDS_2020,
-  ...WORLDS_2021,
-  ...WORLDS_2022,
-  ...WORLDS_2023,
-  ...WORLDS_2024,
-  ...WORLDS_2025,
+  ...norm(WORLDS_2011, "worlds"),
+  ...norm(WORLDS_2012, "worlds"),
+  ...norm(WORLDS_2013, "worlds"),
+  ...norm(WORLDS_2014, "worlds"),
+  ...norm(WORLDS_2015, "worlds"),
+  ...norm(WORLDS_2016, "worlds"),
+  ...norm(WORLDS_2017, "worlds"),
+  ...norm(WORLDS_2018, "worlds"),
+  ...norm(WORLDS_2019, "worlds"),
+  ...norm(WORLDS_2020, "worlds"),
+  ...norm(WORLDS_2021, "worlds"),
+  ...norm(WORLDS_2022, "worlds"),
+  ...norm(WORLDS_2023, "worlds"),
+  ...norm(WORLDS_2024, "worlds"),
+  ...norm(WORLDS_2025, "worlds"),
+  ...norm(MSI_TEAMS, "msi"),
 ];
 
 // ── POOL DE JOGO (só playoffs) ──────────────────────────────────────────────
-// O draft e os adversários só usam times que chegaram aos playoffs de cada Worlds.
-// Em todas as edições os times estão listados em ordem de colocação, então os de
-// playoff são os 8 primeiros (campeão + vice + 2 semis + 4 quartas). Exceção: 2011,
-// formato diferente, só teve 4 semifinalistas (Fnatic, aAa, TSM, Epik Gamer).
-// As demais campanhas continuam no arquivo (TEAMS) — só não entram no sorteio.
-const PLAYOFF_COUNT: Record<number, number> = { 2011: 4 };
-const DEFAULT_PLAYOFF_COUNT = 8;
+// O draft e os adversários só usam times que chegaram aos playoffs/bracket de cada
+// edição. Os times de cada campanha estão listados em ORDEM DE COLOCAÇÃO, então o
+// pool são os N primeiros. Worlds: 8 (campeão + vice + 2 semis + 4 quartas); 2011
+// teve só 4 semis. MSI: varia por edição (ver MSI_PLAYOFF_COUNT). As demais
+// campanhas continuam em TEAMS — só não entram no sorteio.
+//
+// Chave de campeonato = `${tournament}-${year}` (separa MSI 2024 de Worlds 2024).
+type ChampKey = string;
+const champKey = (t: { tournament?: Tournament; year: number }): ChampKey => `${t.tournament ?? "worlds"}-${t.year}`;
 
-function playoffTeamsOf(year: number): Team[] {
-  const teams = TEAMS.filter((t) => t.year === year);
-  const n = PLAYOFF_COUNT[year] ?? DEFAULT_PLAYOFF_COUNT;
+const WORLDS_PLAYOFF_COUNT: Record<number, number> = { 2011: 4 };
+const DEFAULT_WORLDS_PLAYOFF = 8;
+// MSI: nº de times do bracket principal por edição. 2023-2025 = 8 (bracket duplo);
+// 2019/2021/2022 = só 4 no knockout (semis + final). Default 8.
+const MSI_PLAYOFF_COUNT: Record<number, number> = { 2019: 4, 2021: 4, 2022: 4 };
+const DEFAULT_MSI_PLAYOFF = 8;
+
+function playoffCountFor(tournament: Tournament, year: number): number {
+  if (tournament === "msi") return MSI_PLAYOFF_COUNT[year] ?? DEFAULT_MSI_PLAYOFF;
+  return WORLDS_PLAYOFF_COUNT[year] ?? DEFAULT_WORLDS_PLAYOFF;
+}
+
+// Campanhas (tournament+year) na ordem cronológica em que aparecem em TEAMS.
+const CHAMP_KEYS: ChampKey[] = [...new Set(TEAMS.map(champKey))];
+
+function playoffTeamsOf(key: ChampKey): Team[] {
+  const teams = TEAMS.filter((t) => champKey(t) === key);
+  const first = teams[0];
+  if (!first) return [];
+  const n = playoffCountFor(first.tournament ?? "worlds", first.year);
   return teams.slice(0, n);
 }
 
-const YEARS = [...new Set(TEAMS.map((t) => t.year))].sort((a, b) => a - b);
-
 // Times elegíveis no jogo (draft + adversários). Mantém a ordem cronológica.
-export const DRAFT_TEAMS: Team[] = YEARS.flatMap(playoffTeamsOf);
+export const DRAFT_TEAMS: Team[] = CHAMP_KEYS.flatMap(playoffTeamsOf);
 
-// Ids dos times que pararam nas QUARTAS de final (5º-8º colocados de cada edição
-// — os 4 últimos do grupo de playoff). Usado pra ponderar o sorteio do draft:
-// quartas caem um pouco menos que campeão/vice/semi. 2011 (4 times) não tem quartas.
+// Ids dos times que pararam nas QUARTAS (5º+ colocados de cada campanha — fora do
+// top 4). Usado pra ponderar o sorteio do draft. 2011 (4 times) não tem quartas.
 export const QUARTERFINAL_IDS: Set<string> = new Set(
-  YEARS.flatMap((year) => playoffTeamsOf(year).slice(4).map((t) => t.id)),
+  CHAMP_KEYS.flatMap((key) => playoffTeamsOf(key).slice(4).map((t) => t.id)),
 );
 
-// Ids dos SEMIFINALISTAS (3º-4º colocados de cada edição). Usado pra badge de
-// bronze no card. 2011 (4 times) — semis são o 3º-4º também (slice 2..4).
+// Ids dos SEMIFINALISTAS (3º-4º colocados de cada campanha). Usado pra selo de
+// bronze no card e pra restrição de pool nas semis.
 export const SEMIFINAL_IDS: Set<string> = new Set(
-  YEARS.flatMap((year) => playoffTeamsOf(year).slice(2, 4).map((t) => t.id)),
+  CHAMP_KEYS.flatMap((key) => playoffTeamsOf(key).slice(2, 4).map((t) => t.id)),
 );
 
 export const ROLES: Role[] = ["TOP", "JNG", "MID", "BOT", "SUP"];

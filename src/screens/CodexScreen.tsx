@@ -1,17 +1,29 @@
 import type { CSSProperties } from "react";
 import type { Game } from "../game/useGame";
-import type { Team } from "../types";
+import type { Team, Tournament } from "../types";
 import { DRAFT_TEAMS, QUARTERFINAL_IDS, SEMIFINAL_IDS } from "../data/teams";
 import { rarityFor, teamAvg } from "../game/helpers";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 
-// agrupa os times de playoff por ano, mais recente primeiro.
-const YEARS_DESC = [...new Set(DRAFT_TEAMS.map((t) => t.year))].sort((a, b) => b - a);
-const BY_YEAR: { year: number; teams: Team[] }[] = YEARS_DESC.map((year) => ({
-  year,
-  teams: DRAFT_TEAMS.filter((t) => t.year === year),
-}));
+// agrupa os times de playoff por (torneio, ano). Ordem: ano desc; no mesmo ano,
+// Worlds (fim do ano) antes do MSI (meio do ano).
+const TOURN_LABEL: Record<Tournament, string> = { worlds: "Worlds", msi: "MSI" };
+const TOURN_ORDER: Record<Tournament, number> = { worlds: 0, msi: 1 };
+interface CodexGroup { key: string; year: number; tournament: Tournament; teams: Team[] }
+const BY_GROUP: CodexGroup[] = (() => {
+  const map = new Map<string, CodexGroup>();
+  for (const t of DRAFT_TEAMS) {
+    const tournament = t.tournament ?? "worlds";
+    const key = `${tournament}-${t.year}`;
+    if (!map.has(key)) map.set(key, { key, year: t.year, tournament, teams: [] });
+    map.get(key)!.teams.push(t);
+  }
+  return [...map.values()].sort(
+    (a, b) => b.year - a.year || TOURN_ORDER[a.tournament] - TOURN_ORDER[b.tournament],
+  );
+})();
+const EDITION_COUNT = BY_GROUP.length;
 
 /** Selo da colocação do time naquele Worlds. */
 function placement(t: Team): { label: string; color: string; border: string; bg: string } {
@@ -79,7 +91,7 @@ export function CodexScreen({ game }: { game: Game }) {
             Almanaque
           </h1>
           <p className="mt-1 font-mono text-[12px] uppercase tracking-[2px] text-muted">
-            Os 8 times de playoff de cada Worlds · {YEARS_DESC.length} edições
+            Os times de playoff de cada torneio · {EDITION_COUNT} edições
           </p>
         </div>
         <button
@@ -92,8 +104,8 @@ export function CodexScreen({ game }: { game: Game }) {
 
       {/* blocos por edição */}
       <div className="flex flex-col gap-9">
-        {BY_YEAR.map(({ year, teams }) => (
-          <section key={year}>
+        {BY_GROUP.map(({ key, year, tournament, teams }) => (
+          <section key={key}>
             <div
               className="mb-3 flex items-center gap-3 bg-app py-1"
               style={sticky}
@@ -101,7 +113,7 @@ export function CodexScreen({ game }: { game: Game }) {
               <span className="font-display text-[26px] font-bold leading-none text-gold-bright">
                 {year}
               </span>
-              <span className="font-mono text-[11px] uppercase tracking-[2px] text-muted">Worlds {year}</span>
+              <span className="font-mono text-[11px] uppercase tracking-[2px] text-muted">{TOURN_LABEL[tournament]} {year}</span>
               <span className="h-px flex-1" style={{ background: "rgba(201,162,75,0.22)" }} />
               <span className="font-mono text-[11px] text-dim">{teams.length} times</span>
             </div>
