@@ -8,6 +8,8 @@ interface Props {
   strokeWidth?: number;
   /** "stacked" (GOLDEN em cima, R[0]AD embaixo — hero) ou "inline" (tudo numa linha — topo do draft). */
   layout?: "stacked" | "inline";
+  /** cor sólida que substitui o gradiente dourado (ex.: escuro sobre fundo dourado). */
+  fill?: string;
   /** aceito por compatibilidade com chamadas antigas — não usado mais. */
   dotR?: number;
 }
@@ -20,11 +22,15 @@ const FONT = "'Bebas Neue', sans-serif";
  * rio azul \). Dois layouts: "stacked" (GOLDEN / R0AD em duas linhas, pra hero) e
  * "inline" (GOLDEN R0AD numa linha só, pro topo do draft).
  */
-export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked" }: Props) {
+export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked", fill }: Props) {
   const id = useId();
   const word: CSSProperties = { fontFamily: FONT, fontWeight: 400, fontSize: "112px", letterSpacing: "4px" };
 
-  const grad = (
+  // cor da marca: gradiente dourado por padrão, ou uma cor sólida (ex.: escuro).
+  const ink = fill ?? `url(#${id})`;
+  const river = fill ?? "#6aa0da"; // o "\" do nexus (rio azul) também escurece quando fill é setado
+
+  const grad = fill ? null : (
     <defs>
       <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#F8EBBE" />
@@ -44,12 +50,12 @@ export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked"
         height={half * 2}
         rx={half * 0.32}
         fill="none"
-        stroke={`url(#${id})`}
+        stroke={ink}
         strokeWidth={strokeWidth}
         strokeLinejoin="round"
       />
-      <line x1={sqCx - arm} y1={cy - arm} x2={sqCx + arm} y2={cy + arm} stroke="#6aa0da" strokeWidth={strokeWidth} strokeLinecap="round" />
-      <line x1={sqCx - arm} y1={cy + arm} x2={sqCx + arm} y2={cy - arm} stroke={`url(#${id})`} strokeWidth={strokeWidth} strokeLinecap="round" />
+      <line x1={sqCx - arm} y1={cy - arm} x2={sqCx + arm} y2={cy + arm} stroke={river} strokeWidth={strokeWidth} strokeLinecap="round" />
+      <line x1={sqCx - arm} y1={cy + arm} x2={sqCx + arm} y2={cy - arm} stroke={ink} strokeWidth={strokeWidth} strokeLinecap="round" />
     </>
   );
 
@@ -71,11 +77,11 @@ export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked"
     return (
       <svg viewBox={`0 0 ${VW} 124`} className={className} style={{ display: "block", overflow: "visible", ...style }}>
         {grad}
-        <text x={goldenREndX} y={base} textAnchor="end" fill={`url(#${id})`} style={word}>
+        <text x={goldenREndX} y={base} textAnchor="end" fill={ink} style={word}>
           GOLDEN R
         </text>
         {nexus(sqCx, cy, half, arm)}
-        <text x={adX} y={base} textAnchor="start" fill={`url(#${id})`} style={word}>
+        <text x={adX} y={base} textAnchor="start" fill={ink} style={word}>
           AD
         </text>
       </svg>
@@ -98,14 +104,14 @@ export function Logo6x0({ className, style, strokeWidth = 11, layout = "stacked"
   return (
     <svg viewBox={`0 0 ${VW} 232`} className={className} style={{ display: "block", overflow: "visible", ...style }}>
       {grad}
-      <text x={cx} y={topBase} textAnchor="middle" fill={`url(#${id})`} style={word}>
+      <text x={cx} y={topBase} textAnchor="middle" fill={ink} style={word}>
         GOLDEN
       </text>
-      <text x={rRightX} y={botBase} textAnchor="end" fill={`url(#${id})`} style={word}>
+      <text x={rRightX} y={botBase} textAnchor="end" fill={ink} style={word}>
         R
       </text>
       {nexus(sqCx, cy, half, arm)}
-      <text x={adX} y={botBase} textAnchor="start" fill={`url(#${id})`} style={word}>
+      <text x={adX} y={botBase} textAnchor="start" fill={ink} style={word}>
         AD
       </text>
     </svg>

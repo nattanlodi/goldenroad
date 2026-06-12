@@ -15,7 +15,12 @@ function acharK(alvo) {
   return (lo + hi) / 2;
 }
 console.log(`Pool média ${POOL_AVG.toFixed(2)}\n`);
-const alvos = { swiss: 79, quarter: 83, semi: 86, final: 90 };
+const alvos = {
+  swiss: 79, quarter: 83, semi: 86, final: 90,
+  // rampa suave do MSI (próprio mapa de dificuldade, esquenta na UR1)
+  msi_ur1: 79, msi_ur2: 82, msi_uf: 86,
+  msi_lr1: 81, msi_lr2: 84, msi_lr3: 86, msi_lf: 88, msi_gf: 90,
+};
 for (const [fase, alvo] of Object.entries(alvos)) {
   const k = acharK(alvo);
   console.log(`${fase.padEnd(8)} alvo ${alvo}  =>  k=${k.toFixed(4)}  (média real ${mediaEsperada(k).toFixed(2)})`);

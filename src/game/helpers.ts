@@ -202,6 +202,18 @@ const STAGE_INTENSITY: Record<string, number> = {
   quarter: 0.039,
   semi: 0.097,
   final: 0.203,
+  // MSI — rampa suave própria (calib-k.mjs). A UR1 "esquenta" no nível da
+  // suíça (~79) e a dificuldade cresce gradual até a GF (~90), em vez de já
+  // começar em nível de quartas. Alvos: UR1 79 · UR2 82 · UF 86 · LR1 81 ·
+  // LR2 84 · LR3 86 · LF 88 · GF 90.
+  msi_ur1: -0.039,
+  msi_ur2: 0.018,
+  msi_uf: 0.097,
+  msi_lr1: 0.0,
+  msi_lr2: 0.056,
+  msi_lr3: 0.097,
+  msi_lf: 0.145,
+  msi_gf: 0.21,
 };
 
 /**
@@ -336,12 +348,12 @@ export interface RaritySkin {
 
 const RARITY_SKINS: Record<Rarity, RaritySkin> = {
   // 100 = duplo MVP (Finals + Torneio). Card único: fundo branco/marfim com shimmer dourado.
-  centuriao: { rarity: "centuriao", cls: "card-centuriao", ratingColor: "#a8801f" },
-  mitico: { rarity: "mitico", cls: "card-mitico", ratingColor: "#ff8d7a" },
-  lendario: { rarity: "lendario", cls: "card-lendario", ratingColor: "#f5d77a" },
-  epico: { rarity: "epico", cls: "card-epico", ratingColor: "#d2a0e8" },
-  raro: { rarity: "raro", cls: "card-raro", ratingColor: "#8fb8ec" },
-  comum: { rarity: "comum", cls: "card-comum", ratingColor: "#cfd3cb" },
+  centuriao: { rarity: "centuriao", cls: "card-centuriao", ratingColor: "#e8b53a" }, // dourado rico
+  mitico: { rarity: "mitico", cls: "card-mitico", ratingColor: "#ff5a4d" }, // vermelho rubi (não coral)
+  lendario: { rarity: "lendario", cls: "card-lendario", ratingColor: "#f2c14e" }, // dourado/âmbar (não amarelão)
+  epico: { rarity: "epico", cls: "card-epico", ratingColor: "#c061e8" }, // roxo (não rosa/lavanda)
+  raro: { rarity: "raro", cls: "card-raro", ratingColor: "#5a9eff" }, // azul saturado
+  comum: { rarity: "comum", cls: "card-comum", ratingColor: "#cfd3cb" }, // cinza neutro
 };
 
 /**

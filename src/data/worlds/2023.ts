@@ -10,9 +10,9 @@ export const WORLDS_2023: Team[] = [
   { id: "t1-2023", team: "T1", short: "T1", year: 2023, league: "LCK", champion: true,
     players: [["TOP", "Zeus", 100, "kr"], ["JNG", "Oner", 94, "kr"], ["MID", "Faker", 92, "kr"], ["BOT", "Gumayusi", 88, "kr"], ["SUP", "Keria", 96, "kr"]] },
   // 2º — Vice (base 84). TheShy de volta a uma final; Crisp 92 na QF, ascensão até a final.
-  // Recalibrado com geral real + força do oponente (o +3 de curadoria do Weiwei foi substituído pelo recálculo).
+  // Recalibrado com geral real + força do oponente; +2 de curadoria (o vice estava abaixo do merecido).
   { id: "wbg-2023", team: "Weibo Gaming", short: "WBG", year: 2023, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "TheShy", 91, "kr"], ["JNG", "Weiwei", 80, "cn"], ["MID", "Xiaohu", 88, "cn"], ["BOT", "Light", 85, "cn"], ["SUP", "Crisp", 88, "cn"]] },
+    players: [["TOP", "TheShy", 93, "kr"], ["JNG", "Weiwei", 82, "cn"], ["MID", "Xiaohu", 90, "cn"], ["BOT", "Light", 87, "cn"], ["SUP", "Crisp", 90, "cn"]] },
   // 3º-4º — Semifinal (base 81). ON o destaque; Bin/Elk.
   { id: "blg-2023", team: "Bilibili Gaming", short: "BLG", year: 2023, league: "LPL", champion: false,
     players: [["TOP", "Bin", 80, "cn"], ["JNG", "XUN", 86, "cn"], ["MID", "Yagao", 85, "cn"], ["BOT", "Elk", 85, "cn"], ["SUP", "ON", 88, "cn"]] },

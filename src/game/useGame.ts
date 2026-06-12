@@ -1,10 +1,36 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
-import type { GameMode, LineupPlayer, PlayedSeries, Role, Team } from "../types";
+import type {
+  ActiveBuff,
+  CardTarget,
+  EventCard,
+  GameMode,
+  Lineup,
+  LineupPlayer,
+  PlayedSeries,
+  Role,
+  RosterEntry,
+  SeriesMods,
+  SeriesSetup,
+  Team,
+} from "../types";
 import { DRAFT_TEAMS, ROLES } from "../data/teams";
 import { buildNextSeries, drawAny, lineScore, lineupPicks, rarityFor, rnd, rollSeriesHighlights, simulateSeries, tierFor, weightedTeam, yy } from "./helpers";
+import { computeForma, effLineScore, effOpp, effOppAvg, effYou, emptyMods } from "./effects";
+import { rollEventCards } from "../data/eventCards";
 import { buildMsiSeries, MSI_START, msiNext } from "./msi";
-import { initialState, reducer } from "./reducer";
+import { initialState, reducer, type GameState, type PreSeries } from "./reducer";
 import { useAudio } from "./useAudio";
+
+/** Calcula o pacote de pré-série (forma do dia + evento) ao entrar numa série. */
+function makePre(prev: GameState, series: SeriesSetup, isFirst: boolean): PreSeries {
+  if (isFirst) return { seriesMods: emptyMods(), formNotes: [], pendingEvent: null, eventDry: 0 };
+  const { mods, notes } = computeForma(prev.seriesResult, prev.highlight, prev.series?.format, prev.lineup);
+  const hasFrozen = notes.some((n) => n.kind === "gelado");
+  const roll = rollEventCards(prev.eventDry, hasFrozen, !!series.decisive);
+  return { seriesMods: mods, formNotes: notes, pendingEvent: roll.cards, eventDry: roll.dry };
+}
+
+const clampRating = (n: number) => Math.max(40, Math.min(100, n));
 
 const RECORD_KEY = "w60_record";
 
@@ -101,6 +127,7 @@ export function useGame() {
         role,
         name: entry[1],
         rating: entry[2],
+        baseRating: entry[2],
         team: current.team,
         short: current.short,
         year: current.year,
@@ -142,24 +169,28 @@ export function useGame() {
     // GOLDENROAD começa pelo MSI (bracket double-elim), na Upper Round 1.
     if (S.mode === "goldenroad") {
       const { series, usedOppIds } = buildMsiSeries(MSI_START, []);
-      dispatch({ type: "startMsi", series, usedOppIds, node: MSI_START });
+      dispatch({ type: "startMsi", series, usedOppIds, node: MSI_START, pre: makePre(S, series, true) });
       return;
     }
     const { series, usedOppIds } = buildNextSeries("swiss", 0, 0, 0, []);
-    dispatch({ type: "startCampaign", series, usedOppIds });
+    dispatch({ type: "startCampaign", series, usedOppIds, pre: makePre(S, series, true) });
   }, []);
 
   const playSeries = useCallback(() => {
     const S = stateRef.current;
-    if (S.seriesPlaying || S.revealed || !S.series) return;
+    if (S.seriesPlaying || S.revealed || !S.series || S.pendingEvent) return;
     const series = S.series;
     const seriesIndex = S.history.length;
     // rodada da suíça = quantas séries suíças já houve + 1 (só relevante na suíça)
     const swissRound =
       series.stageKey === "swiss" ? S.history.filter((h) => h.stageKey === "swiss").length + 1 : undefined;
-    const yourAvg = lineScore(S.lineup);
-    const sim = simulateSeries(series.target, yourAvg, series.opp.avg);
-    const highlight = rollSeriesHighlights(sim.games, lineupPicks(S.lineup), series.opp.players, sim.won);
+    // notas EFETIVAS (base + deltas temporários da forma/cartas) na simulação E nos destaques.
+    const yourAvg = effLineScore(S.lineup, S.seriesMods);
+    const oppAvg = effOppAvg(series.opp, S.seriesMods);
+    const sim = simulateSeries(series.target, yourAvg, oppAvg);
+    const youEff: LineupPlayer[] = lineupPicks(S.lineup).map((p) => ({ ...p, rating: effYou(S.lineup, S.seriesMods, p.role) }));
+    const oppEff: RosterEntry[] = series.opp.players.map((p) => [p[0], p[1], effOpp(p[2], S.seriesMods, p[0]), p[3]]);
+    const highlight = rollSeriesHighlights(sim.games, youEff, oppEff, sim.won);
     dispatch({ type: "playBegin" });
     let yw = 0;
     let ow = 0;
@@ -216,6 +247,8 @@ export function useGame() {
       yourGames: S.yourGames,
       oppGames: S.oppGames,
       won,
+      // marca o campeonato: no GOLDENROAD usa a etapa atual (msi/worlds); avulso é worlds.
+      championship: S.mode === "goldenroad" ? S.careerStage : "worlds",
     };
 
     const finishChampion = () => {
@@ -246,12 +279,12 @@ export function useGame() {
         // campeão do MSI → segue pro Worlds com a MESMA line (carreira continua).
         sndTrophy();
         const { series, usedOppIds } = buildNextSeries("swiss", 0, 0, 0, []);
-        dispatch({ type: "msiToWorlds", series, usedOppIds });
+        dispatch({ type: "msiToWorlds", played, series, usedOppIds, pre: makePre(S, series, false) });
       } else if (outcome.kind === "eliminated") {
         finishEliminated();
       } else {
         const { series, usedOppIds } = buildMsiSeries(outcome.node, S.usedOppIds);
-        dispatch({ type: "msiAdvance", played, series, node: outcome.node, usedOppIds });
+        dispatch({ type: "msiAdvance", played, series, node: outcome.node, usedOppIds, pre: makePre(S, series, false) });
       }
       return;
     }
@@ -270,6 +303,7 @@ export function useGame() {
             swissLosses: S.swissLosses,
             koIndex: 0,
             usedOppIds,
+            pre: makePre(S, series, false),
           });
         } else {
           const { series, usedOppIds } = buildNextSeries("swiss", swissWins, S.swissLosses, S.koIndex, S.usedOppIds);
@@ -282,6 +316,7 @@ export function useGame() {
             swissLosses: S.swissLosses,
             koIndex: S.koIndex,
             usedOppIds,
+            pre: makePre(S, series, false),
           });
         }
       } else {
@@ -299,6 +334,7 @@ export function useGame() {
             swissLosses,
             koIndex: S.koIndex,
             usedOppIds,
+            pre: makePre(S, series, false),
           });
         }
       }
@@ -319,6 +355,7 @@ export function useGame() {
             swissLosses: S.swissLosses,
             koIndex,
             usedOppIds,
+            pre: makePre(S, series, false),
           });
         }
       } else {
@@ -326,6 +363,186 @@ export function useGame() {
       }
     }
   }, [sndTrophy, sndDefeat]);
+
+  // ---- resolução de carta de evento (pré-série) ----
+  const resolveEventCard = useCallback((card: EventCard, target?: CardTarget) => {
+    const S = stateRef.current;
+    if (!S.series) return;
+    let lineup: Lineup = S.lineup;
+    let series = S.series;
+    const mods: SeriesMods = { you: { ...S.seriesMods.you }, opp: { ...S.seriesMods.opp } };
+    const perm: Partial<Record<Role, number>> = { ...S.permMods };
+    let formNotes = S.formNotes;
+    const buffs: ActiveBuff[] = [...S.activeBuffs];
+    const picks = lineupPicks(lineup);
+
+    const addYou = (role: Role, delta: number) => {
+      mods.you[role] = (mods.you[role] ?? 0) + delta;
+    };
+
+    switch (card.kind) {
+      case "teamBuff": {
+        // permanente: sobe a nota base de toda a line + registra o delta por lane (selo +N).
+        const lu: Lineup = { ...lineup };
+        for (const r of ROLES) {
+          const p = lu[r];
+          if (p) {
+            lu[r] = { ...p, rating: clampRating(p.rating + card.value) };
+            perm[r] = (perm[r] ?? 0) + card.value;
+          }
+        }
+        lineup = lu;
+        buffs.push({ id: `team-${buffs.length}`, icon: card.icon, label: `+${card.value} na line` });
+        break;
+      }
+      case "teamBuffTemp": {
+        for (const p of picks) addYou(p.role, card.value);
+        break;
+      }
+      case "roleBuffRandom": {
+        if (picks.length) addYou(picks[Math.floor(Math.random() * picks.length)].role, card.value);
+        break;
+      }
+      case "roleBuffChoose": {
+        if (target?.role) addYou(target.role, card.value);
+        break;
+      }
+      case "weakestBuff": {
+        if (picks.length) {
+          const weakest = picks.reduce((m, p) => (p.rating < m.rating ? p : m), picks[0]);
+          addYou(weakest.role, card.value);
+        }
+        break;
+      }
+      case "weakestBuffPerm": {
+        if (picks.length) {
+          const weakest = picks.reduce((m, p) => (p.rating < m.rating ? p : m), picks[0]);
+          lineup = { ...lineup, [weakest.role]: { ...weakest, rating: clampRating(weakest.rating + card.value) } };
+          perm[weakest.role] = (perm[weakest.role] ?? 0) + card.value;
+          buffs.push({ id: `prom-${buffs.length}`, icon: card.icon, label: `${weakest.name} +${card.value}` });
+        }
+        break;
+      }
+      case "oldestBuff": {
+        if (picks.length) {
+          const oldest = picks.reduce((m, p) => (p.year < m.year ? p : m), picks[0]);
+          addYou(oldest.role, card.value);
+        }
+        break;
+      }
+      case "nerfOpp": {
+        if (target?.role) mods.opp[target.role] = (mods.opp[target.role] ?? 0) - card.value;
+        break;
+      }
+      case "nerfOppAll": {
+        for (const p of series.opp.players) mods.opp[p[0]] = (mods.opp[p[0]] ?? 0) - card.value;
+        break;
+      }
+      case "swapOwnRole": {
+        const { role, pickTeamId, pickName } = target ?? {};
+        if (!role || !pickTeamId || !pickName) return;
+        const team = DRAFT_TEAMS.find((t) => t.id === pickTeamId);
+        const entry = team?.players.find((p) => p[0] === role && p[1] === pickName);
+        if (!team || !entry) return;
+        const newP: LineupPlayer = {
+          role, name: entry[1], rating: clampRating(entry[2] + (perm[role] ?? 0)), baseRating: entry[2], team: team.team, short: team.short,
+          year: team.year, league: team.league, champion: team.champion, finalist: team.finalist, country: entry[3],
+        };
+        lineup = { ...lineup, [role]: newP };
+        buffs.push({ id: `joker-${role}-${entry[1]}`, icon: card.icon, label: `${entry[1]} (${team.short})` });
+        break;
+      }
+      case "swapWithOpp": {
+        const role = target?.role;
+        if (!role) return;
+        const mine = lineup[role];
+        const idx = series.opp.players.findIndex((p) => p[0] === role);
+        if (!mine || idx < 0) return;
+        const oppEntry = series.opp.players[idx];
+        const newMine: LineupPlayer = {
+          role, name: oppEntry[1], rating: clampRating(oppEntry[2] + (perm[role] ?? 0)), baseRating: oppEntry[2], team: series.opp.team, short: series.opp.short,
+          year: series.opp.year, league: series.opp.league, champion: false, country: oppEntry[3],
+        };
+        const newOpp = series.opp.players.slice();
+        newOpp[idx] = [role, mine.name, mine.rating, mine.country];
+        lineup = { ...lineup, [role]: newMine };
+        const avg = Math.round(newOpp.reduce((a, p) => a + p[2], 0) / newOpp.length);
+        series = { ...series, opp: { ...series.opp, players: newOpp, avg } };
+        buffs.push({ id: `steal-${role}-${oppEntry[1]}`, icon: card.icon, label: `Roubou ${oppEntry[1]}` });
+        break;
+      }
+      case "bestBuffPerm": {
+        if (picks.length) {
+          const best = picks.reduce((m, p) => (p.rating > m.rating ? p : m), picks[0]);
+          lineup = { ...lineup, [best.role]: { ...best, rating: clampRating(best.rating + card.value) } };
+          perm[best.role] = (perm[best.role] ?? 0) + card.value;
+          buffs.push({ id: `lenda-${buffs.length}`, icon: card.icon, label: `${best.name} +${card.value}` });
+        }
+        break;
+      }
+      case "captainChoose": {
+        if (target?.role) {
+          for (const p of picks) addYou(p.role, p.role === target.role ? card.value : -1);
+        }
+        break;
+      }
+      case "igniteChoose": {
+        if (target?.role) {
+          addYou(target.role, card.value);
+          formNotes = [...formNotes.filter((n) => n.role !== target.role), { side: "you", role: target.role, kind: "fogo", delta: card.value }];
+        }
+        break;
+      }
+      case "frontlineBuff": {
+        for (const r of ["TOP", "SUP"] as Role[]) if (lineup[r]) addYou(r, card.value);
+        break;
+      }
+      case "roulette": {
+        const win = Math.random() < 0.6;
+        const d = win ? card.value : -2;
+        for (const p of picks) addYou(p.role, d);
+        break;
+      }
+      case "stealBest": {
+        // acha o melhor do rival e troca pelo seu da mesma lane (permanente).
+        if (series.opp.players.length) {
+          const bestOpp = series.opp.players.reduce((m, p) => (p[2] > m[2] ? p : m), series.opp.players[0]);
+          const role = bestOpp[0];
+          const mine = lineup[role];
+          const idx = series.opp.players.findIndex((p) => p[0] === role);
+          if (mine && idx >= 0) {
+            const oppEntry = series.opp.players[idx];
+            lineup = {
+              ...lineup,
+              [role]: {
+                role, name: oppEntry[1], rating: clampRating(oppEntry[2] + (perm[role] ?? 0)), baseRating: oppEntry[2], team: series.opp.team, short: series.opp.short,
+                year: series.opp.year, league: series.opp.league, champion: false, country: oppEntry[3],
+              },
+            };
+            const newOpp = series.opp.players.slice();
+            newOpp[idx] = [role, mine.name, mine.rating, mine.country];
+            const avg = Math.round(newOpp.reduce((a, p) => a + p[2], 0) / newOpp.length);
+            series = { ...series, opp: { ...series.opp, players: newOpp, avg } };
+            buffs.push({ id: `scout-${role}-${oppEntry[1]}`, icon: card.icon, label: `Roubou ${oppEntry[1]}` });
+          }
+        }
+        break;
+      }
+      case "thaw": {
+        const frozen = formNotes.find((n) => n.kind === "gelado");
+        if (frozen) {
+          addYou(frozen.role, -frozen.delta + card.value); // cancela o -3 e ainda soma o bônus
+          formNotes = formNotes.filter((n) => n !== frozen);
+        } else if (picks.length) {
+          const weakest = picks.reduce((m, p) => (p.rating < m.rating ? p : m), picks[0]);
+          addYou(weakest.role, card.value);
+        }
+        break;
+      }
+    }
+
+    dispatch({ type: "resolveEvent", lineup, series, seriesMods: mods, permMods: perm, formNotes, activeBuffs: buffs });
+  }, []);
 
   const clearFlashes = useCallback(() => dispatch({ type: "clearFlashes" }), []);
 
@@ -607,6 +824,7 @@ export function useGame() {
     startSeries,
     playSeries,
     nextSeries,
+    resolveEventCard,
     clearFlashes,
     openCodex,
     restart,

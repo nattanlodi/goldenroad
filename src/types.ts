@@ -22,8 +22,11 @@ export interface Team {
 /** Jogador já escolhido e alocado numa lane da sua line. */
 export interface LineupPlayer {
   role: Role;
-  name: string;
+  /** nota EFETIVA (pode subir/descer por buffs permanentes de carta). */
   rating: number;
+  /** nota ORIGINAL do jogador — nunca alterada por buff (pra exibir a real). */
+  baseRating: number;
+  name: string;
   team: string;
   short: string;
   year: number;
@@ -151,6 +154,83 @@ export interface PlayedSeries {
   yourGames: number;
   oppGames: number;
   won: boolean;
+  /** campeonato a que a série pertenceu — MSI ou Worlds (modo GOLDENROAD).
+   *  No modo Worlds avulso, sempre "worlds". Permite agrupar a jornada por torneio. */
+  championship: CareerStage;
 }
 
 export type CampaignEnd = "champion" | "eliminated";
+
+// ============================================================
+// Eventos de pré-série (cartas estilo ARAM) + Forma do dia
+// ============================================================
+
+/** Deltas TEMPORÁRIOS de overall, válidos só na série atual (zeram ao trocar de
+ *  oponente). Aplicados sobre a nota base na simulação e no display. */
+export interface SeriesMods {
+  you: Partial<Record<Role, number>>;
+  opp: Partial<Record<Role, number>>;
+}
+
+/** Forma do dia de um jogador SEU, exibida como badge na linha. */
+export type FormKind = "fogo" | "gelado";
+export interface FormNote {
+  side: Side;
+  role: Role;
+  kind: FormKind;
+  /** delta aplicado (já refletido em SeriesMods) — só pra texto. */
+  delta: number;
+}
+
+/** Raridade de uma carta de evento (controla peso do sorteio + visual). */
+export type CardRarity = "comum" | "rara" | "lendaria";
+
+/** Tipo de efeito — o handler em useGame sabe como aplicar cada um e se
+ *  precisa de um alvo (escolher jogador). */
+export type CardKind =
+  | "teamBuff" // +N permanente em todos
+  | "teamBuffTemp" // +N em todos, só nesta série
+  | "roleBuffRandom" // +N temp numa role sorteada sua
+  | "roleBuffChoose" // +N temp numa role que VOCÊ escolhe (alvo: sua role)
+  | "weakestBuff" // +N temp no seu menor overall
+  | "weakestBuffPerm" // +N permanente no seu menor overall
+  | "oldestBuff" // +N temp no seu jogador de edição mais antiga
+  | "bestBuffPerm" // +N permanente no seu MAIOR overall
+  | "captainChoose" // +N numa lane sua à escolha, -1 nas outras (essa série)
+  | "igniteChoose" // põe um jogador seu EM CHAMAS (🔥 +3) essa série (alvo: sua role)
+  | "frontlineBuff" // +N no TOP e SUP, essa série
+  | "roulette" // aposta: chance de +5 no time / risco de -2 (essa série)
+  | "nerfOpp" // -N temp num jogador do rival (alvo: opp)
+  | "nerfOppAll" // -N temp em todo o rival
+  | "stealBest" // rouba o MELHOR do rival pro seu time na mesma lane (permanente)
+  | "swapOwnRole" // troca um seu por qualquer jogador da mesma role (alvo: tabela)
+  | "swapWithOpp" // troca um seu por um do rival na mesma role (alvo: par)
+  | "thaw"; // remove o gelado de um jogador + bônus
+
+/** Uma carta de evento sorteável. */
+export interface EventCard {
+  id: string;
+  name: string;
+  desc: string;
+  icon: string; // emoji
+  rarity: CardRarity;
+  kind: CardKind;
+  value: number; // magnitude (ex.: +1, +2, -3)
+  permanent: boolean; // efeito vale a run inteira (true) ou só a próxima série (false)
+  /** precisa de uma etapa de escolha de alvo após selecionar a carta. */
+  needsTarget: boolean;
+}
+
+/** Buff PERMANENTE ativo na run (só pra exibir no HUD). */
+export interface ActiveBuff {
+  id: string;
+  icon: string;
+  label: string;
+}
+
+/** Alvo escolhido para uma carta que precisa de seleção. */
+export interface CardTarget {
+  role?: Role; // lane envolvida (nerf, trocas)
+  pickTeamId?: string; // time do jogador escolhido (curinga)
+  pickName?: string; // nome do jogador escolhido (curinga)
+}

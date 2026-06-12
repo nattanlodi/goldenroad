@@ -1,8 +1,11 @@
 import { useEffect, type CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import type { LiveGame, Role, Side } from "../types";
-import { lineScore, lineupPicks, rarityFor, seriesFlavor, yy } from "../game/helpers";
+import { lineupPicks, rarityFor, yy } from "../game/helpers";
+import { effLineScore, effOpp, effOppAvg, effYou } from "../game/effects";
 import { MSI_BRACKET } from "../game/msi";
+import { teamColor } from "../data/teamColors";
+import { EventCardOverlay } from "../components/EventCardOverlay";
 import type { MsiNode } from "../types";
 import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
@@ -114,6 +117,9 @@ function LineRow({
   side,
   showRatings,
   wins,
+  oppColor,
+  form,
+  delta,
 }: {
   role: Role;
   name: string;
@@ -123,8 +129,17 @@ function LineRow({
   showRatings: boolean;
   /** true = essa lane vence (overall ≥ adversário); marca a linha com realce. */
   wins?: boolean;
+  /** cor da org do rival (só no lado "opp") — pinta o cromático da linha. */
+  oppColor?: string;
+  /** forma do dia desse jogador (🔥 fogo / 🧊 gelado). */
+  form?: "fogo" | "gelado";
+  /** delta de overall por efeito (carta/forma) — mostra selo +/− na badge. */
+  delta?: number;
 }) {
   const you = side === "you";
+  const mod = delta ?? 0;
+  // cor do realce do rival: cor da org (se houver) ou o coral padrão.
+  const oc = oppColor ?? "rgb(210,122,104)";
   const skin = rarityFor(rating);
   // seta de vantagem: aparece só em quem vence a lane, apontando pro centro (› na sua line, ‹ no rival).
   const arrow = showRatings && wins ? (
@@ -134,16 +149,51 @@ function LineRow({
   ) : (
     <span className="w-[7px]" aria-hidden />
   );
+  // pill de overall: fundo transparente tingido pela cor da raridade. Quando há
+  // delta por efeito (carta/forma), ganha um selo +/− no canto (verde sobe, vermelho desce).
   const pill = showRatings && (
     <span
-      className="inline-flex min-w-[30px] items-center justify-center rounded-[7px] px-1.5 py-[3px] font-mono text-[14px] font-bold tabular-nums"
+      className="relative inline-flex min-w-[34px] items-center justify-center rounded-[7px] px-[7px] py-[6px] text-center font-mono text-[17px] font-black leading-none tabular-nums"
       style={{
         color: skin.ratingColor,
-        background: `color-mix(in srgb, ${skin.ratingColor} 13%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${skin.ratingColor} 38%, transparent)`,
+        background: `color-mix(in srgb, ${skin.ratingColor} 16%, rgba(8,9,11,0.85))`,
+        border: `1px solid ${mod !== 0 ? (mod > 0 ? "rgba(127,209,138,0.7)" : "rgba(230,144,128,0.7)") : `color-mix(in srgb, ${skin.ratingColor} 38%, transparent)`}`,
       }}
     >
       {rating}
+      {mod !== 0 && (
+        <span
+          className="absolute -right-2 -top-2 inline-flex items-center justify-center rounded-full px-1 py-[1px] font-mono text-[9px] font-black leading-none"
+          style={
+            mod > 0
+              ? { color: "#0f1a12", background: "#7fd18a", boxShadow: "0 0 7px rgba(127,209,138,0.65)" }
+              : { color: "#241010", background: "#e69080", boxShadow: "0 0 7px rgba(230,144,128,0.65)" }
+          }
+        >
+          {mod > 0 ? `+${mod}` : mod}
+        </span>
+      )}
+    </span>
+  );
+  const badge = <RoleBadge role={role} variant={you ? "gold" : "red"} color={you ? undefined : oc} size="sm" />;
+  // chip de forma do dia (🔥 fogo / 🧊 gelado).
+  const formChip = form && (
+    <span
+      title={form === "fogo" ? "Em chamas (+3 nesta série)" : "Gelado (−3 nesta série)"}
+      className="shrink-0 text-[14px] leading-none"
+      style={form === "fogo" ? { filter: "drop-shadow(0 0 6px rgba(255,120,60,0.7))" } : { filter: "drop-shadow(0 0 6px rgba(120,180,255,0.7))" }}
+    >
+      {form === "fogo" ? "🔥" : "🧊"}
+    </span>
+  );
+  // bloco bandeira+nome — espelhado no rival (nome à esquerda, bandeira à direita).
+  const ident = (
+    <span className={`flex min-w-0 flex-1 items-center gap-3 ${you ? "" : "flex-row-reverse text-right"}`}>
+      <Flag cc={country} size={15} />
+      <span className={`truncate font-display text-[18px] font-semibold ${you ? "text-cream" : "text-[#E7E0D6]"}`}>
+        {name}
+      </span>
+      {formChip}
     </span>
   );
   return (
@@ -151,23 +201,28 @@ function LineRow({
       className="group/row relative flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 transition-all"
       style={{
         background: you
-          ? "linear-gradient(100deg,rgba(34,42,55,0.62),rgba(24,30,40,0.5))"
-          : "linear-gradient(100deg,rgba(48,34,36,0.62),rgba(32,24,26,0.5))",
-        border: `1px solid ${you ? "rgba(201,162,75,0.14)" : "rgba(210,122,104,0.16)"}`,
+          ? "linear-gradient(100deg,rgba(42,44,48,0.62),rgba(30,31,34,0.5))"
+          : `linear-gradient(100deg, color-mix(in srgb, ${oc} 14%, rgba(28,24,26,0.6)), rgba(28,24,26,0.5))`,
+        border: `1px solid ${you ? "rgba(201,162,75,0.14)" : `color-mix(in srgb, ${oc} 26%, transparent)`}`,
       }}
     >
-      {/* rival: seta primeiro (lado interno = esquerda) */}
-      {!you && arrow}
-      <RoleBadge role={role} variant={you ? "gold" : "red"} size="sm" />
-      <span className="flex min-w-0 flex-1 items-center gap-2">
-        <Flag cc={country} size={15} />
-        <span className={`truncate font-display text-[15px] font-semibold ${you ? "text-cream" : "text-[#E7E0D6]"}`}>
-          {name}
-        </span>
-      </span>
-      {pill}
-      {/* sua line: seta por último (lado interno = direita) */}
-      {you && arrow}
+      {you ? (
+        // sua line: lane · [bandeira nome] · pill · seta (interna = direita)
+        <>
+          {badge}
+          {ident}
+          {pill}
+          {arrow}
+        </>
+      ) : (
+        // rival (espelhado): seta (interna = esquerda) · pill · [nome bandeira] · lane
+        <>
+          {arrow}
+          {pill}
+          {ident}
+          {badge}
+        </>
+      )}
     </div>
   );
 }
@@ -268,11 +323,15 @@ export function SeriesScreen({ game }: { game: Game }) {
     seriesResult,
     difficulty,
     lineup,
-    history,
     highlight,
     pentaFlash,
     gameMvpFlash,
     campaignGames,
+    seriesMods,
+    permMods,
+    formNotes,
+    activeBuffs,
+    pendingEvent,
   } = game.state;
 
   const isMsi = mode === "goldenroad" && !!msiNode;
@@ -290,12 +349,18 @@ export function SeriesScreen({ game }: { game: Game }) {
   const target = series.target;
   const notStarted = !revealed && !seriesPlaying;
   const isWin = seriesResult === "win";
-  const flavor = seriesFlavor(isWin, yourGames, oppGames, history.length);
   const yourList = lineupPicks(lineup);
-  const yourAvg = lineScore(lineup);
-  // overall do adversário e do seu time por lane, pra realçar quem vence cada lane.
-  const oppByRole = new Map<Role, number>(series.opp.players.map((p) => [p[0], p[2]]));
-  const youByRole = new Map<Role, number>(yourList.map((p) => [p.role, p.rating]));
+  // notas EFETIVAS (base + deltas temporários da forma/cartas) no display.
+  const yourAvg = effLineScore(lineup, seriesMods);
+  const oppAvgEff = effOppAvg(series.opp, seriesMods);
+  // overall efetivo do adversário e do seu time por lane (pra realçar quem vence cada lane).
+  const oppByRole = new Map<Role, number>(series.opp.players.map((p) => [p[0], effOpp(p[2], seriesMods, p[0])]));
+  const youByRole = new Map<Role, number>(yourList.map((p) => [p.role, effYou(lineup, seriesMods, p.role)]));
+  // forma do dia por role (pra badge 🔥/🧊).
+  const formByRole = new Map<Role, "fogo" | "gelado">(formNotes.filter((n) => n.side === "you").map((n) => [n.role, n.kind]));
+  // cor principal da org do rival (T1 vermelho, Gen.G amarelo...) — identidade
+  // visual do card do adversário. Fallback neutro pra orgs sem cor mapeada.
+  const oppColor = teamColor(series.opp.short).accent;
   const isLastWin = isMsi
     ? isWin && msiNode === "GF"
     : isWin && stagePhase === "ko" && koIndex >= 2;
@@ -319,9 +384,26 @@ export function SeriesScreen({ game }: { game: Game }) {
   })();
 
   return (
-    <div className="anim-fade-fast mx-auto w-full max-w-[1040px]">
-      {/* header + progresso */}
-      <div className="mb-[18px] text-center">
+    <>
+      <EventCardOverlay game={game} />
+      <div className="anim-fade-fast mx-auto w-full max-w-[1140px]">
+        {/* HUD de buffs PERMANENTES da run (a forma do dia 🔥/🧊 fica na linha do jogador). */}
+        {activeBuffs.length > 0 && (
+          <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
+            {activeBuffs.map((b) => (
+              <span
+                key={b.id}
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold tracking-[0.5px]"
+                style={{ background: "rgba(201,162,75,0.14)", border: "1px solid rgba(232,206,134,0.4)", color: "#e8ce86" }}
+              >
+                <span className="text-[12px]">{b.icon}</span>
+                {b.label}
+              </span>
+            ))}
+          </div>
+        )}
+        {/* header + progresso */}
+        <div className="mb-[18px] text-center">
         {isMsi ? (
           <div className="mb-8 flex items-center justify-center">
             <span
@@ -385,27 +467,35 @@ export function SeriesScreen({ game }: { game: Game }) {
       </div>
 
       {/* 3 colunas */}
-      <div className="grid items-stretch gap-4 [grid-template-columns:1fr] wide:[grid-template-columns:1fr_1.05fr_1fr]">
-        {/* sua line */}
-        <div className="panel-raised flex flex-col overflow-hidden rounded-2xl border border-gold/30">
+      <div className="grid items-stretch gap-4 [grid-template-columns:1fr] wide:[grid-template-columns:1.15fr_0.9fr_1.15fr]">
+        {/* sua line — fundo cinza escuro neutro (sem azulado) */}
+        <div
+          className="flex flex-col overflow-hidden rounded-2xl border border-gold/30"
+          style={{ background: "linear-gradient(180deg,rgba(40,41,44,0.82),rgba(28,29,31,0.84))" }}
+        >
           <div className="flex min-h-[74px] items-center border-b border-gold/20 px-[18px] py-4">
             <span className="font-display text-[21px] font-semibold uppercase tracking-[1px] text-gold-bright">
               Sua line
             </span>
           </div>
           <div className="flex flex-1 flex-col gap-1.5 p-2">
-            {yourList.map((p) => (
-              <LineRow
-                key={p.role}
-                role={p.role}
-                name={p.name}
-                country={p.country}
-                rating={p.rating}
-                side="you"
-                showRatings={showRatings}
-                wins={p.rating >= (oppByRole.get(p.role) ?? 0)}
-              />
-            ))}
+            {yourList.map((p) => {
+              const eff = youByRole.get(p.role) ?? p.rating;
+              return (
+                <LineRow
+                  key={p.role}
+                  role={p.role}
+                  name={p.name}
+                  country={p.country}
+                  rating={eff}
+                  side="you"
+                  showRatings={showRatings}
+                  wins={eff >= (oppByRole.get(p.role) ?? 0)}
+                  form={formByRole.get(p.role)}
+                  delta={(permMods[p.role] ?? 0) + (seriesMods.you[p.role] ?? 0)}
+                />
+              );
+            })}
           </div>
           {showRatings && (
             <div className="flex items-center justify-between border-t border-gold/15 px-3.5 py-2">
@@ -439,12 +529,19 @@ export function SeriesScreen({ game }: { game: Game }) {
               >
                 VS
               </div>
-              <button
-                onClick={game.playSeries}
-                className="btn-gold cursor-pointer rounded-[10px] border-none px-[34px] py-[13px] font-display text-[16px] font-semibold uppercase tracking-[2px]"
-              >
-                ▶ Jogar série
-              </button>
+              {pendingEvent ? (
+                // evento a caminho: trava o início até o jogador escolher uma carta.
+                <div className="flex items-center gap-2 rounded-[10px] border border-gold/30 px-[28px] py-[13px] font-display text-[15px] font-semibold uppercase tracking-[2px] text-gold-bright" style={{ background: "rgba(201,162,75,0.08)" }}>
+                  <span className="animate-pulse">⚡</span> Evento a caminho…
+                </div>
+              ) : (
+                <button
+                  onClick={game.playSeries}
+                  className="btn-gold cursor-pointer rounded-[10px] border-none px-[34px] py-[13px] font-display text-[16px] font-semibold uppercase tracking-[2px]"
+                >
+                  ▶ Jogar série
+                </button>
+              )}
             </>
           )}
 
@@ -507,16 +604,16 @@ export function SeriesScreen({ game }: { game: Game }) {
                 </div>
               )}
               <div className="mt-4 flex flex-col items-center gap-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Você</span>
+                <div className="relative flex justify-center">
+                  <span className="absolute right-full mr-2 self-center font-mono text-[9px] uppercase tracking-[1px] text-muted">Você</span>
                   <div className="flex gap-[7px]">
                     {Array.from({ length: target }, (_, i) => (
                       <div key={i} className="h-[16px] w-[16px] rounded-[5px] transition-all" style={i < yourGames ? dotGreen : dotEmpty} />
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Rival</span>
+                <div className="relative flex justify-center">
+                  <span className="absolute right-full mr-2 self-center font-mono text-[9px] uppercase tracking-[1px] text-muted">Rival</span>
                   <div className="flex gap-[7px]">
                     {Array.from({ length: target }, (_, i) => (
                       <div key={i} className="h-[16px] w-[16px] rounded-[5px] transition-all" style={i < oppGames ? dotRed : dotEmpty} />
@@ -529,21 +626,21 @@ export function SeriesScreen({ game }: { game: Game }) {
 
           {revealed && (
             <div className="anim-pop">
-              <div
-                className={`mt-3.5 mb-1 font-mono text-[48px] leading-none font-bold tracking-[2px] ${isWin ? "text-win" : "text-red"}`}
-              >
-                {yourGames}–{oppGames}
+              <div className="mt-3.5 mb-2 font-mono text-[48px] leading-none font-bold tracking-[2px]">
+                {/* só o SEU placar colora pelo resultado; traço e nº do oponente em cinza neutro. */}
+                <span className={isWin ? "text-win" : "text-red"}>{yourGames}</span>
+                <span style={{ color: "rgba(160,168,176,0.4)" }}>–</span>
+                <span style={{ color: "rgba(160,168,176,0.5)" }}>{oppGames}</span>
               </div>
               <div
-                className={`font-display text-[18px] font-bold uppercase tracking-[3px] ${isWin ? "text-win" : "text-red"}`}
+                className={`mb-6 font-display text-[18px] font-bold uppercase tracking-[3px] ${isWin ? "text-win" : "text-red"}`}
               >
                 {isWin ? "Vitória" : "Derrota"}
               </div>
-              <div className="mx-auto mt-2 mb-3 max-w-[260px] text-[13px] text-[#BFC4CD]">{flavor}</div>
 
               {highlight?.mvp && series.target > 1 && (
                 <div
-                  className="anim-pop mx-auto mb-2.5 inline-flex items-center gap-2 rounded-[11px] px-3.5 py-2"
+                  className="anim-pop mx-auto mb-7 inline-flex items-center gap-2 rounded-[11px] px-3.5 py-2"
                   style={
                     highlight.mvp.side === "you"
                       ? {
@@ -568,8 +665,6 @@ export function SeriesScreen({ game }: { game: Game }) {
                 </div>
               )}
 
-              <div className="mb-1" />
-
               <button
                 onClick={game.nextSeries}
                 className={
@@ -584,36 +679,54 @@ export function SeriesScreen({ game }: { game: Game }) {
           )}
         </div>
 
-        {/* adversário */}
+        {/* adversário — cromático na cor da org (oppColor) */}
         <div
-          className="flex flex-col overflow-hidden rounded-2xl border border-red/30"
-          style={{ background: "linear-gradient(180deg,rgba(58,44,44,0.7),rgba(34,28,30,0.7))" }}
+          className="flex flex-col overflow-hidden rounded-2xl border"
+          style={{
+            borderColor: `color-mix(in srgb, ${oppColor} 32%, transparent)`,
+            background: `linear-gradient(180deg, color-mix(in srgb, ${oppColor} 16%, rgba(30,26,28,0.72)), rgba(26,24,26,0.72))`,
+          }}
         >
-          <div className="flex min-h-[74px] items-center justify-between gap-2.5 border-b px-[18px] py-4" style={{ borderColor: "rgba(210,122,104,0.28)" }}>
+          <div
+            className="flex min-h-[74px] items-center justify-between gap-2.5 border-b px-[18px] py-4"
+            style={{ borderColor: `color-mix(in srgb, ${oppColor} 30%, transparent)` }}
+          >
             <div className="min-w-0">
               <div className="truncate font-display text-[21px] font-semibold leading-[1.1] text-cream">{series.opp.team}</div>
               <div className="mt-[3px] font-mono text-[11px] tracking-[1px] text-muted">{series.opp.league}</div>
             </div>
-            <div className="font-display text-[24px] leading-none font-bold text-red-soft">{series.opp.year}</div>
+            <div className="font-display text-[24px] leading-none font-bold" style={{ color: oppColor }}>
+              {series.opp.year}
+            </div>
           </div>
           <div className="flex flex-1 flex-col gap-1.5 p-2">
-            {series.opp.players.map((p) => (
-              <LineRow
-                key={p[0]}
-                role={p[0]}
-                name={p[1]}
-                country={p[3]}
-                rating={p[2]}
-                side="opp"
-                showRatings={showRatings}
-                wins={p[2] > (youByRole.get(p[0]) ?? 0)}
-              />
-            ))}
+            {series.opp.players.map((p) => {
+              const eff = oppByRole.get(p[0]) ?? p[2];
+              return (
+                <LineRow
+                  key={p[0]}
+                  role={p[0]}
+                  name={p[1]}
+                  country={p[3]}
+                  rating={eff}
+                  side="opp"
+                  showRatings={showRatings}
+                  wins={eff > (youByRole.get(p[0]) ?? 0)}
+                  oppColor={oppColor}
+                  delta={seriesMods.opp[p[0]] ?? 0}
+                />
+              );
+            })}
           </div>
           {showRatings && (
-            <div className="flex items-center justify-between border-t px-3.5 py-2" style={{ borderColor: "rgba(210,122,104,0.18)" }}>
+            <div
+              className="flex items-center justify-between border-t px-3.5 py-2"
+              style={{ borderColor: `color-mix(in srgb, ${oppColor} 22%, transparent)` }}
+            >
               <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Média</span>
-              <span className="font-mono text-[18px] font-bold text-red-soft">{series.opp.avg}</span>
+              <span className="font-mono text-[18px] font-bold" style={{ color: oppColor }}>
+                {oppAvgEff}
+              </span>
             </div>
           )}
         </div>
@@ -724,6 +837,7 @@ export function SeriesScreen({ game }: { game: Game }) {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

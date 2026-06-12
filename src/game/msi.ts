@@ -22,16 +22,18 @@ interface NodeInfo {
 
 // Mapa do bracket (fiel ao MSI real, do ponto de vista do jogador).
 // Dificuldade cresce conforme avança; lower bracket tende a adversários fortes
-// (quem caiu da upper). Reusa as chaves do Worlds: quarter < semi < final.
+// (quem caiu da upper). Usa chaves próprias do MSI (msi_*) com rampa suave: a
+// UR1 "esquenta" no nível da suíça do Worlds (~79) em vez de já abrir em
+// nível de quartas, e sobe gradual até a GF (~90). Ver STAGE_INTENSITY.
 export const MSI_BRACKET: Record<MsiNode, NodeInfo> = {
-  UR1: { label: "Upper Bracket · Rodada 1", side: "upper", difficultyKey: "quarter", onWin: "UR2", onLoss: "LR1" },
-  UR2: { label: "Upper Bracket · Rodada 2", side: "upper", difficultyKey: "semi", onWin: "UF", onLoss: "LR2" },
-  UF: { label: "Final da Upper Bracket", side: "upper", difficultyKey: "final", onWin: "GF", onLoss: "LF" },
-  LR1: { label: "Lower Bracket · Rodada 1", side: "lower", difficultyKey: "quarter", onWin: "LR2", onLoss: "eliminated" },
-  LR2: { label: "Lower Bracket · Rodada 2", side: "lower", difficultyKey: "semi", onWin: "LR3", onLoss: "eliminated" },
-  LR3: { label: "Lower Bracket · Rodada 3", side: "lower", difficultyKey: "semi", onWin: "LF", onLoss: "eliminated" },
-  LF: { label: "Final da Lower Bracket", side: "lower", difficultyKey: "final", onWin: "GF", onLoss: "eliminated" },
-  GF: { label: "Grande Final do MSI", side: "upper", difficultyKey: "final", onWin: "champion", onLoss: "eliminated" },
+  UR1: { label: "Upper Bracket · Rodada 1", side: "upper", difficultyKey: "msi_ur1", onWin: "UR2", onLoss: "LR1" },
+  UR2: { label: "Upper Bracket · Rodada 2", side: "upper", difficultyKey: "msi_ur2", onWin: "UF", onLoss: "LR2" },
+  UF: { label: "Final da Upper Bracket", side: "upper", difficultyKey: "msi_uf", onWin: "GF", onLoss: "LF" },
+  LR1: { label: "Lower Bracket · Rodada 1", side: "lower", difficultyKey: "msi_lr1", onWin: "LR2", onLoss: "eliminated" },
+  LR2: { label: "Lower Bracket · Rodada 2", side: "lower", difficultyKey: "msi_lr2", onWin: "LR3", onLoss: "eliminated" },
+  LR3: { label: "Lower Bracket · Rodada 3", side: "lower", difficultyKey: "msi_lr3", onWin: "LF", onLoss: "eliminated" },
+  LF: { label: "Final da Lower Bracket", side: "lower", difficultyKey: "msi_lf", onWin: "GF", onLoss: "eliminated" },
+  GF: { label: "Grande Final do MSI", side: "upper", difficultyKey: "msi_gf", onWin: "champion", onLoss: "eliminated" },
 };
 
 /** Nó inicial: o jogador sempre começa na Upper Round 1. */

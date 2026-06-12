@@ -1,6 +1,7 @@
 import { DRAFT_TEAMS } from "./data/teams";
 import { useGame } from "./game/useGame";
 import { AppBackground } from "./components/AppBackground";
+import { VictoryBackdrop } from "./components/VictoryBackdrop";
 import { MuteButton } from "./components/MuteButton";
 import { StartScreen } from "./screens/StartScreen";
 import { DraftScreen } from "./screens/DraftScreen";
@@ -13,12 +14,18 @@ export function App() {
   const { phase } = game.state;
 
   const isGame = phase === "series";
+  // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
+  const isVictory = phase === "result" && game.state.finished === "champion";
   return (
     <div
       className={`bg-app${isGame ? " bg-app-game" : ""} flex min-h-screen w-full flex-col items-center font-body text-cream`}
       style={{ padding: "clamp(18px,4vw,40px)" }}
     >
-      <AppBackground dim={phase === "play"} variant={isGame ? "game" : undefined} />
+      {isVictory ? (
+        <VictoryBackdrop />
+      ) : (
+        <AppBackground dim={phase === "play"} variant={isGame ? "game" : undefined} />
+      )}
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
       {phase === "start" && (

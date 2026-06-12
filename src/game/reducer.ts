@@ -1,7 +1,10 @@
 import type {
+  ActiveBuff,
   CampaignEnd,
   CareerStage,
   Difficulty,
+  EventCard,
+  FormNote,
   GameMode,
   GameMvp,
   HighlightRef,
@@ -14,10 +17,20 @@ import type {
   Phase,
   Role,
   SeriesHighlight,
+  SeriesMods,
   SeriesSetup,
   StagePhase,
   Team,
 } from "../types";
+import { emptyMods } from "./effects";
+
+/** Pacote de pré-série: forma do dia + evento sorteado, calculado em useGame. */
+export interface PreSeries {
+  seriesMods: SeriesMods;
+  formNotes: FormNote[];
+  pendingEvent: EventCard[] | null;
+  eventDry: number;
+}
 
 export interface GameState {
   phase: Phase;
@@ -54,6 +67,14 @@ export interface GameState {
   finalsMvp: HighlightRef | null; // MVP da Grande Final (campeão) — preservado pro ResultScreen
   finished: CampaignEnd | null;
 
+  // eventos de pré-série + forma do dia
+  seriesMods: SeriesMods; // deltas TEMPORÁRIOS (zeram a cada série)
+  permMods: Partial<Record<Role, number>>; // deltas PERMANENTES por lane (pro selo +N)
+  formNotes: FormNote[]; // badges de forma (fogo/gelado) da série atual
+  activeBuffs: ActiveBuff[]; // buffs PERMANENTES acumulados na run (HUD)
+  pendingEvent: EventCard[] | null; // 3 cartas a escolher (null = nenhum evento)
+  eventDry: number; // séries seguidas sem evento (pity)
+
   // share / meta
   copied: boolean;
   record: number;
@@ -82,6 +103,12 @@ const freshCampaign = {
   campaignGames: [] as LiveGame[],
   finalsMvp: null as HighlightRef | null,
   finished: null as CampaignEnd | null,
+  seriesMods: emptyMods(),
+  permMods: {} as Partial<Record<Role, number>>,
+  formNotes: [] as FormNote[],
+  activeBuffs: [] as ActiveBuff[],
+  pendingEvent: null as EventCard[] | null,
+  eventDry: 0,
 };
 
 export const initialState: GameState = {
@@ -108,16 +135,17 @@ export type Action =
   | { type: "rollEnd"; team: Team }
   | { type: "pick"; role: Role; player: LineupPlayer; complete: boolean }
   | { type: "rerollDec" }
-  | { type: "startCampaign"; series: SeriesSetup; usedOppIds: string[] }
-  | { type: "startMsi"; series: SeriesSetup; usedOppIds: string[]; node: MsiNode }
+  | { type: "startCampaign"; series: SeriesSetup; usedOppIds: string[]; pre: PreSeries }
+  | { type: "startMsi"; series: SeriesSetup; usedOppIds: string[]; node: MsiNode; pre: PreSeries }
   | {
       type: "msiAdvance";
       played: PlayedSeries;
       series: SeriesSetup;
       node: MsiNode;
       usedOppIds: string[];
+      pre: PreSeries;
     }
-  | { type: "msiToWorlds"; series: SeriesSetup; usedOppIds: string[] }
+  | { type: "msiToWorlds"; played: PlayedSeries; series: SeriesSetup; usedOppIds: string[]; pre: PreSeries }
   | { type: "playBegin" }
   | { type: "gameStep"; yourGames: number; oppGames: number; penta: Pentakill | null; gameMvp: GameMvp | null; liveGame: LiveGame }
   | { type: "clearFlashes" }
@@ -131,11 +159,29 @@ export type Action =
       swissLosses: number;
       koIndex: number;
       usedOppIds: string[];
+      pre: PreSeries;
     }
   | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean; finalsMvp: HighlightRef | null }
+  | {
+      type: "resolveEvent";
+      lineup: Lineup;
+      series: SeriesSetup;
+      seriesMods: SeriesMods;
+      permMods: Partial<Record<Role, number>>;
+      formNotes: FormNote[];
+      activeBuffs: ActiveBuff[];
+    }
   | { type: "restart" }
   | { type: "openCodex" }
   | { type: "setCopied"; copied: boolean };
+
+/** Campos de pré-série a aplicar ao entrar numa nova série (forma + evento). */
+const applyPre = (pre: PreSeries) => ({
+  seriesMods: pre.seriesMods,
+  formNotes: pre.formNotes,
+  pendingEvent: pre.pendingEvent,
+  eventDry: pre.eventDry,
+});
 
 export function reducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -178,6 +224,7 @@ export function reducer(state: GameState, action: Action): GameState {
         ...freshCampaign,
         series: action.series,
         usedOppIds: action.usedOppIds,
+        ...applyPre(action.pre),
       };
 
     case "startMsi":
@@ -189,6 +236,7 @@ export function reducer(state: GameState, action: Action): GameState {
         msiNode: action.node,
         series: action.series,
         usedOppIds: action.usedOppIds,
+        ...applyPre(action.pre),
       };
 
     case "msiAdvance":
@@ -207,17 +255,25 @@ export function reducer(state: GameState, action: Action): GameState {
         pentaFlash: null,
         gameMvpFlash: null,
         liveGames: [],
+        ...applyPre(action.pre),
       };
 
     case "msiToWorlds":
-      // campeão do MSI: mantém a line, parte pro Worlds (etapa worlds da carreira).
+      // campeão do MSI: mantém a line (e buffs permanentes), parte pro Worlds.
+      // PRESERVA o histórico da campanha (séries do MSI) e registra a final do MSI;
+      // só reseta o progresso do torneio (suíça/mata-mata) via freshCampaign.
       return {
         ...state,
         careerStage: "worlds",
         msiNode: null,
         ...freshCampaign,
+        history: [...state.history, action.played], // MSI inteiro + a final do MSI
+        campaignGames: state.campaignGames, // mantém os jogos da run (continuidade)
+        activeBuffs: state.activeBuffs, // preserva buffs permanentes da run
+        permMods: state.permMods, // preserva os deltas permanentes por lane
         series: action.series,
         usedOppIds: action.usedOppIds,
+        ...applyPre(action.pre),
       };
 
     case "playBegin":
@@ -270,6 +326,19 @@ export function reducer(state: GameState, action: Action): GameState {
         pentaFlash: null,
         gameMvpFlash: null,
         liveGames: [],
+        ...applyPre(action.pre),
+      };
+
+    case "resolveEvent":
+      return {
+        ...state,
+        lineup: action.lineup,
+        series: action.series,
+        seriesMods: action.seriesMods,
+        permMods: action.permMods,
+        formNotes: action.formNotes,
+        activeBuffs: action.activeBuffs,
+        pendingEvent: null,
       };
 
     case "finishCampaign":
