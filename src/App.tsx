@@ -12,12 +12,13 @@ export function App() {
   const game = useGame();
   const { phase } = game.state;
 
+  const isGame = phase === "series";
   return (
     <div
-      className="bg-app flex min-h-screen w-full flex-col items-center font-body text-cream"
+      className={`bg-app${isGame ? " bg-app-game" : ""} flex min-h-screen w-full flex-col items-center font-body text-cream`}
       style={{ padding: "clamp(18px,4vw,40px)" }}
     >
-      <AppBackground dim={phase === "play"} />
+      <AppBackground dim={phase === "play"} variant={isGame ? "game" : undefined} />
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
       {phase === "start" && (

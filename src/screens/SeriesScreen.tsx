@@ -1,7 +1,7 @@
 import { useEffect, type CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import type { LiveGame, Role, Side } from "../types";
-import { lineScore, lineupPicks, seriesFlavor, yy } from "../game/helpers";
+import { lineScore, lineupPicks, rarityFor, seriesFlavor, yy } from "../game/helpers";
 import { MSI_BRACKET } from "../game/msi";
 import type { MsiNode } from "../types";
 import { Flag } from "../components/Flag";
@@ -105,13 +105,84 @@ function HighlightName({ role, name, country, side }: { role: Role; name: string
   );
 }
 
+/** Uma linha da tabela de line: lane · bandeira · nome · pill de rating (cor por raridade). */
+function LineRow({
+  role,
+  name,
+  country,
+  rating,
+  side,
+  showRatings,
+  wins,
+}: {
+  role: Role;
+  name: string;
+  country?: string;
+  rating: number;
+  side: Side;
+  showRatings: boolean;
+  /** true = essa lane vence (overall ≥ adversário); marca a linha com realce. */
+  wins?: boolean;
+}) {
+  const you = side === "you";
+  const skin = rarityFor(rating);
+  // seta de vantagem: aparece só em quem vence a lane, apontando pro centro (› na sua line, ‹ no rival).
+  const arrow = showRatings && wins ? (
+    <span className="font-mono text-[15px] font-bold leading-none" style={{ color: "#7fd18a" }}>
+      {you ? "›" : "‹"}
+    </span>
+  ) : (
+    <span className="w-[7px]" aria-hidden />
+  );
+  const pill = showRatings && (
+    <span
+      className="inline-flex min-w-[30px] items-center justify-center rounded-[7px] px-1.5 py-[3px] font-mono text-[14px] font-bold tabular-nums"
+      style={{
+        color: skin.ratingColor,
+        background: `color-mix(in srgb, ${skin.ratingColor} 13%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${skin.ratingColor} 38%, transparent)`,
+      }}
+    >
+      {rating}
+    </span>
+  );
+  return (
+    <div
+      className="group/row relative flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 transition-all"
+      style={{
+        background: you
+          ? "linear-gradient(100deg,rgba(34,42,55,0.62),rgba(24,30,40,0.5))"
+          : "linear-gradient(100deg,rgba(48,34,36,0.62),rgba(32,24,26,0.5))",
+        border: `1px solid ${you ? "rgba(201,162,75,0.14)" : "rgba(210,122,104,0.16)"}`,
+      }}
+    >
+      {/* rival: seta primeiro (lado interno = esquerda) */}
+      {!you && arrow}
+      <RoleBadge role={role} variant={you ? "gold" : "red"} size="sm" />
+      <span className="flex min-w-0 flex-1 items-center gap-2">
+        <Flag cc={country} size={15} />
+        <span className={`truncate font-display text-[15px] font-semibold ${you ? "text-cream" : "text-[#E7E0D6]"}`}>
+          {name}
+        </span>
+      </span>
+      {pill}
+      {/* sua line: seta por último (lado interno = direita) */}
+      {you && arrow}
+    </div>
+  );
+}
+
 // ordem linear do caminho (pra saber o que já foi "passado" no destaque visual).
 const MSI_PATH_ORDER: MsiNode[] = ["UR1", "UR2", "UF", "LR1", "LR2", "LR3", "LF", "GF"];
 
-/** Cabeçalho do bracket do MSI: linha da upper, linha da lower e a GF, com o nó atual destacado. */
-function MsiBracketHeader({ node }: { node: MsiNode }) {
+/** Cabeçalho do bracket do MSI: só a linha do lado atual (upper OU lower) + a GF no final. Label fora do card. */
+function MsiBracketHeader({ node, format }: { node: MsiNode; format?: string }) {
   const side = MSI_BRACKET[node].side;
   const curIdx = MSI_PATH_ORDER.indexOf(node);
+  // se ainda está no upper (e não na GF), mostra a trilha upper; senão, a lower.
+  const isGF = node === "GF";
+  const lane = side === "upper" && !isGF ? MSI_UPPER : MSI_LOWER;
+  const laneLabel = side === "upper" && !isGF ? "Upper" : "Lower";
   const chip = (n: MsiNode) => {
     const cur = n === node;
     const passed = MSI_PATH_ORDER.indexOf(n) < curIdx;
@@ -128,27 +199,25 @@ function MsiBracketHeader({ node }: { node: MsiNode }) {
     );
   };
   return (
-    <div className="inline-flex flex-col items-center gap-2 rounded-[14px] border border-gold/25 px-5 py-3">
-      <div className="flex items-center gap-2">
-        <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Upper</span>
-        {MSI_UPPER.map(chip)}
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="w-[44px] text-right font-mono text-[9px] uppercase tracking-[1px] text-muted">Lower</span>
-        {MSI_LOWER.map(chip)}
-      </div>
-      <div className="mt-0.5 flex items-center gap-2">
+    <>
+      <div className="inline-flex items-center gap-2 rounded-[14px] border border-gold/25 px-5 py-3">
+        <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">{laneLabel}</span>
+        {lane.map(chip)}
+        <span className="mx-1 font-mono text-[12px] text-dim">→</span>
         {chip("GF")}
-        <span className="font-display text-[12px] font-semibold uppercase tracking-[1px] text-gold-bright">
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <span className="font-display text-[13px] font-semibold uppercase tracking-[1px] text-gold-bright">
           {MSI_BRACKET[node].label}
         </span>
+        {format && <span className="font-mono text-[11px] tracking-[1px] text-dim">· {format}</span>}
         {side === "lower" && (
           <span className="rounded-full bg-red/15 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[1px] text-red-soft">
             sem mais erros
           </span>
         )}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -224,6 +293,9 @@ export function SeriesScreen({ game }: { game: Game }) {
   const flavor = seriesFlavor(isWin, yourGames, oppGames, history.length);
   const yourList = lineupPicks(lineup);
   const yourAvg = lineScore(lineup);
+  // overall do adversário e do seu time por lane, pra realçar quem vence cada lane.
+  const oppByRole = new Map<Role, number>(series.opp.players.map((p) => [p[0], p[2]]));
+  const youByRole = new Map<Role, number>(yourList.map((p) => [p.role, p.rating]));
   const isLastWin = isMsi
     ? isWin && msiNode === "GF"
     : isWin && stagePhase === "ko" && koIndex >= 2;
@@ -250,12 +322,26 @@ export function SeriesScreen({ game }: { game: Game }) {
     <div className="anim-fade-fast mx-auto w-full max-w-[1040px]">
       {/* header + progresso */}
       <div className="mb-[18px] text-center">
-        <div className="mb-3 font-mono text-[12px] uppercase tracking-[3px] text-muted">
-          {isMsi ? "MSI · GOLDENROAD · Bracket duplo" : "Playoffs · rumo ao 6–0"}
-        </div>
+        {isMsi ? (
+          <div className="mb-8 flex items-center justify-center">
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[2px]"
+              style={{
+                color: "#1a1206",
+                background: "linear-gradient(180deg,#e8ce86,#c9a24b)",
+                boxShadow: "0 0 18px rgba(201,162,75,0.45), inset 0 1px 0 rgba(255,255,255,0.4)",
+              }}
+            >
+              ⚔ MSI
+              <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">GOLDENROAD · BRACKET DUPLO</span>
+            </span>
+          </div>
+        ) : (
+          <div className="mb-3 font-mono text-[12px] uppercase tracking-[3px] text-muted">Playoffs · rumo ao 6–0</div>
+        )}
 
         {isMsi ? (
-          <MsiBracketHeader node={msiNode!} />
+          <MsiBracketHeader node={msiNode!} format={series.format} />
         ) : stagePhase === "swiss" ? (
           <div className="inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-[14px] border border-gold/25 px-5 py-2.5">
             <span className="font-display text-[14px] font-semibold uppercase tracking-[1px] text-gold-bright">
@@ -301,39 +387,58 @@ export function SeriesScreen({ game }: { game: Game }) {
       {/* 3 colunas */}
       <div className="grid items-stretch gap-4 [grid-template-columns:1fr] wide:[grid-template-columns:1fr_1.05fr_1fr]">
         {/* sua line */}
-        <div className="panel-raised overflow-hidden rounded-2xl border border-gold/30">
-          <div className="flex items-baseline justify-between gap-2 border-b border-gold/20 px-3.5 py-[11px]">
-            <span className="font-display text-[14px] font-semibold uppercase tracking-[1px] text-gold-bright">
+        <div className="panel-raised flex flex-col overflow-hidden rounded-2xl border border-gold/30">
+          <div className="flex min-h-[74px] items-center border-b border-gold/20 px-[18px] py-4">
+            <span className="font-display text-[21px] font-semibold uppercase tracking-[1px] text-gold-bright">
               Sua line
             </span>
-            {showRatings && <span className="font-mono text-[11px] text-muted">méd. {yourAvg}</span>}
           </div>
-          <div className="flex flex-col gap-[5px] p-2">
+          <div className="flex flex-1 flex-col gap-1.5 p-2">
             {yourList.map((p) => (
-              <div
+              <LineRow
                 key={p.role}
-                className="flex items-center gap-2.5 rounded-[9px] px-[9px] py-[7px]"
-                style={{ background: "rgba(28,34,45,0.5)" }}
-              >
-                <RoleBadge role={p.role} size="sm" />
-                <span className="flex min-w-0 flex-1 items-center gap-1.5">
-                  <Flag cc={p.country} size={12} />
-                  <span className="truncate font-display text-[15px] font-semibold text-cream">{p.name}</span>
-                </span>
-                {showRatings && <span className="font-mono text-[14px] font-bold text-gold-bright">{p.rating}</span>}
-              </div>
+                role={p.role}
+                name={p.name}
+                country={p.country}
+                rating={p.rating}
+                side="you"
+                showRatings={showRatings}
+                wins={p.rating >= (oppByRole.get(p.role) ?? 0)}
+              />
             ))}
           </div>
+          {showRatings && (
+            <div className="flex items-center justify-between border-t border-gold/15 px-3.5 py-2">
+              <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Média</span>
+              <span className="font-mono text-[18px] font-bold text-gold-bright">{yourAvg}</span>
+            </div>
+          )}
         </div>
 
         {/* centro */}
         <div className="flex min-h-[260px] flex-col items-center justify-center px-2.5 py-[18px] text-center">
-          <div className="font-mono text-[11px] uppercase tracking-[2px] text-muted">{series.stageLabel}</div>
-          <div className="mt-[3px] font-mono text-[11px] text-dim">{series.format}</div>
+          {/* no MSI a etapa+formato ficam embaixo do badge (MsiBracketHeader); aqui só no modo Worlds */}
+          {!isMsi && (
+            <>
+              <div className="font-mono text-[11px] uppercase tracking-[2px] text-muted">{series.stageLabel}</div>
+              <div className="mt-[3px] font-mono text-[11px] text-dim">{series.format}</div>
+            </>
+          )}
 
           {notStarted && (
             <>
-              <div className="my-[18px] font-display text-[34px] font-bold tracking-[6px] text-dim">VS</div>
+              <div
+                className="my-[20px] font-display text-[64px] leading-none font-extrabold tracking-[4px]"
+                style={{
+                  background: "linear-gradient(180deg,#f0dca0,#c9a24b)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "drop-shadow(0 0 18px rgba(201,162,75,0.4))",
+                }}
+              >
+                VS
+              </div>
               <button
                 onClick={game.playSeries}
                 className="btn-gold cursor-pointer rounded-[10px] border-none px-[34px] py-[13px] font-display text-[16px] font-semibold uppercase tracking-[2px]"
@@ -481,31 +586,36 @@ export function SeriesScreen({ game }: { game: Game }) {
 
         {/* adversário */}
         <div
-          className="overflow-hidden rounded-2xl border border-red/30"
+          className="flex flex-col overflow-hidden rounded-2xl border border-red/30"
           style={{ background: "linear-gradient(180deg,rgba(58,44,44,0.7),rgba(34,28,30,0.7))" }}
         >
-          <div className="flex items-baseline justify-between gap-2 border-b px-3.5 py-[11px]" style={{ borderColor: "rgba(210,122,104,0.28)" }}>
-            <span className="truncate font-display text-[14px] font-semibold text-cream">{series.opp.team}</span>
-            <span className="font-mono text-[11px] text-red-soft">
-              {showRatings ? `méd. ${series.opp.avg} · ` : ""}'{yy(series.opp.year)}
-            </span>
+          <div className="flex min-h-[74px] items-center justify-between gap-2.5 border-b px-[18px] py-4" style={{ borderColor: "rgba(210,122,104,0.28)" }}>
+            <div className="min-w-0">
+              <div className="truncate font-display text-[21px] font-semibold leading-[1.1] text-cream">{series.opp.team}</div>
+              <div className="mt-[3px] font-mono text-[11px] tracking-[1px] text-muted">{series.opp.league}</div>
+            </div>
+            <div className="font-display text-[24px] leading-none font-bold text-red-soft">{series.opp.year}</div>
           </div>
-          <div className="flex flex-col gap-[5px] p-2">
+          <div className="flex flex-1 flex-col gap-1.5 p-2">
             {series.opp.players.map((p) => (
-              <div
+              <LineRow
                 key={p[0]}
-                className="flex items-center gap-2.5 rounded-[9px] px-[9px] py-[7px]"
-                style={{ background: "rgba(34,28,30,0.5)" }}
-              >
-                <RoleBadge role={p[0]} variant="red" size="sm" />
-                <span className="flex min-w-0 flex-1 items-center gap-1.5">
-                  <Flag cc={p[3]} size={12} />
-                  <span className="truncate font-display text-[15px] font-semibold text-[#E7E0D6]">{p[1]}</span>
-                </span>
-                {showRatings && <span className="font-mono text-[14px] font-bold text-red-soft">{p[2]}</span>}
-              </div>
+                role={p[0]}
+                name={p[1]}
+                country={p[3]}
+                rating={p[2]}
+                side="opp"
+                showRatings={showRatings}
+                wins={p[2] > (youByRole.get(p[0]) ?? 0)}
+              />
             ))}
           </div>
+          {showRatings && (
+            <div className="flex items-center justify-between border-t px-3.5 py-2" style={{ borderColor: "rgba(210,122,104,0.18)" }}>
+              <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Média</span>
+              <span className="font-mono text-[18px] font-bold text-red-soft">{series.opp.avg}</span>
+            </div>
+          )}
         </div>
       </div>
 
