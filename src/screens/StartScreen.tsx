@@ -25,15 +25,11 @@ const cardIdle: CSSProperties = {
 };
 
 export function StartScreen({ poolCount, onBegin }: Props) {
-  const [mode, setMode] = useState<GameMode>("worlds");
+  const [mode, setMode] = useState<GameMode>("goldenroad");
   return (
     <div className="anim-fade m-auto w-full max-w-[780px] text-center">
-      <div className="mb-[30px] inline-flex items-center gap-2.5 rounded-full border border-gold/40 px-4 py-[7px] font-mono text-[12px] uppercase tracking-[2px] text-gold-bright">
-        ★ Desafio Worlds
-      </div>
-
       <Logo6x0
-        className="mx-auto mt-1.5 block h-auto"
+        className="mx-auto mt-2 block h-auto"
         style={{ width: "clamp(280px,68vw,520px)", filter: "drop-shadow(0 6px 30px rgba(201,162,75,0.32))" }}
       />
 
@@ -50,25 +46,7 @@ export function StartScreen({ poolCount, onBegin }: Props) {
       <div className="mb-[30px]">
         <div className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-muted">Escolha o modo</div>
         <div className="grid grid-cols-1 gap-3.5 text-left wide:grid-cols-2">
-          {/* Só Worlds — modo atual */}
-          <button
-            type="button"
-            onClick={() => setMode("worlds")}
-            className="relative cursor-pointer overflow-hidden rounded-[16px] p-[20px] text-left transition-all"
-            style={mode === "worlds" ? cardSelected : cardIdle}
-          >
-            <div className="flex items-center justify-between">
-              <span className={`font-display text-[19px] font-bold uppercase tracking-[1px] ${mode === "worlds" ? "text-gold-bright" : "text-cream"}`}>
-                Só Worlds
-              </span>
-              {mode === "worlds" && <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>}
-            </div>
-            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
-              Monte sua line com astros do Mundial e vença os playoffs rumo ao 6–0.
-            </p>
-          </button>
-
-          {/* GOLDENROAD — modo carreira (MSI → Worlds) */}
+          {/* GOLDENROAD — modo carreira (MSI → Worlds), padrão */}
           <button
             type="button"
             onClick={() => setMode("goldenroad")}
@@ -92,6 +70,24 @@ export function StartScreen({ poolCount, onBegin }: Props) {
             </div>
             <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
               Modo carreira: comece pelo <b className="text-cream">MSI</b> (bracket duplo) e siga pro Worlds com a mesma line.
+            </p>
+          </button>
+
+          {/* Só Worlds — modo direto */}
+          <button
+            type="button"
+            onClick={() => setMode("worlds")}
+            className="relative cursor-pointer overflow-hidden rounded-[16px] p-[20px] text-left transition-all"
+            style={mode === "worlds" ? cardSelected : cardIdle}
+          >
+            <div className="flex items-center justify-between">
+              <span className={`font-display text-[19px] font-bold uppercase tracking-[1px] ${mode === "worlds" ? "text-gold-bright" : "text-cream"}`}>
+                Só Worlds
+              </span>
+              {mode === "worlds" && <span className="font-mono text-[12px] text-gold-bright">✓ Selecionado</span>}
+            </div>
+            <p className="mt-1.5 text-[13.5px] leading-[1.45] text-[#D7D4CB]">
+              Monte sua line com astros do Mundial e vença os playoffs rumo ao 6–0.
             </p>
           </button>
         </div>
