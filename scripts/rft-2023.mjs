@@ -9,11 +9,11 @@ merge("2023", {
   Gumayusi:{ base:86, geral:64.0, playoff:[66,64,62] },
   Keria:   { base:86, geral:74.0, playoff:[78,77,66] },
   // Weibo Gaming vice (base 84). TheShy de volta a uma final.
-  TheShy:  { base:84, geral:70.0, playoff:[39,77,82] },
-  Weiwei:  { base:84, geral:55.0, playoff:[50,53,67] },
-  Xiaohu:  { base:84, geral:62.0, playoff:[50,65,80] },
-  Light:   { base:84, geral:60.0, playoff:[39,54,84] },
-  Crisp:   { base:84, geral:62.0, playoff:[41,60,92] },
+  TheShy:  { base:84, geral:70.0, playoff:[39,77,82], vice:true },
+  Weiwei:  { base:84, geral:55.0, playoff:[50,53,67], vice:true },
+  Xiaohu:  { base:84, geral:62.0, playoff:[50,65,80], vice:true },
+  Light:   { base:84, geral:60.0, playoff:[39,54,84], vice:true },
+  Crisp:   { base:84, geral:62.0, playoff:[41,60,92], vice:true },
   // Bilibili Gaming semi (base 81): SF1+QF2. Bin/Elk.
   Bin:     { base:81, geral:60.0, playoff:[47,69] },
   Xun:     { base:81, geral:65.0, playoff:[62,75] },

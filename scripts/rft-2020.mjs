@@ -9,11 +9,11 @@ merge("2020", {
   Ghost:   { base:86, geral:62.0, playoff:[63,57,64] },
   BeryL:   { base:86, geral:65.0, playoff:[63,67,69] },
   // Suning vice (base 84). SofM o jungler vietnamita; Bin o destaque.
-  Bin:     { base:84, geral:66.0, playoff:[52,77,71] },
-  SofM:    { base:84, geral:64.0, playoff:[54,67,71] },
-  Angel:   { base:84, geral:60.0, playoff:[56,66,62] },
-  huanfeng:{ base:84, geral:62.0, playoff:[46,59,73] },
-  SwordArt:{ base:84, geral:62.0, playoff:[51,63,68] },
+  Bin:     { base:84, geral:66.0, playoff:[52,77,71], vice:true },
+  SofM:    { base:84, geral:64.0, playoff:[54,67,71], vice:true },
+  Angel:   { base:84, geral:60.0, playoff:[56,66,62], vice:true },
+  huanfeng:{ base:84, geral:62.0, playoff:[46,59,73], vice:true },
+  SwordArt:{ base:84, geral:62.0, playoff:[51,63,68], vice:true },
   // Top Esports semi (base 81): SF2+QF3. knight/JackeyLove.
   "369":   { base:81, geral:58.0, playoff:[54,67] },
   Karsa:   { base:81, geral:60.0, playoff:[52,70] },

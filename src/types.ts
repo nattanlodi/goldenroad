@@ -37,7 +37,7 @@ export type Lineup = Record<Role, LineupPlayer | null>;
 
 export type Difficulty = "classico" | "especialista";
 
-export type Phase = "start" | "play" | "series" | "result";
+export type Phase = "start" | "play" | "series" | "result" | "codex";
 
 // ---- campanha / playoffs ----
 

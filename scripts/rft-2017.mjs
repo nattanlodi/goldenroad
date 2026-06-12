@@ -9,11 +9,11 @@ merge("2017", {
   Ruler:   { base:86, geral:66.0, playoff:[70,59,71] },
   CoreJJ:  { base:86, geral:66.0, playoff:[70,65,74] },
   // SKT vice (base 84). Faker ainda elite na derrota.
-  Huni:    { base:84, geral:60.0, playoff:[65,64,65] },
-  Peanut:  { base:84, geral:50.0, playoff:[46,50,55] },
-  Faker:   { base:84, geral:64.0, playoff:[64,60,71] },
-  Bang:    { base:84, geral:55.0, playoff:[46,57,58] },
-  Wolf:    { base:84, geral:55.0, playoff:[46,56,58] },
+  Huni:    { base:84, geral:60.0, playoff:[65,64,65], vice:true },
+  Peanut:  { base:84, geral:50.0, playoff:[46,50,55], vice:true },
+  Faker:   { base:84, geral:64.0, playoff:[64,60,71], vice:true },
+  Bang:    { base:84, geral:55.0, playoff:[46,57,58], vice:true },
+  Wolf:    { base:84, geral:55.0, playoff:[46,56,58], vice:true },
   // RNG semi (base 81): SF1+QF3. Uzi.
   Letme:   { base:81, geral:58.0, playoff:[57,65] },
   Mlxg:    { base:81, geral:58.0, playoff:[61,59] },

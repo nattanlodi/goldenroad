@@ -8,10 +8,10 @@ export const WORLDS_2017: Team[] = [
   // 1º — Campeão (base 88). Equilibrado, sem transcendente; mas TODOS gigantes no playoff
   // (CuVee 81 na QF, CoreJJ 74). Varreram a SKT 3-0 na final.
   { id: "ssg-2017", team: "Samsung Galaxy", short: "SSG", year: 2017, league: "LCK", champion: true,
-    players: [["TOP", "CuVee", 96, "kr"], ["JNG", "Ambition", 91, "kr"], ["MID", "Crown", 92, "kr"], ["BOT", "Ruler", 93, "kr"], ["SUP", "CoreJJ", 95, "kr"]] },
+    players: [["TOP", "CuVee", 96, "kr"], ["JNG", "Ambition", 92, "kr"], ["MID", "Crown", 92, "kr"], ["BOT", "Ruler", 93, "kr"], ["SUP", "CoreJJ", 95, "kr"]] },
   // 2º — Vice (base 84). Faker ainda elite (89), mas o bot (Bang/Wolf) desabou na final 0-3.
   { id: "skt-2017", team: "SK Telecom T1", short: "SKT", year: 2017, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Huni", 88, "kr"], ["JNG", "Peanut", 75, "kr"], ["MID", "Faker", 89, "kr"], ["BOT", "Bang", 79, "kr"], ["SUP", "Wolf", 79, "kr"]] },
+    players: [["TOP", "Huni", 88, "kr"], ["JNG", "Peanut", 76, "kr"], ["MID", "Faker", 89, "kr"], ["BOT", "Bang", 80, "kr"], ["SUP", "Wolf", 80, "kr"]] },
   // 3º-4º — Semifinal (base 81). Xiaohu 90 e Uzi 87 (77 na QF) carregaram.
   { id: "rng-2017", team: "Royal Never Give Up", short: "RNG", year: 2017, league: "LPL", champion: false,
     players: [["TOP", "Letme", 82, "cn"], ["JNG", "Mlxg", 81, "cn"], ["MID", "Xiaohu", 91, "cn"], ["BOT", "Uzi", 88, "cn"], ["SUP", "Ming", 83, "cn"]] },

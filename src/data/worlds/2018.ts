@@ -9,10 +9,10 @@ export const WORLDS_2018: Team[] = [
   // -2 geral (vs o cálculo bruto) porque o campo de 2018 era mais fraco e o IG não
   // achou resistência real — final 3-0 tranquila sobre uma Fnatic abaixo.
   { id: "ig-2018", team: "Invictus Gaming", short: "IG", year: 2018, league: "LPL", champion: true,
-    players: [["TOP", "TheShy", 95, "kr"], ["JNG", "Ning", 94, "cn"], ["MID", "Rookie", 95, "kr"], ["BOT", "JackeyLove", 91, "cn"], ["SUP", "Baolan", 95, "cn"]] },
+    players: [["TOP", "TheShy", 95, "kr"], ["JNG", "Ning", 95, "cn"], ["MID", "Rookie", 95, "kr"], ["BOT", "JackeyLove", 91, "cn"], ["SUP", "Baolan", 95, "cn"]] },
   // 2º — Vice (base 84). Demolidores na semi (Bwipo 86) mas massacrados 0-3 na final — bot/mid caíram.
   { id: "fnatic-2018", team: "Fnatic", short: "FNC", year: 2018, league: "EU", champion: false, finalist: true,
-    players: [["TOP", "Bwipo", 89, "be"], ["JNG", "Broxah", 88, "dk"], ["MID", "Caps", 84, "dk"], ["BOT", "Rekkles", 84, "se"], ["SUP", "Hylissang", 84, "bg"]] },
+    players: [["TOP", "Bwipo", 92, "be"], ["JNG", "Broxah", 90, "dk"], ["MID", "Caps", 86, "dk"], ["BOT", "Rekkles", 86, "se"], ["SUP", "Hylissang", 86, "bg"]] },
   // 3º-4º — Semifinal (base 81). 1º semifinalista da NA; Jensen/Svenskeren brilharam na QF.
   { id: "c9-2018", team: "Cloud9", short: "C9", year: 2018, league: "NA", champion: false,
     players: [["TOP", "Licorice", 70, "ca"], ["JNG", "Svenskeren", 83, "dk"], ["MID", "Jensen", 85, "dk"], ["BOT", "Sneaky", 79, "us"], ["SUP", "Zeyzal", 80, "us"]] },

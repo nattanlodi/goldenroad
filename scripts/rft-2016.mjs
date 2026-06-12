@@ -9,11 +9,11 @@ merge("2016", {
   Bang:   { base:86, geral:60.0, playoff:[63,51,64] },
   Wolf:   { base:86, geral:60.0, playoff:[65,56,63] },
   // Samsung Galaxy vice (base 84): F+SF2+QF1. Crown e Ruler em ascensão.
-  CuVee:  { base:84, geral:62.0, playoff:[56,65,69] },
-  Ambition:{ base:84, geral:60.0, playoff:[49,65,62] },
-  Crown:  { base:84, geral:66.0, playoff:[55,84,68] },
-  Ruler:  { base:84, geral:58.0, playoff:[55,49,66] },
-  CoreJJ: { base:84, geral:58.0, playoff:[52,49,71] },
+  CuVee:  { base:84, geral:62.0, playoff:[56,65,69], vice:true },
+  Ambition:{ base:84, geral:60.0, playoff:[49,65,62], vice:true },
+  Crown:  { base:84, geral:66.0, playoff:[55,84,68], vice:true },
+  Ruler:  { base:84, geral:58.0, playoff:[55,49,66], vice:true },
+  CoreJJ: { base:84, geral:58.0, playoff:[52,49,71], vice:true },
   // ROX Tigers semi (base 81): SF1+QF3. O lendário ROX.
   Smeb:   { base:81, geral:68.0, playoff:[64,69] },
   Peanut: { base:81, geral:62.0, playoff:[52,70] },

@@ -3,18 +3,18 @@ import { merge } from "./rft-merge.mjs";
 // Séries: F (final SKT-Royal), S1 (SKT-NaJin), S2 (Royal-Fnatic),
 //         QF1 (C9-Fnatic), QF2 (NaJin-Gambit), QF3 (Gamania-SKT), QF4 (Royal-OMG).
 merge("2013", {
-  // SKT campeão (base 88): F + S1 + QF3
-  Impact:    { base:86, geral:66.6, playoff:[61,51,81] },
-  Bengi:     { base:86, geral:56.2, playoff:[59,74,60] },
-  Faker:     { base:86, geral:60.8, playoff:[73,58,63] , mvp:true },
-  Piglet:    { base:86, geral:59.3, playoff:[35,68,63] },
-  PoohManDu: { base:86, geral:57.0, playoff:[55,55,70] },
-  // Royal Club vice (base 84): F + S2 + QF4
-  GoDlike:   { base:84, geral:53.5, playoff:[49,41,61] }, // Ackerman
-  Lucky:     { base:84, geral:50.0, playoff:[37,37,58] },
-  "Wh1t3zZ": { base:84, geral:58.1, playoff:[56,56,62] },
-  Uzi:       { base:84, geral:51.2, playoff:[53,53,64] },
-  Tabe:      { base:84, geral:51.7, playoff:[55,55,59] },
+  // SKT campeão (base 88): [Final, Semi(S1), Quartas(QF3)] — notas reais dos prints rft.gg.
+  Impact:    { base:86, geral:66.6, playoff:[64,61,81] },
+  Bengi:     { base:86, geral:56.2, playoff:[61,51,60] },
+  Faker:     { base:86, geral:60.8, playoff:[59,62,63] , mvp:true },
+  Piglet:    { base:86, geral:59.3, playoff:[60,56,63] },
+  PoohManDu: { base:86, geral:57.0, playoff:[63,50,70] },
+  // Royal Club vice (base 84): [Final, Semi(S2), Quartas(QF4)]. vice:true → final pesa 0.5.
+  GoDlike:   { base:84, geral:53.5, playoff:[49,41,61], vice:true }, // Ackerman
+  Lucky:     { base:84, geral:50.0, playoff:[37,37,58], vice:true },
+  "Wh1t3zZ": { base:84, geral:58.1, playoff:[56,56,62], vice:true },
+  Uzi:       { base:84, geral:51.2, playoff:[53,53,64], vice:true },
+  Tabe:      { base:84, geral:51.7, playoff:[55,55,59], vice:true },
   // NaJin Black Sword semi (base 81): S1 + QF2
   Expession: { base:81, geral:62.4, playoff:[42,72] },
   Watch:     { base:81, geral:49.4, playoff:[74,56] },

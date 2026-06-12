@@ -9,11 +9,11 @@ merge("2019", {
   Lwx:     { base:86, geral:66.0, playoff:[73,62,62] },
   Crisp:   { base:86, geral:72.0, playoff:[74,80,74] },
   // G2 vice (base 84). A super-G2.
-  Wunder:  { base:84, geral:60.0, playoff:[53,56,74] },
-  Jankos:  { base:84, geral:58.0, playoff:[48,58,66] },
-  Caps:    { base:84, geral:62.0, playoff:[37,64,60] },
-  Perkz:   { base:84, geral:60.0, playoff:[40,60,59] },
-  Mikyx:   { base:84, geral:60.0, playoff:[41,72,54] },
+  Wunder:  { base:84, geral:60.0, playoff:[53,56,74], vice:true },
+  Jankos:  { base:84, geral:58.0, playoff:[48,58,66], vice:true },
+  Caps:    { base:84, geral:62.0, playoff:[37,64,60], vice:true },
+  Perkz:   { base:84, geral:60.0, playoff:[40,60,59], vice:true },
+  Mikyx:   { base:84, geral:60.0, playoff:[41,72,54], vice:true },
   // Invictus Gaming semi (base 81): SF1+QF1
   TheShy:  { base:81, geral:66.0, playoff:[51,77] },
   Ning:    { base:81, geral:52.0, playoff:[43,61] },

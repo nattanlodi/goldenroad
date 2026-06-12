@@ -9,11 +9,11 @@ merge("2015", {
   Bang:    { base:86, geral:62.0, playoff:[60,55,66] },
   Wolf:    { base:86, geral:60.0, playoff:[62,62,66] },
   // KOO Tigers vice (base 84): F+SF2+QF4 (ROX no RFT)
-  Smeb:    { base:84, geral:64.0, playoff:[55,78,66] },
-  Hojin:   { base:84, geral:52.0, playoff:[55,50,54] },
-  Kuro:    { base:84, geral:60.0, playoff:[54,68,64] },
-  PraY:    { base:84, geral:55.0, playoff:[47,60,54] },
-  GorillA: { base:84, geral:62.0, playoff:[49,76,63] },
+  Smeb:    { base:84, geral:64.0, playoff:[55,78,66], vice:true },
+  Hojin:   { base:84, geral:52.0, playoff:[55,50,54], vice:true },
+  Kuro:    { base:84, geral:60.0, playoff:[54,68,64], vice:true },
+  PraY:    { base:84, geral:55.0, playoff:[47,60,54], vice:true },
+  GorillA: { base:84, geral:62.0, playoff:[49,76,63], vice:true },
   // Fnatic semi (base 81): SF2+QF3
   Huni:    { base:81, geral:62.0, playoff:[50,73] },
   Reignover:{ base:81, geral:58.0, playoff:[51,53] },

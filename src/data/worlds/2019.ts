@@ -7,10 +7,10 @@ import type { Team } from "../../types";
 export const WORLDS_2019: Team[] = [
   // 1º — Campeão (base 88). Varreram a final 3-0; Tian MVP, Doinb cérebro, Crisp sensacional (80 na semi).
   { id: "fpx-2019", team: "FunPlus Phoenix", short: "FPX", year: 2019, league: "LPL", champion: true,
-    players: [["TOP", "GimGoon", 91, "kr"], ["JNG", "Tian", 98, "cn"], ["MID", "doinb", 96, "kr"], ["BOT", "lwx", 94, "cn"], ["SUP", "Crisp", 97, "cn"]] },
+    players: [["TOP", "GimGoon", 91, "kr"], ["JNG", "Tian", 99, "cn"], ["MID", "doinb", 96, "kr"], ["BOT", "lwx", 94, "cn"], ["SUP", "Crisp", 97, "cn"]] },
   // 2º — Vice (base 84). A super-G2, mas massacrada 0-3 na final (Caps 37, Perkz 40).
   { id: "g2-2019", team: "G2 Esports", short: "G2", year: 2019, league: "LEC", champion: false, finalist: true,
-    players: [["TOP", "Wunder", 86, "dk"], ["JNG", "Jankos", 83, "pl"], ["MID", "Caps", 82, "dk"], ["BOT", "Perkz", 81, "hr"], ["SUP", "Mikyx", 83, "si"]] },
+    players: [["TOP", "Wunder", 88, "dk"], ["JNG", "Jankos", 85, "pl"], ["MID", "Caps", 84, "dk"], ["BOT", "Perkz", 83, "hr"], ["SUP", "Mikyx", 85, "si"]] },
   // 3º-4º — Semifinal (base 81). TheShy 77 na QF; Rookie consistente.
   { id: "ig-2019", team: "Invictus Gaming", short: "IG", year: 2019, league: "LPL", champion: false,
     players: [["TOP", "TheShy", 87, "kr"], ["JNG", "Ning", 75, "cn"], ["MID", "Rookie", 86, "kr"], ["BOT", "JackeyLove", 79, "cn"], ["SUP", "Baolan", 75, "cn"]] },

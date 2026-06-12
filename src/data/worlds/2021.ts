@@ -7,10 +7,10 @@ import type { Team } from "../../types";
 export const WORLDS_2021: Team[] = [
   // 1º — Campeão (base 88). Meiko o destaque (95, sup MVP-tier); Flandre/Scout fortes.
   { id: "edg-2021", team: "EDward Gaming", short: "EDG", year: 2021, league: "LPL", champion: true,
-    players: [["TOP", "Flandre", 93, "cn"], ["JNG", "Jiejie", 88, "cn"], ["MID", "Scout", 92, "kr"], ["BOT", "Viper", 86, "kr"], ["SUP", "Meiko", 94, "cn"]] },
+    players: [["TOP", "Flandre", 93, "cn"], ["JNG", "Jiejie", 88, "cn"], ["MID", "Scout", 93, "kr"], ["BOT", "Viper", 86, "kr"], ["SUP", "Meiko", 94, "cn"]] },
   // 2º — Vice (base 84). Final em 5 jogos; BeryL/Canyon/ShowMaker fortes.
   { id: "dk-2021", team: "DWG KIA", short: "DK", year: 2021, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Khan", 89, "kr"], ["JNG", "Canyon", 91, "kr"], ["MID", "ShowMaker", 88, "kr"], ["BOT", "Ghost", 83, "kr"], ["SUP", "BeryL", 92, "kr"]] },
+    players: [["TOP", "Khan", 90, "kr"], ["JNG", "Canyon", 92, "kr"], ["MID", "ShowMaker", 90, "kr"], ["BOT", "Ghost", 84, "kr"], ["SUP", "BeryL", 93, "kr"]] },
   // 3º-4º — Semifinal (base 81). Demoliram a C9 na QF (Life 80); levaram a EDG ao 5º jogo.
   { id: "geng-2021", team: "Gen.G Esports", short: "GEN", year: 2021, league: "LCK", champion: false,
     players: [["TOP", "Rascal", 87, "kr"], ["JNG", "Clid", 86, "kr"], ["MID", "Bdd", 91, "kr"], ["BOT", "Ruler", 82, "kr"], ["SUP", "Life", 92, "kr"]] },

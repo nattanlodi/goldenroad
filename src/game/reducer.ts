@@ -134,6 +134,7 @@ export type Action =
     }
   | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean; finalsMvp: HighlightRef | null }
   | { type: "restart" }
+  | { type: "openCodex" }
   | { type: "setCopied"; copied: boolean };
 
 export function reducer(state: GameState, action: Action): GameState {
@@ -284,6 +285,9 @@ export function reducer(state: GameState, action: Action): GameState {
 
     case "restart":
       return { ...state, phase: "start" };
+
+    case "openCodex":
+      return { ...state, phase: "codex" };
 
     case "setCopied":
       return { ...state, copied: action.copied };

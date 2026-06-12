@@ -9,11 +9,11 @@ merge("2014", {
   imp:     { base:86, geral:62.6, playoff:[58,55,36] },
   Mata:    { base:86, geral:79.8, playoff:[80,85,84] , mvp:true },
   // Star Horn Royal Club vice (base 84): F + SF2 + QF3
-  Cola:    { base:84, geral:50.4, playoff:[44,45,45] },
-  inSec:   { base:84, geral:48.1, playoff:[32,46,46] },
-  corn:    { base:84, geral:55.6, playoff:[32,58,60] },
-  Uzi:     { base:84, geral:57.0, playoff:[40,56,56] },
-  Zero:    { base:84, geral:61.0, playoff:[41,58,65] },
+  Cola:    { base:84, geral:50.4, playoff:[44,45,45], vice:true },
+  inSec:   { base:84, geral:48.1, playoff:[32,46,46], vice:true },
+  corn:    { base:84, geral:55.6, playoff:[32,58,60], vice:true },
+  Uzi:     { base:84, geral:57.0, playoff:[40,56,56], vice:true },
+  Zero:    { base:84, geral:61.0, playoff:[41,58,65], vice:true },
   // Samsung Blue semi (base 81): SF1 + QF2
   Acorn:   { base:81, geral:52.7, playoff:[18,61] },
   Spirit:  { base:81, geral:54.1, playoff:[25,61] },

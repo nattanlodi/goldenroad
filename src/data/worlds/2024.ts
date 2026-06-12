@@ -5,29 +5,31 @@ import type { Team } from "../../types";
 // colocação + RFT 1.0 (rft.gg), 70% playoff + 30% geral; ver teams.ts. Faker'24 curadoria (MVP da final).
 export const WORLDS_2024: Team[] = [
   // 1º — Campeão (base 88). 4º título; crescimento clássico no mata-mata (Keria 86 na QF3).
+  // Faker +1 de curadoria: plays clutch decisivas nos jogos mais importantes (a fórmula não captura).
   { id: "t1-2024", team: "T1", short: "T1", year: 2024, league: "LCK", champion: true,
-    players: [["TOP", "Zeus", 94, "kr"], ["JNG", "Oner", 93, "kr"], ["MID", "Faker", 92, "kr"], ["BOT", "Gumayusi", 97, "kr"], ["SUP", "Keria", 95, "kr"]] },
+    players: [["TOP", "Zeus", 94, "kr"], ["JNG", "Oner", 93, "kr"], ["MID", "Faker", 92, "kr"], ["BOT", "Gumayusi", 93, "kr"], ["SUP", "Keria", 94, "kr"]] },
   // 2º — Vice (base 84). Final em 5 jogos; Knight monstruoso (84 na semi), Bin/ON fortes.
+  // knight: MVP do torneio 2024 (+2). Overalls recalibrados com geral REAL (rft-playoffs.ts) + força do oponente.
   { id: "blg-2024", team: "Bilibili Gaming", short: "BLG", year: 2024, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Bin", 90, "cn"], ["JNG", "XUN", 88, "cn"], ["MID", "knight", 93, "cn"], ["BOT", "Elk", 88, "cn"], ["SUP", "ON", 89, "cn"]] },
+    players: [["TOP", "Bin", 89, "cn"], ["JNG", "XUN", 89, "cn"], ["MID", "knight", 96, "cn"], ["BOT", "Elk", 88, "cn"], ["SUP", "ON", 86, "cn"]] },
   // 3º-4º — Semifinal (base 81). Crisp/Xiaohu o destaque; varridos pela BLG na semi.
   { id: "wbg-2024", team: "Weibo Gaming", short: "WBG", year: 2024, league: "LPL", champion: false,
-    players: [["TOP", "Breathe", 82, "cn"], ["JNG", "Tarzan", 77, "kr"], ["MID", "Xiaohu", 83, "cn"], ["BOT", "Light", 80, "cn"], ["SUP", "Crisp", 85, "cn"]] },
-  // 3º-4º — Semifinal (base 81). Chovy/Kiin o destaque; favoritos que pararam na semi.
+    players: [["TOP", "Breathe", 82, "cn"], ["JNG", "Tarzan", 75, "kr"], ["MID", "Xiaohu", 81, "cn"], ["BOT", "Light", 79, "cn"], ["SUP", "Crisp", 83, "cn"]] },
+  // 3º-4º — Semifinal (base 81). Chovy/Peyz o destaque; favoritos que pararam na semi. Enfrentaram os mais fortes (força do oponente premiou).
   { id: "geng-2024", team: "Gen.G Esports", short: "GEN", year: 2024, league: "LCK", champion: false,
-    players: [["TOP", "Kiin", 86, "kr"], ["JNG", "Canyon", 82, "kr"], ["MID", "Chovy", 87, "kr"], ["BOT", "Peyz", 84, "kr"], ["SUP", "Lehends", 78, "kr"]] },
-  // 5º-8º — Quartas (base 78). Perderam 1-3 pra WBG; Zika/GALA o destaque.
+    players: [["TOP", "Kiin", 84, "kr"], ["JNG", "Canyon", 80, "kr"], ["MID", "Chovy", 87, "kr"], ["BOT", "Peyz", 84, "kr"], ["SUP", "Lehends", 79, "kr"]] },
+  // 5º-8º — Quartas (base 78). Perderam 1-3 pra WBG; Zika/Hang o destaque.
   { id: "lng-2024", team: "LNG Esports", short: "LNG", year: 2024, league: "LPL", champion: false,
-    players: [["TOP", "Zika", 79, "cn"], ["JNG", "Weiwei", 73, "cn"], ["MID", "Scout", 77, "kr"], ["BOT", "GALA", 79, "cn"], ["SUP", "Hang", 76, "cn"]] },
+    players: [["TOP", "Zika", 81, "cn"], ["JNG", "Weiwei", 75, "cn"], ["MID", "Scout", 78, "kr"], ["BOT", "GALA", 80, "cn"], ["SUP", "Hang", 78, "cn"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra BLG; Viper/Delight o destaque (núcleo da HLE de 2025).
   { id: "hle-2024", team: "Hanwha Life Esports", short: "HLE", year: 2024, league: "LCK", champion: false,
-    players: [["TOP", "Doran", 71, "kr"], ["JNG", "Peanut", 72, "kr"], ["MID", "Zeka", 79, "kr"], ["BOT", "Viper", 84, "kr"], ["SUP", "Delight", 82, "kr"]] },
-  // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Creme/Meiko afundaram.
+    players: [["TOP", "Doran", 71, "kr"], ["JNG", "Peanut", 72, "kr"], ["MID", "Zeka", 80, "kr"], ["BOT", "Viper", 85, "kr"], ["SUP", "Delight", 83, "kr"]] },
+  // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Creme/Meiko afundaram no mata-mata.
   { id: "tes-2024", team: "Top Esports", short: "TES", year: 2024, league: "LPL", champion: false,
-    players: [["TOP", "369", 68, "cn"], ["JNG", "Tian", 66, "cn"], ["MID", "Creme", 66, "cn"], ["BOT", "JackeyLove", 66, "cn"], ["SUP", "Meiko", 66, "cn"]] },
-  // 5º-8º — Quartas (base 78). A melhor campanha da NA em anos; Inspired/Quad o destaque.
+    players: [["TOP", "369", 71, "cn"], ["JNG", "Tian", 68, "cn"], ["MID", "Creme", 66, "cn"], ["BOT", "JackeyLove", 67, "cn"], ["SUP", "Meiko", 66, "cn"]] },
+  // 5º-8º — Quartas (base 78). A melhor campanha da NA em anos; Inspired/Quad o destaque (mas inflaram vs times fracos — força do oponente desinflou).
   { id: "flyquest-2024", team: "FlyQuest", short: "FLY", year: 2024, league: "LCS", champion: false,
-    players: [["TOP", "Bwipo", 73, "be"], ["JNG", "Inspired", 80, "pl"], ["MID", "Quad", 80, "kr"], ["BOT", "Massu", 76, "ca"], ["SUP", "Busio", 74, "us"]] },
+    players: [["TOP", "Bwipo", 71, "be"], ["JNG", "Inspired", 78, "pl"], ["MID", "Quad", 79, "kr"], ["BOT", "Massu", 75, "ca"], ["SUP", "Busio", 73, "us"]] },
   // 9º-12º — Fase suíça eliminados (base 72). Caps/Hans Sama.
   { id: "g2-2024", team: "G2 Esports", short: "G2", year: 2024, league: "LEC", champion: false,
     players: [["TOP", "BrokenBlade", 73, "de"], ["JNG", "Yike", 73, "se"], ["MID", "Caps", 75, "dk"], ["BOT", "Hans Sama", 74, "fr"], ["SUP", "Mikyx", 73, "si"]] },

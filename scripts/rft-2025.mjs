@@ -9,11 +9,11 @@ merge("2025", {
   Gumayusi:{ base:86, geral:74.0, playoff:[70,79,74] , mvp:true },
   Keria:   { base:86, geral:76.0, playoff:[71,84,73] },
   // KT Rolster vice (base 84). Bdd/Cuzz/Peter monstruosos na QF (92/90/91).
-  PerfecT: { base:84, geral:72.0, playoff:[63,71,80] },
-  Cuzz:    { base:84, geral:78.0, playoff:[74,76,90] },
-  Bdd:     { base:84, geral:78.0, playoff:[70,78,92] },
-  deokdam: { base:84, geral:72.0, playoff:[58,78,84] },
-  Peter:   { base:84, geral:76.0, playoff:[68,75,91] },
+  PerfecT: { base:84, geral:72.0, playoff:[63,71,80], vice:true },
+  Cuzz:    { base:84, geral:78.0, playoff:[74,76,90], vice:true },
+  Bdd:     { base:84, geral:78.0, playoff:[70,78,92], vice:true },
+  deokdam: { base:84, geral:72.0, playoff:[58,78,84], vice:true },
+  Peter:   { base:84, geral:76.0, playoff:[68,75,91], vice:true },
   // Top Esports semi (base 81): SF2+QF3. 369/Creme/JackeyLove.
   "369":   { base:81, geral:66.0, playoff:[56,75] },
   Kanavi:  { base:81, geral:58.0, playoff:[40,73] },

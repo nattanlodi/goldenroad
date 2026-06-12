@@ -16,11 +16,25 @@ function stats(arr) {
   return { m, sd };
 }
 
-// players: { name: { base, geral, playoff:[...series ratings] (vazio = sem playoff), mvp? } }
+// players: { name: { base, geral, playoff:[...series ratings] (vazio = sem playoff), mvp?, vice? } }
+// Array playoff em ordem [Final, Semi, Quartas...] (1ª posição = fase mais avançada).
+// VICE (vice:true): AMACIA a queda da FINAL (1ª posição). A final mantém PESO NORMAL na
+// média (não infla semi/quartas), mas seu VALOR é suavizado em direção à média das outras
+// séries: finalAmaciada = (finalReal + média(semi, quartas)) / 2. Ideia: perder a final 0-3
+// não derruba quem foi gigante o torneio todo, sem fazer a nota se basear mais na semi/quartas.
 export function merge(label, players) {
   const geralVals = Object.values(players).map((p) => p.geral);
   const playoffPlayers = Object.values(players).filter((p) => p.playoff && p.playoff.length);
-  const playoffAvg = (p) => p.playoff.reduce((a, v) => a + v, 0) / p.playoff.length;
+  // média de RFT de playoff; pro vice, a final (1ª pos) tem o valor amaciado (peso normal).
+  const playoffAvg = (p) => {
+    if (p.vice && p.playoff.length > 1) {
+      const others = p.playoff.slice(1);
+      const othersAvg = others.reduce((a, v) => a + v, 0) / others.length;
+      const finalSoft = (p.playoff[0] + othersAvg) / 2;
+      return [finalSoft, ...others].reduce((a, v) => a + v, 0) / p.playoff.length;
+    }
+    return p.playoff.reduce((a, v) => a + v, 0) / p.playoff.length;
+  };
   const gStat = stats(geralVals);
   const pStat = stats(playoffPlayers.map(playoffAvg));
 

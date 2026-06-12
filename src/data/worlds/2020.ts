@@ -6,10 +6,10 @@ import type { Team } from "../../types";
 export const WORLDS_2020: Team[] = [
   // 1º — Campeão (base 88). Domínio total; Canyon MVP (81 na QF), Nuguri/ShowMaker no teto.
   { id: "dwg-2020", team: "DAMWON Gaming", short: "DWG", year: 2020, league: "LCK", champion: true,
-    players: [["TOP", "Nuguri", 97, "kr"], ["JNG", "Canyon", 98, "kr"], ["MID", "ShowMaker", 95, "kr"], ["BOT", "Ghost", 89, "kr"], ["SUP", "BeryL", 93, "kr"]] },
+    players: [["TOP", "Nuguri", 97, "kr"], ["JNG", "Canyon", 99, "kr"], ["MID", "ShowMaker", 95, "kr"], ["BOT", "Ghost", 89, "kr"], ["SUP", "BeryL", 93, "kr"]] },
   // 2º — Vice (base 84). Bin/SofM cresceram nas séries vencidas; final fraca os segurou.
   { id: "suning-2020", team: "Suning", short: "SN", year: 2020, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Bin", 91, "cn"], ["JNG", "SofM", 89, "vn"], ["MID", "Angel", 87, "cn"], ["BOT", "huanfeng", 86, "cn"], ["SUP", "SwordArt", 87, "tw"]] },
+    players: [["TOP", "Bin", 93, "cn"], ["JNG", "SofM", 90, "vn"], ["MID", "Angel", 87, "cn"], ["BOT", "huanfeng", 88, "cn"], ["SUP", "SwordArt", 88, "tw"]] },
   // 3º-4º — Semifinal (base 81). knight gigante (79 na QF); JackeyLove apagado na semi.
   { id: "tes-2020", team: "Top Esports", short: "TES", year: 2020, league: "LPL", champion: false,
     players: [["TOP", "369", 83, "cn"], ["JNG", "Karsa", 83, "tw"], ["MID", "knight", 90, "cn"], ["BOT", "JackeyLove", 78, "cn"], ["SUP", "yuyanjia", 80, "cn"]] },

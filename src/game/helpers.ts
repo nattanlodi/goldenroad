@@ -324,7 +324,7 @@ export function yy(year: number): string {
 // Raridade do jogador (visual dos cards) — por overall
 // ============================================================
 
-export type Rarity = "mitico" | "lendario" | "epico" | "raro" | "comum";
+export type Rarity = "centuriao" | "mitico" | "lendario" | "epico" | "raro" | "comum";
 
 export interface RaritySkin {
   rarity: Rarity;
@@ -335,6 +335,8 @@ export interface RaritySkin {
 }
 
 const RARITY_SKINS: Record<Rarity, RaritySkin> = {
+  // 100 = duplo MVP (Finals + Torneio). Card único: fundo branco/marfim com shimmer dourado.
+  centuriao: { rarity: "centuriao", cls: "card-centuriao", ratingColor: "#a8801f" },
   mitico: { rarity: "mitico", cls: "card-mitico", ratingColor: "#ff8d7a" },
   lendario: { rarity: "lendario", cls: "card-lendario", ratingColor: "#f5d77a" },
   epico: { rarity: "epico", cls: "card-epico", ratingColor: "#d2a0e8" },
@@ -343,10 +345,12 @@ const RARITY_SKINS: Record<Rarity, RaritySkin> = {
 };
 
 /**
- * Raridade pela nota do jogador. Calibrada ao pool (média ~81, teto 98):
- *   mítico 97+ · lendário 92-96 · épico 86-91 · raro 80-85 · comum <80.
+ * Raridade pela nota do jogador. Calibrada ao pool (média ~81, teto 100):
+ *   centurião 100 (duplo MVP) · mítico 97-99 · lendário 92-96 · épico 86-91 ·
+ *   raro 80-85 · comum <80.
  */
 export function rarityFor(overall: number): RaritySkin {
+  if (overall >= 100) return RARITY_SKINS.centuriao;
   if (overall >= 97) return RARITY_SKINS.mitico;
   if (overall >= 92) return RARITY_SKINS.lendario;
   if (overall >= 86) return RARITY_SKINS.epico;

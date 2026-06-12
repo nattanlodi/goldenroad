@@ -9,11 +9,11 @@ merge("2018", {
   JackeyLove:{ base:86, geral:68.0, playoff:[76,60,61] },
   Baolan:    { base:86, geral:70.0, playoff:[85,68,66] },
   // Fnatic vice (base 84). Massacrados 0-3 na final, mas demolidores na semi (Bwipo 86).
-  Bwipo:     { base:84, geral:62.0, playoff:[43,86,63] },
-  Broxah:    { base:84, geral:60.0, playoff:[51,77,63] },
-  Caps:      { base:84, geral:60.0, playoff:[40,77,53] },
-  Rekkles:   { base:84, geral:58.0, playoff:[47,69,58] },
-  Hylissang: { base:84, geral:58.0, playoff:[41,75,57] },
+  Bwipo:     { base:84, geral:62.0, playoff:[43,86,63], vice:true },
+  Broxah:    { base:84, geral:60.0, playoff:[51,77,63], vice:true },
+  Caps:      { base:84, geral:60.0, playoff:[40,77,53], vice:true },
+  Rekkles:   { base:84, geral:58.0, playoff:[47,69,58], vice:true },
+  Hylissang: { base:84, geral:58.0, playoff:[41,75,57], vice:true },
   // Cloud9 semi (base 81): SF2+QF3. 1º semifinalista NA.
   Licorice:  { base:81, geral:48.0, playoff:[36,49] },
   Svenskeren:{ base:81, geral:60.0, playoff:[42,79] },

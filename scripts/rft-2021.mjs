@@ -9,11 +9,11 @@ merge("2021", {
   Viper:   { base:86, geral:58.0, playoff:[51,62,54] },
   Meiko:   { base:86, geral:65.0, playoff:[63,65,71] },
   // DAMWON KIA vice (base 84). ShowMaker/Canyon/BeryL fortes.
-  Khan:    { base:84, geral:60.0, playoff:[57,63,73] },
-  Canyon:  { base:84, geral:64.0, playoff:[53,66,75] },
-  ShowMaker:{ base:84, geral:62.0, playoff:[45,72,67] },
-  Ghost:   { base:84, geral:55.0, playoff:[51,55,64] },
-  BeryL:   { base:84, geral:62.0, playoff:[60,70,76] },
+  Khan:    { base:84, geral:60.0, playoff:[57,63,73], vice:true },
+  Canyon:  { base:84, geral:64.0, playoff:[53,66,75], vice:true },
+  ShowMaker:{ base:84, geral:62.0, playoff:[45,72,67], vice:true },
+  Ghost:   { base:84, geral:55.0, playoff:[51,55,64], vice:true },
+  BeryL:   { base:84, geral:62.0, playoff:[60,70,76], vice:true },
   // T1 semi (base 81): SF1+QF1. Faker com o trio jovem emergindo.
   Canna:   { base:81, geral:62.0, playoff:[57,76] },
   Oner:    { base:81, geral:62.0, playoff:[51,76] },

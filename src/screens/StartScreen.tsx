@@ -6,6 +6,7 @@ import { Logo6x0 } from "../components/Logo6x0";
 interface Props {
   poolCount: number;
   onBegin: (mode: GameMode) => void;
+  onCodex: () => void;
 }
 
 const RULES = [
@@ -24,7 +25,7 @@ const cardIdle: CSSProperties = {
   background: "linear-gradient(160deg,rgba(40,46,58,0.5),rgba(26,32,42,0.65))",
 };
 
-export function StartScreen({ poolCount, onBegin }: Props) {
+export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
   const [mode, setMode] = useState<GameMode>("goldenroad");
   return (
     <div className="anim-fade m-auto w-full max-w-[780px] text-center">
@@ -36,7 +37,7 @@ export function StartScreen({ poolCount, onBegin }: Props) {
       <h1 className="mt-[18px] mb-2 font-display text-[clamp(22px,4.5vw,38px)] font-semibold uppercase tracking-[1px] text-cream">
         Monte a line invencível
       </h1>
-      <p className="mx-auto mb-[38px] max-w-[520px] text-[clamp(15px,2.2vw,18px)] leading-[1.55] text-[#BFC4CD]">
+      <p className="mx-auto mb-[38px] text-[clamp(15px,2.2vw,18px)] leading-[1.55] text-[#BFC4CD]">
         Você recebe lines reais de times lendários do Worlds. Escolha{" "}
         <b className="text-cream">um jogador por rodada</b> e preencha as 5 lanes. Depois, vença as 6 séries dos
         playoffs <b className="text-cream">uma a uma</b> e erga a taça com um 6–0 perfeito.
@@ -106,12 +107,20 @@ export function StartScreen({ poolCount, onBegin }: Props) {
         ))}
       </div>
 
-      <button
-        onClick={() => onBegin(mode)}
-        className="btn-gold cursor-pointer rounded-[11px] border-none px-[46px] py-4 font-display text-[18px] font-semibold uppercase tracking-[2px]"
-      >
-        {mode === "goldenroad" ? "Começar carreira" : "Começar campanha"}
-      </button>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          onClick={() => onBegin(mode)}
+          className="btn-gold cursor-pointer rounded-[11px] border-none px-[46px] py-4 font-display text-[18px] font-semibold uppercase tracking-[2px]"
+        >
+          {mode === "goldenroad" ? "Começar carreira" : "Começar campanha"}
+        </button>
+        <button
+          onClick={onCodex}
+          className="btn-ghost cursor-pointer rounded-[11px] px-[28px] py-4 font-display text-[15px] font-semibold uppercase tracking-[1px]"
+        >
+          📖 Almanaque
+        </button>
+      </div>
       <div className="mt-[18px] font-mono text-[13px] text-dim-2">
         {poolCount} campanhas no pool · LCK · LPL · LEC · LMS
       </div>

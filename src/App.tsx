@@ -6,6 +6,7 @@ import { StartScreen } from "./screens/StartScreen";
 import { DraftScreen } from "./screens/DraftScreen";
 import { SeriesScreen } from "./screens/SeriesScreen";
 import { ResultScreen } from "./screens/ResultScreen";
+import { CodexScreen } from "./screens/CodexScreen";
 
 export function App() {
   const game = useGame();
@@ -19,10 +20,13 @@ export function App() {
       <AppBackground dim={phase === "play"} />
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
-      {phase === "start" && <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={(mode) => game.begin(mode)} />}
+      {phase === "start" && (
+        <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={(mode) => game.begin(mode)} onCodex={game.openCodex} />
+      )}
       {phase === "play" && <DraftScreen game={game} />}
       {phase === "series" && <SeriesScreen game={game} />}
       {phase === "result" && <ResultScreen game={game} />}
+      {phase === "codex" && <CodexScreen game={game} />}
     </div>
   );
 }

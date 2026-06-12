@@ -8,10 +8,10 @@ import type { Team } from "../../types";
 export const WORLDS_2015: Team[] = [
   // 1º — Campeão (base 88). Faker dominante no playoff (75/77/75). Bengi o mais discreto da line.
   { id: "skt-2015", team: "SK Telecom T1", short: "SKT", year: 2015, league: "LCK", champion: true,
-    players: [["TOP", "MaRin", 98, "kr"], ["JNG", "Bengi", 85, "kr"], ["MID", "Faker", 97, "kr"], ["BOT", "Bang", 92, "kr"], ["SUP", "Wolf", 93, "kr"]] },
+    players: [["TOP", "MaRin", 99, "kr"], ["JNG", "Bengi", 85, "kr"], ["MID", "Faker", 97, "kr"], ["BOT", "Bang", 92, "kr"], ["SUP", "Wolf", 93, "kr"]] },
   // 2º — Vice (base 84). Smeb/GorillA/Kuro carregaram (78/76/68 na semi); Hojin/PraY modestos.
   { id: "koo-2015", team: "KOO Tigers", short: "KOO", year: 2015, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Smeb", 94, "kr"], ["JNG", "Hojin", 82, "kr"], ["MID", "Kuro", 90, "kr"], ["BOT", "PraY", 83, "kr"], ["SUP", "GorillA", 91, "kr"]] },
+    players: [["TOP", "Smeb", 95, "kr"], ["JNG", "Hojin", 82, "kr"], ["MID", "Kuro", 91, "kr"], ["BOT", "PraY", 84, "kr"], ["SUP", "GorillA", 93, "kr"]] },
   // 3º-4º — Semifinal (base 81). Febiven o destaque (80 na QF), Huni forte; bot apagado na semi.
   { id: "fnatic-2015", team: "Fnatic", short: "FNC", year: 2015, league: "EU", champion: false,
     players: [["TOP", "Huni", 88, "kr"], ["JNG", "Reignover", 80, "kr"], ["MID", "Febiven", 94, "nl"], ["BOT", "Rekkles", 81, "se"], ["SUP", "YellOwStaR", 80, "fr"]] },

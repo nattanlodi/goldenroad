@@ -9,11 +9,11 @@ merge("2022", {
   Deft:    { base:86, geral:58.0, playoff:[56,60,65] },
   BeryL:   { base:86, geral:62.0, playoff:[63,64,64] },
   // T1 vice (base 84). Trio jovem + Faker; final em 5 jogos.
-  Zeus:    { base:84, geral:66.0, playoff:[58,71,78] },
-  Oner:    { base:84, geral:62.0, playoff:[60,61,73] },
-  Faker:   { base:84, geral:64.0, playoff:[58,72,62] },
-  Gumayusi:{ base:84, geral:68.0, playoff:[55,80,72] },
-  Keria:   { base:84, geral:68.0, playoff:[63,80,73] },
+  Zeus:    { base:84, geral:66.0, playoff:[58,71,78], vice:true },
+  Oner:    { base:84, geral:62.0, playoff:[60,61,73], vice:true },
+  Faker:   { base:84, geral:64.0, playoff:[58,72,62], vice:true },
+  Gumayusi:{ base:84, geral:68.0, playoff:[55,80,72], vice:true },
+  Keria:   { base:84, geral:68.0, playoff:[63,80,73], vice:true },
   // JD Gaming semi (base 81): SF1+QF1. Kanavi gigante na QF (82).
   "369":   { base:81, geral:66.0, playoff:[64,78] },
   Kanavi:  { base:81, geral:68.0, playoff:[60,82] },

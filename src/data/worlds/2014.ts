@@ -9,10 +9,11 @@ export const WORLDS_2014: Team[] = [
   // 1º — Campeão (base 88). O mais dominante da história; RFT de playoff absurdo
   // (PawN 98 na semi, Looper 90, Mata 85). 4 jogadores no teto; imp 88 (QF1 fraco).
   { id: "sswhite-2014", team: "Samsung White", short: "SSW", year: 2014, league: "OGN", champion: true,
-    players: [["TOP", "Looper", 97, "kr"], ["JNG", "DanDy", 97, "kr"], ["MID", "PawN", 97, "kr"], ["BOT", "imp", 85, "kr"], ["SUP", "Mata", 98, "kr"]] },
-  // 2º — Vice (base 84). Campanha modesta: sobreviveram sem brilhar (zero 85 o melhor).
+    players: [["TOP", "Looper", 97, "kr"], ["JNG", "DanDy", 97, "kr"], ["MID", "PawN", 97, "kr"], ["BOT", "imp", 85, "kr"], ["SUP", "Mata", 99, "kr"]] },
+  // 2º — Vice (base 84). +3 de curadoria em todos: jogaram a final muito mal (SSW os destruiu),
+  // mas chegar à final do mundial não merece nota tão baixa. RFT puxou demais pra baixo.
   { id: "shrc-2014", team: "Star Horn Royal Club", short: "SHR", year: 2014, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Cola", 79, "cn"], ["JNG", "inSec", 78, "kr"], ["MID", "corn", 82, "cn"], ["BOT", "Uzi", 83, "cn"], ["SUP", "Zero", 85, "kr"]] },
+    players: [["TOP", "Cola", 82, "cn"], ["JNG", "inSec", 81, "kr"], ["MID", "corn", 87, "cn"], ["BOT", "Uzi", 87, "cn"], ["SUP", "Zero", 89, "kr"]] },
   // 3º-4º — Semifinal (base 81). Foram varridos 0-3 pela SSW na semi; QF2 melhor equilibrou.
   { id: "ssblue-2014", team: "Samsung Blue", short: "SSB", year: 2014, league: "OGN", champion: false,
     players: [["TOP", "Acorn", 75, "kr"], ["JNG", "Spirit", 76, "kr"], ["MID", "Dade", 78, "kr"], ["BOT", "Deft", 77, "kr"], ["SUP", "Heart", 79, "kr"]] },

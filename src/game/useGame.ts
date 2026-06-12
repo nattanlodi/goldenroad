@@ -329,6 +329,7 @@ export function useGame() {
 
   const clearFlashes = useCallback(() => dispatch({ type: "clearFlashes" }), []);
 
+  const openCodex = useCallback(() => dispatch({ type: "openCodex" }), []);
   const restart = useCallback(() => dispatch({ type: "restart" }), []);
 
   // ---- compartilhar ----
@@ -607,6 +608,7 @@ export function useGame() {
     playSeries,
     nextSeries,
     clearFlashes,
+    openCodex,
     restart,
     copyResult,
     downloadCard,

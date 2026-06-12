@@ -3,16 +3,16 @@ import type { Team } from "../../types";
 // Worlds 2013 — Season 3 World Championship (final no Staples Center, LA).
 // 14 times · campeão: SK Telecom T1 (1ª taça do Faker) sobre o Royal Club.
 // Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
-// com 70% do peso no RFT DOS PLAYOFFS (quartas/semi/final, agregado por série) e
-// 30% no geral; ver teams.ts. Faker'13 e Impact'13 com override de curadoria.
+// com 80% do peso no RFT DOS PLAYOFFS (quartas/semi/final, agregado por série) e
+// 20% no geral; ver teams.ts. SEM curadoria — fórmula pura + notas reais dos prints.
 export const WORLDS_2013: Team[] = [
-  // 1º — Campeão (base 88). Bengi gigante no playoff (59/74/60); Piglet equilibrado
-  // (35 na final, 68/63 nas outras). Faker/Impact 96 por curadoria.
+  // 1º — Campeão (base 88). Notas de playoff [Final/Semi/QF] dos prints rft.gg:
+  // Impact 64/61/81 · Bengi 61/51/60 · Faker 59/62/63 (MVP) · Piglet 60/56/63 · Pooh 63/50/70.
   { id: "skt-2013", team: "SK Telecom T1", short: "SKT", year: 2013, league: "OGN", champion: true,
-    players: [["TOP", "Impact", 96, "kr"], ["JNG", "Bengi", 93, "kr"], ["MID", "Faker", 96, "kr"], ["BOT", "Piglet", 88, "kr"], ["SUP", "PoohManDu", 91, "kr"]] },
-  // 2º — Vice (base 84). Final/S2 fracas; QF4 melhor equilibrou. Wh1t3zZ o destaque.
+    players: [["TOP", "Impact", 97, "kr"], ["JNG", "Bengi", 89, "kr"], ["MID", "Faker", 94, "kr"], ["BOT", "Piglet", 91, "kr"], ["SUP", "PoohManDu", 91, "kr"]] },
+  // 2º — Vice (base 84). Vice fraco em rating (jogou mal o torneio todo); final pesa 0.5.
   { id: "royal-2013", team: "Royal Club", short: "RC", year: 2013, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "GoDlike", 82, "cn"], ["JNG", "Lucky", 77, "cn"], ["MID", "Wh1t3zZ", 88, "cn"], ["BOT", "Uzi", 85, "cn"], ["SUP", "Tabe", 85, "hk"]] },
+    players: [["TOP", "GoDlike", 82, "cn"], ["JNG", "Lucky", 78, "cn"], ["MID", "Wh1t3zZ", 88, "cn"], ["BOT", "Uzi", 86, "cn"], ["SUP", "Tabe", 85, "hk"]] },
   // 3º — Semifinal (base 81). Watch (74 na semi) e Cain (66) brilharam mesmo perdendo.
   { id: "najinbs-2013", team: "NaJin Black Sword", short: "NJBS", year: 2013, league: "OGN", champion: false,
     players: [["TOP", "Expession", 85, "kr"], ["JNG", "Watch", 87, "kr"], ["MID", "Nagne", 84, "kr"], ["BOT", "PraY", 79, "kr"], ["SUP", "Cain", 84, "kr"]] },

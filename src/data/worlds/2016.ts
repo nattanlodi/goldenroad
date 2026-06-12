@@ -8,10 +8,10 @@ import type { Team } from "../../types";
 export const WORLDS_2016: Team[] = [
   // 1º — Campeão (base 88). Line equilibrada e dominante; todos altos no playoff.
   { id: "skt-2016", team: "SK Telecom T1", short: "SKT", year: 2016, league: "LCK", champion: true,
-    players: [["TOP", "Duke", 92, "kr"], ["JNG", "Bengi", 91, "kr"], ["MID", "Faker", 98, "kr"], ["BOT", "Bang", 89, "kr"], ["SUP", "Wolf", 90, "kr"]] },
+    players: [["TOP", "Duke", 92, "kr"], ["JNG", "Bengi", 91, "kr"], ["MID", "Faker", 99, "kr"], ["BOT", "Bang", 89, "kr"], ["SUP", "Wolf", 90, "kr"]] },
   // 2º — Vice (base 84). Crown explodiu (84 na semi); CuVee forte. Núcleo campeão em 2017.
   { id: "samsung-2016", team: "Samsung Galaxy", short: "SSG", year: 2016, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "CuVee", 90, "kr"], ["JNG", "Ambition", 87, "kr"], ["MID", "Crown", 94, "kr"], ["BOT", "Ruler", 85, "kr"], ["SUP", "CoreJJ", 86, "kr"]] },
+    players: [["TOP", "CuVee", 91, "kr"], ["JNG", "Ambition", 88, "kr"], ["MID", "Crown", 95, "kr"], ["BOT", "Ruler", 86, "kr"], ["SUP", "CoreJJ", 86, "kr"]] },
   // 3º-4º — Semifinal (base 81). O lendário ROX, semi épica de 5 jogos contra a SKT.
   { id: "rox-2016", team: "ROX Tigers", short: "ROX", year: 2016, league: "LCK", champion: false,
     players: [["TOP", "Smeb", 90, "kr"], ["JNG", "Peanut", 86, "kr"], ["MID", "Kuro", 87, "kr"], ["BOT", "PraY", 82, "kr"], ["SUP", "GorillA", 86, "kr"]] },
