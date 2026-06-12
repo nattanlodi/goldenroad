@@ -24,6 +24,7 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
   const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 90}ms` });
 
   return (
+    <>
     <div className="start-screen anim-fade m-auto flex w-full max-w-[860px] flex-col items-center text-center">
       {/* ── HERO: logo ── */}
       <div className="start-rise relative" style={rise(0)}>
@@ -137,8 +138,8 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
         </div>
       </div>
 
-      {/* ── CTA ── */}
-      <div className="start-rise mt-[44px] flex flex-wrap items-center justify-center gap-3" style={rise(5)}>
+      {/* ── CTA (desktop/tablet: no fluxo; mobile: vira barra fixa abaixo) ── */}
+      <div className="start-rise mt-[44px] hidden flex-wrap items-center justify-center gap-3 sm:flex" style={rise(5)}>
         <button
           onClick={() => onBegin(mode)}
           className="btn-gold cursor-pointer rounded-[12px] border-none px-[48px] py-4 font-display text-[18px] font-semibold uppercase tracking-[2px]"
@@ -154,7 +155,7 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
       </div>
 
       {/* ── RODAPÉ: ligas + pool ── */}
-      <div className="start-rise mt-[26px] flex flex-wrap items-center justify-center gap-2.5" style={rise(6)}>
+      <div className="start-rise mt-7 mb-24 flex flex-wrap items-center justify-center gap-2.5 sm:mt-[26px] sm:mb-0" style={rise(6)}>
         {LEAGUES.map((l) => (
           <span key={l} className="start-league">
             {l}
@@ -163,5 +164,24 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
         <span className="ml-1 font-mono text-[12.5px] text-dim-2">{poolCount} campanhas no pool</span>
       </div>
     </div>
+
+    {/* ── BARRA FIXA (só mobile): CTA sempre acessível no rodapé. Fica FORA do
+        .start-screen (que anima transform e prenderia o position:fixed). ── */}
+    <div className="start-cta-bar sm:hidden">
+      <button
+        onClick={onCodex}
+        aria-label="Almanaque"
+        className="btn-ghost shrink-0 cursor-pointer rounded-[12px] px-4 py-3.5 font-display text-[18px] font-semibold"
+      >
+        📖
+      </button>
+      <button
+        onClick={() => onBegin(mode)}
+        className="btn-gold flex-1 cursor-pointer rounded-[12px] border-none px-6 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[1.5px]"
+      >
+        {mode === "goldenroad" ? "Começar carreira" : "Começar campanha"}
+      </button>
+    </div>
+    </>
   );
 }

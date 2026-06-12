@@ -50,7 +50,7 @@ export function DraftScreen({ game }: { game: Game }) {
   return (
     <div className="anim-fade-fast mx-auto w-full max-w-[1180px]">
       {/* top bar */}
-      <div className="mb-[22px] flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-4 sm:mb-[22px]">
         <div className="flex items-center gap-[13px]">
           <div
             onClick={game.restart}
@@ -79,16 +79,16 @@ export function DraftScreen({ game }: { game: Game }) {
       </div>
 
       {/* 2 colunas */}
-      <div className="flex flex-col items-stretch gap-[18px] wide:flex-row wide:gap-[26px]">
+      <div className="flex flex-col items-stretch gap-3 wide:flex-row wide:gap-[26px]">
         {/* esquerda */}
         <div className="w-full wide:w-[344px] wide:flex-none">
           {/* card MÉDIA DO ELENCO — sempre visível (só no clássico). Vazio mostra "−". */}
           {showRatings && (
             <div
-              className="anim-fade-fast mb-[18px] overflow-hidden rounded-2xl border border-gold/30"
+              className="anim-fade-fast mb-3 overflow-hidden rounded-2xl border border-gold/30 sm:mb-[18px]"
               style={{ background: "linear-gradient(150deg,rgba(58,48,22,0.5),rgba(30,37,49,0.7))" }}
             >
-              <div className="flex items-center justify-between px-[18px] pt-3.5">
+              <div className="flex items-center justify-between px-[18px] pt-2.5 sm:pt-3.5">
                 <div className="font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">★ Média do elenco</div>
                 {/* diamantes: um por lane, preenchido = já escolhida */}
                 <div className="flex gap-[5px]">
@@ -105,11 +105,11 @@ export function DraftScreen({ game }: { game: Game }) {
                   ))}
                 </div>
               </div>
-              <div className="flex items-center gap-3 px-[18px] pb-3.5 pt-1.5">
-                <span className="font-mono text-[44px] font-bold leading-none text-gold-bright">
+              <div className="flex items-center gap-3 px-[18px] pb-2.5 pt-1.5 sm:pb-3.5">
+                <span className="font-mono text-[34px] font-bold leading-none text-gold-bright sm:text-[44px]">
                   {picks.length > 0 ? avg : "–"}
                 </span>
-                <span className="font-display text-[19px] font-bold uppercase tracking-[1px] text-cream">
+                <span className="font-display text-[17px] font-bold uppercase tracking-[1px] text-cream sm:text-[19px]">
                   {picks.length > 0 ? tier.tier : "Sua line"}
                 </span>
               </div>
@@ -189,9 +189,9 @@ export function DraftScreen({ game }: { game: Game }) {
           {showCard && c && (
             <>
               <div className="panel-raised overflow-hidden rounded-2xl border border-gold/25">
-                <div className="flex items-center justify-between gap-2.5 border-b border-gold/20 px-[18px] py-4">
+                <div className="flex items-center justify-between gap-2.5 border-b border-gold/20 px-[18px] py-2.5 sm:py-4">
                   <div>
-                    <div className="font-display text-[21px] font-semibold leading-[1.1] text-cream">{c.team}</div>
+                    <div className="font-display text-[19px] font-semibold leading-[1.1] text-cream sm:text-[21px]">{c.team}</div>
                     <div className="mt-[3px] font-mono text-[11px] tracking-[1px] text-muted">{c.league}</div>
                   </div>
                   <div className="text-right">
@@ -237,7 +237,7 @@ export function DraftScreen({ game }: { game: Game }) {
                 {/* a lista de jogadores só aparece com o time já definido — durante
                     o sorteio quem "embaralha" é só o cabeçalho do card (nome do time). */}
                 {!rolling && (
-                  <div className="flex flex-col gap-3 p-3">
+                  <div className="flex flex-col gap-2 p-2 sm:gap-3 sm:p-3">
                     {c.players.map((p, i) => {
                       const role = p[0];
                       const taken = !!lineup[role];
@@ -255,18 +255,18 @@ export function DraftScreen({ game }: { game: Game }) {
                               ? { opacity: 0.26, filter: "grayscale(1)" }
                               : ({ "--i": i } as CSSProperties)
                           }
-                          className={`player-row ${taken ? "" : "row-in"} ${surface} flex w-full items-center gap-3 rounded-[12px] border border-gold/20 px-3.5 py-[21px] text-left text-cream ${
+                          className={`player-row ${taken ? "" : "row-in"} ${surface} flex w-full items-center gap-2.5 rounded-[12px] border border-gold/20 px-3 py-2.5 text-left text-cream sm:gap-3 sm:px-3.5 sm:py-[21px] ${
                             taken ? "cursor-not-allowed border-dashed" : "cursor-pointer"
                           }`}
                         >
                           <RoleBadge role={role} variant="neutral" />
                           <span className="flex min-w-0 flex-1 items-center gap-1.5">
                             <Flag cc={p[3]} size={10} />
-                            <span className="truncate font-display text-[17px] font-semibold text-cream">{p[1]}</span>
+                            <span className="truncate font-display text-[16px] font-semibold text-cream sm:text-[17px]">{p[1]}</span>
                           </span>
                           {showRatings && (
                             <span
-                              className="mr-1.5 font-mono text-[29px] font-bold leading-none"
+                              className="mr-1.5 font-mono text-[24px] font-bold leading-none sm:text-[29px]"
                               style={{ color: skin.ratingColor }}
                             >
                               {p[2]}
