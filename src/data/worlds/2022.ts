@@ -5,10 +5,11 @@ import type { Team } from "../../types";
 // colocação + RFT 1.0 (rft.gg), 70% playoff (agregado por série) + 30% geral; ver teams.ts.
 // ⚠ Alguns times de grupo/play-in obscuros: rosters best-effort (fonte furada).
 export const WORLDS_2022: Team[] = [
-  // 1º — Campeão (base 88). Cinderela (4ª seed); a maior zebra da história. Recalibrado com geral real +
-  // força do oponente (recálculo "frio" — venceram no clutch, RFT individual mediano; a curadoria +3 foi substituída).
+  // 1º — Campeão (base 88). Cinderela (4ª seed); a maior zebra da história. Recálculo com geral real + força
+  // do oponente, MAIS +5 de curadoria em todos: a DRX teve o pior RFT entre os tops (68.2, abaixo de quem
+  // eliminou) — venceram no CLUTCH/coletivo, não dominando. Run LENDÁRIA, título eternizado; a fórmula não captura clutch.
   { id: "drx-2022", team: "DRX", short: "DRX", year: 2022, league: "LCK", champion: true,
-    players: [["TOP", "Kingen", 90, "kr"], ["JNG", "Pyosik", 87, "kr"], ["MID", "Zeka", 88, "kr"], ["BOT", "Deft", 83, "kr"], ["SUP", "BeryL", 86, "kr"]] },
+    players: [["TOP", "Kingen", 95, "kr"], ["JNG", "Pyosik", 92, "kr"], ["MID", "Zeka", 93, "kr"], ["BOT", "Deft", 88, "kr"], ["SUP", "BeryL", 91, "kr"]] },
   // 2º — Vice (base 84). Trio jovem + Faker; monstros na semi. Final em 5 jogos.
   { id: "t1-2022", team: "T1", short: "T1", year: 2022, league: "LCK", champion: false, finalist: true,
     players: [["TOP", "Zeus", 93, "kr"], ["JNG", "Oner", 87, "kr"], ["MID", "Faker", 86, "kr"], ["BOT", "Gumayusi", 93, "kr"], ["SUP", "Keria", 95, "kr"]] },

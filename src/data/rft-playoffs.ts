@@ -92,6 +92,8 @@ export interface SwissMatch {
   games: PlayoffGame[];
   /** URL do match no rft.gg (fonte). */
   source?: string;
+  /** true = partida conferida; os seriesRating batem com o scoreboard (avgRftRating do scraping). */
+  confirmed?: boolean;
   /** Notas dos 10 jogadores (vencedor primeiro). */
   players: SwissPlayer[];
 }

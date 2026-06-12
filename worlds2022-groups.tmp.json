@@ -1,0 +1,3929 @@
+[
+  {
+    "id": 46920,
+    "slug": "day-1-1",
+    "title": "Cloud9 vs Fnatic",
+    "games": [
+      {
+        "game": 1,
+        "winner": "fnatic",
+        "kills": [
+          6,
+          15
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 69.7
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 84.9
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 62.2
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 89.9
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 51.4
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 52.1
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 60.5
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 43.6
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 60.7
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 51.4
+      }
+    ]
+  },
+  {
+    "id": 46921,
+    "slug": "day-1-2",
+    "title": "G2 Esports vs DAMWON Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "dplus",
+        "kills": [
+          7,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 70.2
+      },
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 47.1
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 36
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 98
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 86.6
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 86.3
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 80.1
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 38.5
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 53.4
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 45.9
+      }
+    ]
+  },
+  {
+    "id": 46922,
+    "slug": "day-1-3",
+    "title": "CTBC Flying Oyster vs 100 Thieves",
+    "games": [
+      {
+        "game": 1,
+        "winner": "ctbc-flying-oyster",
+        "kills": [
+          16,
+          9
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "shunn",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 79.8
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 53.8
+      },
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 48.3
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 46.5
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 41.8
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 66.7
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 40.5
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 74.4
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 77
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 83.7
+      }
+    ]
+  },
+  {
+    "id": 46923,
+    "slug": "day-1-4",
+    "title": "JD Gaming vs Evil Geniuses",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          24,
+          14
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 97
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 80.6
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 54.1
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 59.4
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 88
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 48.5
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 49.3
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 52.8
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 57.9
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 65.9
+      }
+    ]
+  },
+  {
+    "id": 46924,
+    "slug": "day-1-5",
+    "title": "T1 vs EDward Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "t1",
+        "kills": [
+          18,
+          6
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 86.8
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 79.3
+      },
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 46.2
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 36.6
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 49.1
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 52.5
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 60.3
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 81.6
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 88.1
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 48.8
+      }
+    ]
+  },
+  {
+    "id": 46925,
+    "slug": "day-1-6",
+    "title": "Gen.G Esports vs Royal Never Give Up",
+    "games": [
+      {
+        "game": 1,
+        "winner": "royal-never-give-up",
+        "kills": [
+          5,
+          14
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 83.9
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 81.9
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 68.4
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 34.1
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 63.1
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 11.6
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 50.5
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 73.6
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 77.7
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 45
+      }
+    ]
+  },
+  {
+    "id": 46926,
+    "slug": "day-2-1",
+    "title": "Rogue vs DRX",
+    "games": [
+      {
+        "game": 1,
+        "winner": "rogue",
+        "kills": [
+          20,
+          10
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 52.9
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 46
+      },
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 71.2
+      },
+      {
+        "player": "juhan",
+        "team": "drx",
+        "pos": "?",
+        "avg": 54.7
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 60.8
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 62.5
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 79.1
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 67.7
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 72.1
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 78.7
+      }
+    ]
+  },
+  {
+    "id": 46927,
+    "slug": "day-2-2",
+    "title": "Evil Geniuses vs G2 Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "g2-esports",
+        "kills": [
+          2,
+          19
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 84.9
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 80.4
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 29.5
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 25.2
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 44.9
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 51
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 40.2
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 77.9
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 81.3
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 86.1
+      }
+    ]
+  },
+  {
+    "id": 46928,
+    "slug": "day-2-3",
+    "title": "Fnatic vs T1",
+    "games": [
+      {
+        "game": 1,
+        "winner": "fnatic",
+        "kills": [
+          19,
+          7
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 74.8
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 82.3
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 56.8
+      },
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 55.9
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 37.5
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 83.3
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 51
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 42.5
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 48.5
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 89.4
+      }
+    ]
+  },
+  {
+    "id": 46929,
+    "slug": "day-2-4",
+    "title": "EDward Gaming vs Cloud9",
+    "games": [
+      {
+        "game": 1,
+        "winner": "edward-gaming",
+        "kills": [
+          15,
+          4
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 67.2
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 89.9
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 70.8
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 51.5
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 34.8
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 91.7
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 44.3
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 46.6
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 72.8
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 33.1
+      }
+    ]
+  },
+  {
+    "id": 46930,
+    "slug": "day-2-5",
+    "title": "Top Esports vs GAM Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "top-esports",
+        "kills": [
+          23,
+          6
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 42.5
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 37.1
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 50.3
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 67.8
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 41.4
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 64.3
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 22.1
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 97.9
+      }
+    ]
+  },
+  {
+    "id": 46931,
+    "slug": "day-2-6",
+    "title": "DAMWON Gaming vs JD Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          11,
+          18
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 63.6
+      },
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 76.3
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 82.7
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 77.5
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 59.9
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 63.5
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 63.7
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 45.9
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 78.3
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 40.7
+      }
+    ]
+  },
+  {
+    "id": 46932,
+    "slug": "day-3-1",
+    "title": "GAM Esports vs Rogue",
+    "games": [
+      {
+        "game": 1,
+        "winner": "rogue",
+        "kills": [
+          5,
+          14
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 39.9
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 43.4
+      },
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 72.7
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 67.2
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 63.2
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 60.1
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 65.7
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 87.8
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 71.7
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 30
+      }
+    ]
+  },
+  {
+    "id": 46933,
+    "slug": "day-3-2",
+    "title": "100 Thieves vs Gen.G Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          8,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 50.2
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 69.2
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 81.2
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 73.5
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 65.5
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 39.3
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 45.6
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 74.5
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 58.7
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 67.2
+      }
+    ]
+  },
+  {
+    "id": 46934,
+    "slug": "day-3-3",
+    "title": "EDward Gaming vs Fnatic",
+    "games": [
+      {
+        "game": 1,
+        "winner": "edward-gaming",
+        "kills": [
+          19,
+          9
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 46.3
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 34.7
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 53.5
+      },
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 87.7
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 64.6
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 61.9
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 76.5
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 56
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 86
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 39.1
+      }
+    ]
+  },
+  {
+    "id": 46935,
+    "slug": "day-3-4",
+    "title": "Cloud9 vs T1",
+    "games": [
+      {
+        "game": 1,
+        "winner": "t1",
+        "kills": [
+          3,
+          18
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 96.5
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 92.1
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 26.2
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 32.1
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 35.5
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 91
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 53.8
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 82.1
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 26.3
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 55.7
+      }
+    ]
+  },
+  {
+    "id": 46936,
+    "slug": "day-3-5",
+    "title": "Royal Never Give Up vs CTBC Flying Oyster",
+    "games": [
+      {
+        "game": 1,
+        "winner": "royal-never-give-up",
+        "kills": [
+          21,
+          6
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "shunn",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 48.6
+      },
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 86.5
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 92.6
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 39.6
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 67
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 82.2
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 74.7
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 51.5
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 37.9
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 62.3
+      }
+    ]
+  },
+  {
+    "id": 46937,
+    "slug": "day-3-6",
+    "title": "DRX vs Top Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "drx",
+        "kills": [
+          15,
+          2
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 99.3
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 65.4
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 89.9
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 35
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 29.7
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 91
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 72.1
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 30.2
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 34.1
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 65
+      }
+    ]
+  },
+  {
+    "id": 46938,
+    "slug": "day-4-1",
+    "title": "JD Gaming vs G2 Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          15,
+          15
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 54.4
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 66.9
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 81.3
+      },
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 62.9
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 77.3
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 62
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 41.9
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 77.5
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 40.3
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 59.9
+      }
+    ]
+  },
+  {
+    "id": 46939,
+    "slug": "day-4-2",
+    "title": "Rogue vs Top Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "rogue",
+        "kills": [
+          18,
+          6
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 76.1
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 52.5
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 38.2
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 75.2
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 74
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 44.7
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 75.6
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 53.8
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 75.4
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 68.5
+      }
+    ]
+  },
+  {
+    "id": 46940,
+    "slug": "day-4-3",
+    "title": "DAMWON Gaming vs Evil Geniuses",
+    "games": [
+      {
+        "game": 1,
+        "winner": "dplus",
+        "kills": [
+          12,
+          8
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 64.8
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 68.4
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 61.6
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 46.8
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 62.5
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 61
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 49.4
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 75.9
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 51.1
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 73.2
+      }
+    ]
+  },
+  {
+    "id": 46941,
+    "slug": "day-4-4",
+    "title": "100 Thieves vs Royal Never Give Up",
+    "games": [
+      {
+        "game": 1,
+        "winner": "royal-never-give-up",
+        "kills": [
+          4,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 86.5
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 83.4
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 74.3
+      },
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 40.6
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 47.9
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 40.8
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 59.7
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 77.1
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 51.1
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 54
+      }
+    ]
+  },
+  {
+    "id": 46942,
+    "slug": "day-4-5",
+    "title": "Gen.G Esports vs CTBC Flying Oyster",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          25,
+          10
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "shunn",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 41.5
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 63.1
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 84.6
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 85.3
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 73.7
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 67.3
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 80.1
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 49.4
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 51.2
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 57.8
+      }
+    ]
+  },
+  {
+    "id": 46943,
+    "slug": "day-4-6",
+    "title": "GAM Esports vs DRX",
+    "games": [
+      {
+        "game": 1,
+        "winner": "drx",
+        "kills": [
+          6,
+          15
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 77.9
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 92.2
+      },
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 48.4
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 37.2
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 85.5
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 39.5
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 66.2
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 65
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 42.9
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 34
+      }
+    ]
+  },
+  {
+    "id": 46944,
+    "slug": "day-5-1",
+    "title": "Fnatic vs Cloud9",
+    "games": [
+      {
+        "game": 1,
+        "winner": "cloud9",
+        "kills": [
+          5,
+          18
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 37.7
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 37.6
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 35.5
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 51.1
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 81.3
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 78.8
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 82.9
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 94.8
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 37
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 85.4
+      }
+    ]
+  },
+  {
+    "id": 46945,
+    "slug": "day-5-2",
+    "title": "T1 vs Fnatic",
+    "games": [
+      {
+        "game": 1,
+        "winner": "t1",
+        "kills": [
+          15,
+          7
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 62.5
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 53
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 53.8
+      },
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 71.7
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 68.4
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 81.3
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 61
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 41.7
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 55.4
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 59.1
+      }
+    ]
+  },
+  {
+    "id": 46946,
+    "slug": "day-5-3",
+    "title": "Cloud9 vs EDward Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "edward-gaming",
+        "kills": [
+          1,
+          19
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 88.4
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 86.9
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 85.1
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 25.6
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 30.3
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 88.3
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 33.9
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 41.7
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 94.9
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 38
+      }
+    ]
+  },
+  {
+    "id": 46947,
+    "slug": "day-5-4",
+    "title": "Fnatic vs EDward Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "edward-gaming",
+        "kills": [
+          2,
+          18
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "razork",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 24.1
+      },
+      {
+        "player": "upset",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 39.3
+      },
+      {
+        "player": "wunder",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 52.3
+      },
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 88.9
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 76.7
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 94.2
+      },
+      {
+        "player": "humanoid",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 50.1
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 65.1
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 91.6
+      },
+      {
+        "player": "hylissang",
+        "team": "fnatic",
+        "pos": "?",
+        "avg": 33.4
+      }
+    ]
+  },
+  {
+    "id": 46948,
+    "slug": "day-5-5",
+    "title": "T1 vs Cloud9",
+    "games": [
+      {
+        "game": 1,
+        "winner": "t1",
+        "kills": [
+          16,
+          8
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 80.2
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 94.7
+      },
+      {
+        "player": "blaber",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 46.6
+      },
+      {
+        "player": "zven",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 44
+      },
+      {
+        "player": "berserker",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 14.8
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 76.7
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 53
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 84.3
+      },
+      {
+        "player": "fudge",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 43.6
+      },
+      {
+        "player": "jensen",
+        "team": "cloud9",
+        "pos": "?",
+        "avg": 66.6
+      }
+    ]
+  },
+  {
+    "id": 46949,
+    "slug": "day-5-6",
+    "title": "EDward Gaming vs T1",
+    "games": [
+      {
+        "game": 1,
+        "winner": "t1",
+        "kills": [
+          8,
+          24
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "zeus",
+        "team": "t1",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "gumayusi",
+        "team": "t1",
+        "pos": "?",
+        "avg": 71.3
+      },
+      {
+        "player": "viper",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 43.4
+      },
+      {
+        "player": "flandre",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 23.8
+      },
+      {
+        "player": "jiejie",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 71
+      },
+      {
+        "player": "scout",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 48
+      },
+      {
+        "player": "oner",
+        "team": "t1",
+        "pos": "?",
+        "avg": 59.9
+      },
+      {
+        "player": "faker",
+        "team": "t1",
+        "pos": "?",
+        "avg": 85.1
+      },
+      {
+        "player": "keria",
+        "team": "t1",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "meiko",
+        "team": "edward-gaming",
+        "pos": "?",
+        "avg": 61.9
+      }
+    ]
+  },
+  {
+    "id": 46950,
+    "slug": "day-6-1",
+    "title": "G2 Esports vs Evil Geniuses",
+    "games": [
+      {
+        "game": 1,
+        "winner": "evil-geniuses",
+        "kills": [
+          2,
+          15
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 63.3
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 49.1
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 64.3
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 96.1
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 75
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 84.7
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 98.9
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 35.7
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 17.2
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 20.9
+      }
+    ]
+  },
+  {
+    "id": 46951,
+    "slug": "day-6-2",
+    "title": "Evil Geniuses vs JD Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          6,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 84.8
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 87.8
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 91.2
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 43.8
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 95.3
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 34.2
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 37.4
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 39.2
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 19
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 81.7
+      }
+    ]
+  },
+  {
+    "id": 46952,
+    "slug": "day-6-3",
+    "title": "DAMWON Gaming vs G2 Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "dplus",
+        "kills": [
+          18,
+          2
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 82.7
+      },
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 45.1
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 31.7
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 79.3
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 79.8
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 84.8
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 83.3
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 35.1
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 25.5
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 25.3
+      }
+    ]
+  },
+  {
+    "id": 46953,
+    "slug": "day-6-4",
+    "title": "G2 Esports vs JD Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          10,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 82.2
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 59.9
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 58
+      },
+      {
+        "player": "brokenblade",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 28.2
+      },
+      {
+        "player": "caps",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 56.3
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 99.5
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 59.1
+      },
+      {
+        "player": "jankos",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 59.2
+      },
+      {
+        "player": "flakked",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 53.7
+      },
+      {
+        "player": "targamas",
+        "team": "g2-esports",
+        "pos": "?",
+        "avg": 70.2
+      }
+    ]
+  },
+  {
+    "id": 46954,
+    "slug": "day-6-5",
+    "title": "Evil Geniuses vs DAMWON Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "dplus",
+        "kills": [
+          8,
+          21
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 62.7
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 87.8
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 83.6
+      },
+      {
+        "player": "jojopyun",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 39.6
+      },
+      {
+        "player": "vulcan",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 52
+      },
+      {
+        "player": "impact",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 34.9
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 71.5
+      },
+      {
+        "player": "inspired",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 35.9
+      },
+      {
+        "player": "kaori",
+        "team": "evil-geniuses",
+        "pos": "?",
+        "avg": 64.8
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 86.8
+      }
+    ]
+  },
+  {
+    "id": 46955,
+    "slug": "day-6-6",
+    "title": "JD Gaming vs DAMWON Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "dplus",
+        "kills": [
+          6,
+          21
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 73.1
+      },
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 33.3
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 40
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 45.3
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 85
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 88.3
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 53.5
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 43.8
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 68.6
+      }
+    ]
+  },
+  {
+    "id": 46956,
+    "slug": "tiebreakers-1",
+    "title": "DAMWON Gaming vs JD Gaming",
+    "games": [
+      {
+        "game": 1,
+        "winner": "jd-gaming",
+        "kills": [
+          17,
+          28
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "deokdam",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 83.7
+      },
+      {
+        "player": "kanavi",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 75
+      },
+      {
+        "player": "missing",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 78.6
+      },
+      {
+        "player": "hope",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 46.2
+      },
+      {
+        "player": "showmaker",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 70.6
+      },
+      {
+        "player": "kellin",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 49.2
+      },
+      {
+        "player": "369",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 93.4
+      },
+      {
+        "player": "canyon",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 43.7
+      },
+      {
+        "player": "yagao",
+        "team": "jd-gaming",
+        "pos": "?",
+        "avg": 60.7
+      },
+      {
+        "player": "nuguri",
+        "team": "dplus",
+        "pos": "?",
+        "avg": 39
+      }
+    ]
+  },
+  {
+    "id": 46957,
+    "slug": "day-7-1",
+    "title": "Rogue vs GAM Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "rogue",
+        "kills": [
+          19,
+          9
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 34.4
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 48
+      },
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 74
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 56.7
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 70.9
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 59.4
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 57.1
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 94.9
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 79.5
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 33.1
+      }
+    ]
+  },
+  {
+    "id": 46958,
+    "slug": "day-7-2",
+    "title": "GAM Esports vs Top Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gam-esports",
+        "kills": [
+          21,
+          17
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 35.7
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 72.5
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 57.6
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 63.7
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 83
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 71.4
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 57.7
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 62.5
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 55.9
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 81.3
+      }
+    ]
+  },
+  {
+    "id": 46959,
+    "slug": "day-7-3",
+    "title": "DRX vs Rogue",
+    "games": [
+      {
+        "game": 1,
+        "winner": "drx",
+        "kills": [
+          20,
+          4
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 85.2
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 82.6
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 85.2
+      },
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 34.1
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 72.4
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 62.3
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 44.8
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 24.3
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 48.7
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 35.3
+      }
+    ]
+  },
+  {
+    "id": 46960,
+    "slug": "day-7-4",
+    "title": "DRX vs GAM Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "drx",
+        "kills": [
+          19,
+          7
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 75.4
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 64.5
+      },
+      {
+        "player": "kati",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 52.7
+      },
+      {
+        "player": "bie",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 49.6
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 95.5
+      },
+      {
+        "player": "kiaya",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 36.9
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 63.4
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 74.1
+      },
+      {
+        "player": "levi",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 46.7
+      },
+      {
+        "player": "sty1e",
+        "team": "gam-esports",
+        "pos": "?",
+        "avg": 61.3
+      }
+    ]
+  },
+  {
+    "id": 46961,
+    "slug": "day-7-5",
+    "title": "Top Esports vs Rogue",
+    "games": [
+      {
+        "game": 1,
+        "winner": "top-esports",
+        "kills": [
+          19,
+          8
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 30.9
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 89.9
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 81.1
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 52.3
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 40.6
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 58.4
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 55.9
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 81.9
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 22.3
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 77.4
+      }
+    ]
+  },
+  {
+    "id": 46962,
+    "slug": "day-7-6",
+    "title": "Top Esports vs DRX",
+    "games": [
+      {
+        "game": 1,
+        "winner": "top-esports",
+        "kills": [
+          15,
+          3
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 52.2
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 57.3
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 42.7
+      },
+      {
+        "player": "jackeylove",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 66.6
+      },
+      {
+        "player": "tian",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 67.9
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 47
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 55.5
+      },
+      {
+        "player": "wayward",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 76.5
+      },
+      {
+        "player": "mark",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 79.6
+      },
+      {
+        "player": "knight-knight-zhuo-ding",
+        "team": "top-esports",
+        "pos": "?",
+        "avg": 65.4
+      }
+    ]
+  },
+  {
+    "id": 46963,
+    "slug": "tiebreakers-2",
+    "title": "DRX vs Rogue",
+    "games": [
+      {
+        "game": 1,
+        "winner": "drx",
+        "kills": [
+          16,
+          5
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "pyosik",
+        "team": "drx",
+        "pos": "?",
+        "avg": 82.3
+      },
+      {
+        "player": "zeka",
+        "team": "drx",
+        "pos": "?",
+        "avg": 84.1
+      },
+      {
+        "player": "kingen",
+        "team": "drx",
+        "pos": "?",
+        "avg": 59.7
+      },
+      {
+        "player": "trymbi",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 32.8
+      },
+      {
+        "player": "beryl",
+        "team": "drx",
+        "pos": "?",
+        "avg": 65.1
+      },
+      {
+        "player": "deft",
+        "team": "drx",
+        "pos": "?",
+        "avg": 67.5
+      },
+      {
+        "player": "odoamne",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 60.8
+      },
+      {
+        "player": "malrang",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 32.8
+      },
+      {
+        "player": "larssen",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 54.1
+      },
+      {
+        "player": "comp",
+        "team": "rogue",
+        "pos": "?",
+        "avg": 38.9
+      }
+    ]
+  },
+  {
+    "id": 46964,
+    "slug": "day-8-1",
+    "title": "100 Thieves vs CTBC Flying Oyster",
+    "games": [
+      {
+        "game": 1,
+        "winner": "100-thieves",
+        "kills": [
+          20,
+          4
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "shunn",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 43.9
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 36.3
+      },
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 83.5
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 70
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 79.8
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 44.8
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 72.3
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 76.9
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 43.4
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 61.9
+      }
+    ]
+  },
+  {
+    "id": 46965,
+    "slug": "day-8-2",
+    "title": "CTBC Flying Oyster vs Gen.G Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          7,
+          21
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "shunn",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 22.2
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 62.8
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 84.5
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 77.1
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 90.4
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 61.6
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 37.5
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 24.7
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 52.4
+      }
+    ]
+  },
+  {
+    "id": 46966,
+    "slug": "day-8-3",
+    "title": "Royal Never Give Up vs 100 Thieves",
+    "games": [
+      {
+        "game": 1,
+        "winner": "royal-never-give-up",
+        "kills": [
+          16,
+          10
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 83.8
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 63.4
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 73.5
+      },
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 54.5
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 30.6
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 56.9
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 67
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 78.1
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 55.4
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 67.5
+      }
+    ]
+  },
+  {
+    "id": 46967,
+    "slug": "day-8-4",
+    "title": "Gen.G Esports vs 100 Thieves",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          13,
+          2
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "huhi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 32.2
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 90.6
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 75.4
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 96.9
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 81.4
+      },
+      {
+        "player": "fbi",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 19.2
+      },
+      {
+        "player": "abbedagge",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 45.1
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 88
+      },
+      {
+        "player": "closer",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 30
+      },
+      {
+        "player": "ssumday",
+        "team": "100-thieves",
+        "pos": "?",
+        "avg": 36.6
+      }
+    ]
+  },
+  {
+    "id": 46968,
+    "slug": "day-8-5",
+    "title": "CTBC Flying Oyster vs Royal Never Give Up",
+    "games": [
+      {
+        "game": 1,
+        "winner": "royal-never-give-up",
+        "kills": [
+          5,
+          22
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 72.5
+      },
+      {
+        "player": "rest",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 60.1
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 67.5
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 62.3
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 98.4
+      },
+      {
+        "player": "koala",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 40.8
+      },
+      {
+        "player": "gemini",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 29.3
+      },
+      {
+        "player": "mission",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 58.9
+      },
+      {
+        "player": "atlen",
+        "team": "ctbc-flying-oyster",
+        "pos": "?",
+        "avg": 32.7
+      }
+    ]
+  },
+  {
+    "id": 46969,
+    "slug": "day-8-6",
+    "title": "Royal Never Give Up vs Gen.G Esports",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          6,
+          15
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 33.4
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 38.6
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 44.5
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 82.4
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 81.2
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 86.3
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 57.3
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 80.6
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 42.6
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 83.3
+      }
+    ]
+  },
+  {
+    "id": 46970,
+    "slug": "tiebreakers-3",
+    "title": "Gen.G Esports vs Royal Never Give Up",
+    "games": [
+      {
+        "game": 1,
+        "winner": "gen.g-esports",
+        "kills": [
+          20,
+          2
+        ]
+      }
+    ],
+    "players": [
+      {
+        "player": "gala",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 37.2
+      },
+      {
+        "player": "wei",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 36.3
+      },
+      {
+        "player": "xiaohu",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 32.2
+      },
+      {
+        "player": "lehends",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 78.3
+      },
+      {
+        "player": "chovy",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 94.8
+      },
+      {
+        "player": "ruler",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 73.9
+      },
+      {
+        "player": "doran",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 100
+      },
+      {
+        "player": "breathe",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 38.8
+      },
+      {
+        "player": "ming",
+        "team": "royal-never-give-up",
+        "pos": "?",
+        "avg": 49.8
+      },
+      {
+        "player": "peanut",
+        "team": "gen.g-esports",
+        "pos": "?",
+        "avg": 78.9
+      }
+    ]
+  }
+]
