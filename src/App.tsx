@@ -18,8 +18,15 @@ export function App() {
   const isVictory = phase === "result" && game.state.finished === "champion";
   return (
     <div
-      className={`bg-app${isGame ? " bg-app-game" : ""} flex min-h-screen w-full flex-col items-center font-body text-cream`}
-      style={{ padding: "clamp(18px,4vw,40px)" }}
+      className={`bg-app${isGame ? " bg-app-game" : ""} flex min-h-[100dvh] w-full flex-col items-center font-body text-cream`}
+      style={{
+        // edge-to-edge: o fundo vai até as bordas (viewport-fit=cover), mas o
+        // conteúdo soma o safe-area-inset ao padding pra não ficar sob o notch/home bar.
+        paddingTop: "calc(clamp(18px,4vw,40px) + env(safe-area-inset-top))",
+        paddingBottom: "calc(clamp(18px,4vw,40px) + env(safe-area-inset-bottom))",
+        paddingLeft: "calc(clamp(18px,4vw,40px) + env(safe-area-inset-left))",
+        paddingRight: "calc(clamp(18px,4vw,40px) + env(safe-area-inset-right))",
+      }}
     >
       {isVictory ? (
         <VictoryBackdrop />

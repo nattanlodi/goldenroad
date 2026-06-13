@@ -298,7 +298,7 @@ function FsBracketHeader({ node, format }: { node: FsNode; format?: string }) {
         ? { background: "linear-gradient(180deg,#86d79a,#5fae72)", color: "#16241a", border: "1px solid rgba(126,208,143,0.5)" }
         : { background: "rgba(42,51,65,0.6)", color: "#777E89", border: "1px solid rgba(201,162,75,0.14)" };
     return (
-      <span key={n} className="rounded-[7px] px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[1px]" style={style}>
+      <span key={n} className="shrink-0 rounded-[7px] px-1.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.5px] sm:px-2 sm:text-[10px] sm:tracking-[1px]" style={style}>
         {passed ? "✓ " : ""}
         {FS_SHORT[n]}
       </span>
@@ -306,11 +306,11 @@ function FsBracketHeader({ node, format }: { node: FsNode; format?: string }) {
   };
   return (
     <>
-      <div className="inline-flex flex-wrap items-center justify-center gap-2 rounded-[14px] border border-gold/25 px-5 py-3">
-        <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Grupo</span>
+      <div className="inline-flex flex-nowrap items-center justify-center gap-1 rounded-[14px] border border-gold/25 px-2.5 py-2 sm:gap-2 sm:px-5 sm:py-3">
+        <span className="font-mono text-[8px] uppercase tracking-[0.5px] text-muted sm:text-[9px] sm:tracking-[1px]">Grupo</span>
         {groupLane.map(chip)}
-        <span className="mx-1 font-mono text-[12px] text-dim">→</span>
-        <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Knockout</span>
+        <span className="mx-0.5 font-mono text-[11px] text-dim sm:mx-1 sm:text-[12px]">→</span>
+        <span className="font-mono text-[8px] uppercase tracking-[0.5px] text-muted sm:text-[9px] sm:tracking-[1px]">Knockout</span>
         {FS_KNOCKOUT.map(chip)}
       </div>
       <div className="mt-4 flex items-center justify-center gap-2">
@@ -733,7 +733,7 @@ export function SeriesScreen({ game }: { game: Game }) {
 
               {highlight?.mvp && series.target > 1 && (
                 <div
-                  className="anim-pop mx-auto mb-7 inline-flex items-center gap-2 rounded-[11px] px-3.5 py-2"
+                  className="anim-pop mx-auto mb-7 mr-3 inline-flex items-center gap-2 rounded-[11px] px-3.5 py-2 sm:mr-auto"
                   style={
                     highlight.mvp.side === "you"
                       ? {
@@ -760,11 +760,11 @@ export function SeriesScreen({ game }: { game: Game }) {
 
               <button
                 onClick={game.nextSeries}
-                className={
+                className={`btn-gold cursor-pointer border-none font-display font-semibold uppercase ${
                   isLastWin
-                    ? "btn-gold cursor-pointer rounded-[11px] border-none px-9 py-3.5 font-display text-[17px] font-semibold uppercase tracking-[2px]"
-                    : "btn-soft-gold cursor-pointer rounded-[10px] px-[30px] py-3 font-display text-[15px] font-semibold uppercase tracking-[1px]"
-                }
+                    ? "rounded-[11px] px-5 py-3.5 text-[17px] tracking-[2px] sm:px-9"
+                    : "rounded-[10px] px-5 py-3 text-[15px] tracking-[1.5px] sm:px-[30px]"
+                }`}
               >
                 {nextLabel}
               </button>

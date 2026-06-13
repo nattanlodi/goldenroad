@@ -167,7 +167,7 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
 
     {/* ── BARRA FIXA (só mobile): CTA sempre acessível no rodapé. Fica FORA do
         .start-screen (que anima transform e prenderia o position:fixed). ── */}
-    <div className="start-cta-bar sm:hidden">
+    <div className="start-cta-bar">
       <button
         onClick={onCodex}
         aria-label="Almanaque"
