@@ -1211,7 +1211,8 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    /* respiro embaixo: safe-area quando existir (web app), senão 18px de base */
+    padding: 12px 16px max(18px, env(safe-area-inset-bottom));
     background: transparent;
     pointer-events: none;
   }
