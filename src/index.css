@@ -55,14 +55,11 @@ html,
 body {
   margin: 0;
   padding: 0;
-  /* base que CASA com o fundo do app (não um preto chapado): cobre as áreas que o
-     container não pinta — safe-area do mobile (notch/home bar), overscroll e o
-     trilho da scrollbar — pra não aparecer faixa preta nas bordas.
-     Pintamos no <html> a cor do TOPO do gradiente (start). Na tela de jogo o
-     próprio .app-bg fixo (edge-to-edge) cobre tudo, inclusive a safe-area. */
+  /* base que CASA com o fundo do app. NÃO usar overscroll-behavior:none nem
+     height:100vh travado aqui: isso impede o Safari iOS de esconder a barra de
+     endereço ao rolar (a barra fica sempre tapando o topo). Deixamos o
+     documento rolar normalmente pra a barra recolher como nos apps. */
   background: #222834;
-  /* trava o rubber-band em fundo combinando (iOS/Android) */
-  overscroll-behavior: none;
 }
 /* corpo recebe a cor do FUNDO do gradiente, pra overscroll inferior casar */
 body {
@@ -70,7 +67,9 @@ body {
 }
 
 #root {
-  min-height: 100vh;
+  /* 100dvh acompanha a barra de endereço recolhendo (não 100vh, que trava no
+     tamanho sem-barra e impede o auto-hide do Safari iOS). */
+  min-height: 100dvh;
 }
 
 /* ============================================================
