@@ -18,17 +18,25 @@ export function App() {
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
   const isVictory = phase === "result" && game.state.finished === "champion";
 
-  // Sincroniza a cor do <html>, do <body> e do theme-color (notch) com a tela
-  // atual, pra safe-area/overscroll casarem com o fundo (sem faixas no mobile).
+  // Sincroniza a cor do <html>, do <body> e do theme-color (barra de status do
+  // iOS) com a tela atual. A barra de status do Safari é pintada pelo
+  // theme-color — se ele bater com a cor logo ABAIXO da barra, a divisão some
+  // (igual aos sites onde "não tem barra"). Importante: o iOS às vezes ignora
+  // setAttribute no theme-color, então recriamos o <meta> pra forçar a releitura.
   useEffect(() => {
-    // topo do gradiente da tela (o que aparece sob o notch / overscroll de cima)
-    const top = isGame ? "#0c0d10" : "#222834";
-    // base do gradiente (o que aparece sob a home bar / overscroll de baixo)
+    // cor EFETIVA logo abaixo da barra de status (gradiente do topo + glow dourado
+    // do AppBackground já embutido no tom). Tela inicial é mais clara; jogo é quase preto.
+    const top = isGame ? "#0d1014" : "#252b37";
     const bottom = isGame ? "#08090b" : "#1a1f28";
     document.documentElement.style.background = top;
     document.body.style.background = bottom;
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", top);
+
+    // recria o <meta name="theme-color"> pra o iOS reamostrar a cor da barra
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
+    const meta = document.createElement("meta");
+    meta.name = "theme-color";
+    meta.content = top;
+    document.head.appendChild(meta);
   }, [isGame]);
   return (
     <div
