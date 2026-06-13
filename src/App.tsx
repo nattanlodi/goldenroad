@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { DRAFT_TEAMS } from "./data/teams";
 import { useGame } from "./game/useGame";
 import { AppBackground } from "./components/AppBackground";
@@ -16,6 +17,19 @@ export function App() {
   const isGame = phase === "series";
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
   const isVictory = phase === "result" && game.state.finished === "champion";
+
+  // Sincroniza a cor do <html>, do <body> e do theme-color (notch) com a tela
+  // atual, pra safe-area/overscroll casarem com o fundo (sem faixas no mobile).
+  useEffect(() => {
+    // topo do gradiente da tela (o que aparece sob o notch / overscroll de cima)
+    const top = isGame ? "#0c0d10" : "#222834";
+    // base do gradiente (o que aparece sob a home bar / overscroll de baixo)
+    const bottom = isGame ? "#08090b" : "#1a1f28";
+    document.documentElement.style.background = top;
+    document.body.style.background = bottom;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", top);
+  }, [isGame]);
   return (
     <div
       className={`bg-app${isGame ? " bg-app-game" : ""} flex min-h-[100dvh] w-full flex-col items-center font-body text-cream`}

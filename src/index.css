@@ -57,7 +57,15 @@ body {
   padding: 0;
   /* base que CASA com o fundo do app (não um preto chapado): cobre as áreas que o
      container não pinta — safe-area do mobile (notch/home bar), overscroll e o
-     trilho da scrollbar — pra não aparecer faixa preta nas bordas. */
+     trilho da scrollbar — pra não aparecer faixa preta nas bordas.
+     Pintamos no <html> a cor do TOPO do gradiente (start). Na tela de jogo o
+     próprio .app-bg fixo (edge-to-edge) cobre tudo, inclusive a safe-area. */
+  background: #222834;
+  /* trava o rubber-band em fundo combinando (iOS/Android) */
+  overscroll-behavior: none;
+}
+/* corpo recebe a cor do FUNDO do gradiente, pra overscroll inferior casar */
+body {
   background: #1a1f28;
 }
 
@@ -185,18 +193,29 @@ body {
    Componentes utilitários (gradientes/sombras complexos)
    ============================================================ */
 
-/* fundo do app: base grafite estática + glows suaves. As camadas animadas vêm
-   do componente AppBackground (.app-bg), montado no App por cima desta base. */
+/* fundo do app: o container que rola NÃO pinta a base — quem pinta é a camada
+   fixa .app-bg (edge-to-edge, cobre notch/home-bar/overscroll). Aqui só o
+   isolamento de stacking pro conteúdo ficar acima do fundo fixo. */
 .bg-app {
   position: relative;
   isolation: isolate;
+}
+
+/* ── fundo animado global do app (componente AppBackground) ────────────── */
+/* a camada fixa carrega a BASE (gradiente grafite + glows). Como é fixed inset-0,
+   vai de borda a borda da viewport, inclusive sob o notch e a home bar. */
+.app-bg {
   background:
     radial-gradient(1100px 600px at 50% -6%, rgba(201, 162, 75, 0.1), transparent 60%),
     radial-gradient(950px 720px at 100% 112%, rgba(74, 120, 184, 0.08), transparent 58%),
     linear-gradient(180deg, #222834, #1a1f28);
 }
-
-/* ── fundo animado global do app (componente AppBackground) ────────────── */
+.app-bg-game {
+  background:
+    radial-gradient(1100px 600px at 50% -6%, rgba(201, 162, 75, 0.12), transparent 60%),
+    radial-gradient(900px 700px at 100% 112%, rgba(201, 162, 75, 0.06), transparent 58%),
+    linear-gradient(180deg, #0c0d10, #08090b);
+}
 .app-bg > div {
   position: absolute;
   inset: -8%;
@@ -317,13 +336,9 @@ body {
 }
 
 /* ── variante "game" (tela de jogo / série) ─────────────────────────────
-   Fundo mais PRETO (menos azul), luzes douradas mantidas, partículas só douradas. */
-.bg-app-game {
-  background:
-    radial-gradient(1100px 600px at 50% -6%, rgba(201, 162, 75, 0.12), transparent 60%),
-    radial-gradient(900px 700px at 100% 112%, rgba(201, 162, 75, 0.06), transparent 58%),
-    linear-gradient(180deg, #0c0d10, #08090b);
-}
+   Fundo mais PRETO (menos azul), luzes douradas mantidas, partículas só douradas.
+   A base/gradiente é pintada pela camada FIXA .app-bg-game (edge-to-edge); aqui
+   o container que rola não pinta nada pra não criar costura no scroll. */
 /* auroras: troca o blob azul por dourado-âmbar (só douradas) */
 .app-bg-game .app-bg-aurora {
   background:
