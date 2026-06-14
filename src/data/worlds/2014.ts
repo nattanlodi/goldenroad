@@ -1,59 +1,57 @@
 import type { Team } from "../../types";
 
-// Worlds 2014 — Season 4 World Championship (final em Seul, Sangam Stadium).
-// 16 times · campeão: Samsung White (sobre o Star Horn Royal Club) — uma das lines mais dominantes da história.
-// Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
-// 70% no RFT dos playoffs (agregado por série) + 30% no geral; ver teams.ts.
-// Mata'14 e PawN'14 com override de curadoria (MVP transcendente do evento).
+// Worlds 2014 — Season 4 World Championship (final em Seul, Sangam Stadium, 40k pessoas).
+// 16 times · campeão: Samsung White sobre o Star Horn Royal Club (3-1) — uma das lines mais dominantes da história.
+// Tuplas: [role, nome, overall, país]. NOTAS: motor novo — força do oponente + geral REAL da
+// fase de grupos (rft.gg), 80% playoff / 20% geral, bases −2, shrinkage. Ver scripts/rft-w-2014.mjs.
+// Mata (SSW) = Finals MVP. PawN o melhor do torneio de fato (97). Tudo cru, sem curadoria.
 export const WORLDS_2014: Team[] = [
-  // 1º — Campeão (base 88). O mais dominante da história; RFT de playoff absurdo
-  // (PawN 98 na semi, Looper 90, Mata 85). 4 jogadores no teto; imp 88 (QF1 fraco).
-  { id: "sswhite-2014", team: "Samsung White", short: "SSW", year: 2014, league: "OGN", champion: true,
-    players: [["TOP", "Looper", 97, "kr"], ["JNG", "DanDy", 97, "kr"], ["MID", "PawN", 97, "kr"], ["BOT", "imp", 85, "kr"], ["SUP", "Mata", 99, "kr"]] },
-  // 2º — Vice (base 84). +3 de curadoria em todos: jogaram a final muito mal (SSW os destruiu),
-  // mas chegar à final do mundial não merece nota tão baixa. RFT puxou demais pra baixo.
-  { id: "shrc-2014", team: "Star Horn Royal Club", short: "SHR", year: 2014, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "Cola", 82, "cn"], ["JNG", "inSec", 81, "kr"], ["MID", "corn", 87, "cn"], ["BOT", "Uzi", 87, "cn"], ["SUP", "Zero", 89, "kr"]] },
-  // 3º-4º — Semifinal (base 81). Foram varridos 0-3 pela SSW na semi; QF2 melhor equilibrou.
-  { id: "ssblue-2014", team: "Samsung Blue", short: "SSB", year: 2014, league: "OGN", champion: false,
-    players: [["TOP", "Acorn", 75, "kr"], ["JNG", "Spirit", 76, "kr"], ["MID", "Dade", 78, "kr"], ["BOT", "Deft", 77, "kr"], ["SUP", "Heart", 79, "kr"]] },
-  // 3º-4º — Semifinal (base 81). Os verdadeiros carrys: Gogoing 88, Cool 87, Cloud 86 (2 séries fortes).
+  // 1º — Campeão (LCK). A SSW lendária: PawN/Mata gigantes, line inteira 87+. Dominaram do começo ao fim.
+  { id: "sswhite-2014", team: "Samsung White", short: "SSW", year: 2014, league: "LCK", champion: true,
+    players: [["TOP", "Looper", 95, "kr"], ["JNG", "DanDy", 92, "kr"], ["MID", "PawN", 97, "kr"], ["BOT", "imp", 87, "kr"], ["SUP", "Mata", 96, "kr"]] },
+  // 2º — Vice (LPL). Uzi & cia. atropelados na final (notas humilhantes vs SSW). zero o melhor.
+  { id: "shrc-2014", team: "Star Horn Royal Club", short: "SHRC", year: 2014, league: "LPL", champion: false, finalist: true,
+    players: [["TOP", "Cola", 79, "cn"], ["JNG", "inSec", 78, "kr"], ["MID", "Corn", 82, "cn"], ["BOT", "Uzi", 80, "cn"], ["SUP", "zero", 83, "kr"]] },
+  // 3º-4º — Semifinal (LPL). Explodiram no playoff (Gogoing 95 vs Royal); melhor que o seed dizia.
   { id: "omg-2014", team: "Oh My God", short: "OMG", year: 2014, league: "LPL", champion: false,
-    players: [["TOP", "Gogoing", 90, "cn"], ["JNG", "Loveling", 83, "cn"], ["MID", "Cool", 88, "cn"], ["BOT", "San", 83, "cn"], ["SUP", "Cloud", 87, "cn"]] },
-  // 5º-8º — Quartas (base 78). RFT playoff: Bjergsen 65 o único que apareceu; WildTurtle 23.
-  { id: "tsm-2014", team: "Team SoloMid", short: "TSM", year: 2014, league: "NA", champion: false,
-    players: [["TOP", "Dyrus", 79, "us"], ["JNG", "Amazing", 68, "de"], ["MID", "Bjergsen", 83, "dk"], ["BOT", "WildTurtle", 66, "ca"], ["SUP", "Lustboy", 71, "kr"]] },
-  // 5º-8º — Quartas (base 78). RFT playoff (QF2): LemonNation 63 o destaque.
+    players: [["TOP", "Gogoing", 86, "cn"], ["JNG", "LoveLing", 81, "cn"], ["MID", "Cool", 82, "cn"], ["BOT", "san", 81, "cn"], ["SUP", "Cloud", 83, "cn"]] },
+  // 3º-4º — Semifinal (LCK). A irmã mais fraca da SSW: levou 0-3 na semi e suou contra a C9. RFT pune.
+  { id: "ssblue-2014", team: "Samsung Blue", short: "SSB", year: 2014, league: "LCK", champion: false,
+    players: [["TOP", "Acorn", 73, "kr"], ["JNG", "Spirit", 74, "kr"], ["MID", "Dade", 74, "kr"], ["BOT", "Deft", 74, "kr"], ["SUP", "Heart", 74, "kr"]] },
+  // 5º-8º — Quartas (LCS). Levaram a SSB ao limite (2-3); LemonNation/Sneaky o destaque.
   { id: "c9-2014", team: "Cloud9", short: "C9", year: 2014, league: "NA", champion: false,
-    players: [["TOP", "Balls", 76, "us"], ["JNG", "Meteos", 75, "us"], ["MID", "Hai", 76, "us"], ["BOT", "Sneaky", 79, "us"], ["SUP", "LemonNation", 82, "us"]] },
-  // 5º-8º — Quartas (base 78). RFT playoff (QF3): Koro1 63, U 60 (jungler real ClearLove = Mann 52).
+    players: [["TOP", "BalIs", 78, "us"], ["JNG", "Meteos", 79, "us"], ["MID", "Hai", 79, "us"], ["BOT", "Sneaky", 81, "us"], ["SUP", "LemonNation", 84, "us"]] },
+  // 5º-8º — Quartas (LPL). Varridos pela RC. U/Koro1 o melhor. (Korol=Koro1, Mann=ClearLove.)
   { id: "edg-2014", team: "EDward Gaming", short: "EDG", year: 2014, league: "LPL", champion: false,
-    players: [["TOP", "Koro1", 82, "cn"], ["JNG", "ClearLove", 77, "cn"], ["MID", "U", 82, "cn"], ["BOT", "NaMei", 74, "cn"], ["SUP", "Fzzf", 78, "cn"]] },
-  // 5º-8º — Quartas (base 78). Ggoong tinha RFT geral nº1, mas foi VARRIDO 0-3 na QF (46) → 78.
-  { id: "najinws-2014", team: "NaJin White Shield", short: "NWS", year: 2014, league: "OGN", champion: false,
-    players: [["TOP", "Save", 69, "kr"], ["JNG", "Watch", 71, "kr"], ["MID", "Ggoong", 77, "kr"], ["BOT", "Zefa", 73, "kr"], ["SUP", "GorillA", 73, "kr"]] },
-  // 9º-16º — Fase de grupos (base 72). westdoor (o Fizz lendário).
-  { id: "ahq-2014", team: "ahq e-Sports Club", short: "AHQ", year: 2014, league: "GPL", champion: false,
-    players: [["TOP", "Prydz", 72, "tw"], ["JNG", "NAZ", 72, "tw"], ["MID", "westdoor", 74, "tw"], ["BOT", "GarnetDevil", 73, "tw"], ["SUP", "GreenTea", 72, "tw"]] },
-  // 9º-16º — Fase de grupos (base 72). Svenskeren.
-  { id: "sk-2014", team: "SK Gaming", short: "SK", year: 2014, league: "EU", champion: false,
-    players: [["TOP", "fredy122", 73, "gb"], ["JNG", "Svenskeren", 74, "dk"], ["MID", "Jesiz", 73, "dk"], ["BOT", "CandyPanda", 73, "de"], ["SUP", "nRated", 72, "de"]] },
-  // 9º-16º — Fase de grupos (base 72). Froggen.
+    players: [["TOP", "Koro1", 75, "cn"], ["JNG", "ClearLove", 70, "cn"], ["MID", "U", 76, "kr"], ["BOT", "NaMei", 71, "cn"], ["SUP", "fzzf", 74, "cn"]] },
+  // 5º-8º — Quartas (LCK). Varridos pela OMG; Ggoong forte nos grupos, apagado na QF.
+  { id: "najinws-2014", team: "NaJin White Shield", short: "NJWS", year: 2014, league: "LCK", champion: false,
+    players: [["TOP", "Save", 73, "kr"], ["JNG", "Watch", 73, "kr"], ["MID", "Ggoong", 77, "kr"], ["BOT", "Zefa", 73, "kr"], ["SUP", "GorillA", 74, "kr"]] },
+  // 5º-8º — Quartas (LCS). Varridos 0-3 pela SSW; Bjergsen bom nos grupos, apagado na QF (15).
+  { id: "tsm-2014", team: "Team SoloMid", short: "TSM", year: 2014, league: "NA", champion: false,
+    players: [["TOP", "Dyrus", 75, "us"], ["JNG", "Amazing", 68, "de"], ["MID", "Bjergsen", 70, "dk"], ["BOT", "WildTurtle", 70, "ca"], ["SUP", "Lustboy", 73, "kr"]] },
+  // 9º-16º — Fase de grupos (base 72). Melhor campanha europeia dos grupos (Froggen/Wickd 76).
   { id: "alliance-2014", team: "Alliance", short: "ALL", year: 2014, league: "EU", champion: false,
-    players: [["TOP", "Wickd", 73, "dk"], ["JNG", "Shook", 73, "nl"], ["MID", "Froggen", 75, "dk"], ["BOT", "Tabzz", 73, "nl"], ["SUP", "Nyph", 72, "de"]] },
-  // 9º-16º — Fase de grupos (base 72). Roster chinês que jogou a NA LCS.
-  { id: "lmq-2014", team: "LMQ", short: "LMQ", year: 2014, league: "NA", champion: false,
-    players: [["TOP", "ackerman", 72, "cn"], ["JNG", "NoName", 73, "cn"], ["MID", "XiaoWeiXiao", 74, "cn"], ["BOT", "Vasilii", 73, "cn"], ["SUP", "Mor", 72, "cn"]] },
-  // 9º-16º — Fase de grupos (base 72).
+    players: [["TOP", "Wickd", 76, "se"], ["JNG", "Shook", 73, "nl"], ["MID", "Froggen", 76, "dk"], ["BOT", "Tabzz", 72, "se"], ["SUP", "Nyph", 74, "se"]] },
+  // 9º-16º — Fase de grupos (base 72). xPeke/Rekkles o melhor; não passaram dos grupos.
   { id: "fnatic-2014", team: "Fnatic", short: "FNC", year: 2014, league: "EU", champion: false,
-    players: [["TOP", "sOAZ", 73, "fr"], ["JNG", "Cyanide", 73, "fi"], ["MID", "xPeke", 75, "es"], ["BOT", "Rekkles", 75, "se"], ["SUP", "YellOwStaR", 75, "fr"]] },
-  // 9º-16º — Fase de grupos (base 72). Campeão de 2012, em declínio.
-  { id: "tpa-2014", team: "Taipei Assassins", short: "TPA", year: 2014, league: "GPL", champion: false,
-    players: [["TOP", "Achie", 72, "tw"], ["JNG", "Winds", 72, "tw"], ["MID", "Morning", 72, "tw"], ["BOT", "bebe", 73, "tw"], ["SUP", "Jay", 71, "tw"]] },
-  // 9º-16º — Fase de grupos, wildcard da Turquia (base 72, fundo da tabela).
-  { id: "darkpassage-2014", team: "Dark Passage", short: "DP", year: 2014, league: "TCL", champion: false,
-    players: [["TOP", "fabFabulous", 69, "tr"], ["JNG", "Crystal", 68, "tr"], ["MID", "Naru", 69, "tr"], ["BOT", "HolyPhoenix", 69, "tr"], ["SUP", "Touch", 68, "no"]] },
-  // 9º-16º — Fase de grupos, wildcard do Brasil (base 72). Bateu a Alliance num upset histórico.
+    players: [["TOP", "sOAZ", 72, "fr"], ["JNG", "Cyanide", 70, "fi"], ["MID", "xPeke", 74, "es"], ["BOT", "Rekkles", 74, "se"], ["SUP", "YellOwStaR", 73, "fr"]] },
+  // 9º-16º — Fase de grupos (base 72). xiaoweixiao o destaque; roster chinês que jogou a NA LCS.
+  { id: "lmq-2014", team: "LMQ", short: "LMQ", year: 2014, league: "NA", champion: false,
+    players: [["TOP", "Ackerman", 71, "cn"], ["JNG", "NONAME", 71, "cn"], ["MID", "XiaoWeiXiao", 73, "cn"], ["BOT", "Vasilii", 71, "cn"], ["SUP", "Mor", 72, "cn"]] },
+  // 9º-16º — Fase de grupos (base 72). Westdoor (o Fizz lendário); melhor da wildcard de Taiwan.
+  { id: "ahq-2014", team: "ahq e-Sports Club", short: "AHQ", year: 2014, league: "LMS", champion: false,
+    players: [["TOP", "Prydz", 72, "tw"], ["JNG", "Naz", 70, "tw"], ["MID", "Westdoor", 74, "tw"], ["BOT", "GarnetDevil", 70, "tw"], ["SUP", "GreenTea", 73, "tw"]] },
+  // 9º-16º — Fase de grupos (base 72). Wildcard de Taiwan; Morning o melhor. Campeão de 2012 em declínio.
+  { id: "tpa-2014", team: "Taipei Assassins", short: "TPA", year: 2014, league: "LMS", champion: false,
+    players: [["TOP", "Achie", 71, "tw"], ["JNG", "Winds", 72, "tw"], ["MID", "Morning", 74, "tw"], ["BOT", "bebe", 71, "tw"], ["SUP", "Jay", 73, "tw"]] },
+  // 9º-16º — Fase de grupos (base 72). SK europeia fraca nesse ano; Svenskeren ainda rookie.
+  { id: "sk-2014", team: "SK Gaming", short: "SK", year: 2014, league: "EU", champion: false,
+    players: [["TOP", "fredy122", 73, "de"], ["JNG", "Svenskeren", 72, "dk"], ["MID", "Jesiz", 70, "dk"], ["BOT", "CandyPanda", 70, "de"], ["SUP", "nRated", 71, "de"]] },
+  // 9º-16º — Fase de grupos (base 72). Wildcard do Brasil; upset histórico (venceu a Alliance).
   { id: "kabum-2014", team: "KaBuM! e-Sports", short: "KBM", year: 2014, league: "CBLOL", champion: false,
-    players: [["TOP", "LEP", 69, "br"], ["JNG", "Danagorn", 68, "br"], ["MID", "TinOwns", 70, "br"], ["BOT", "Minerva", 69, "br"], ["SUP", "dans", 68, "br"]] },
+    players: [["TOP", "Lep", 70, "br"], ["JNG", "Danagorn", 68, "br"], ["MID", "tinowns", 71, "br"], ["BOT", "Minerva", 70, "br"], ["SUP", "dans", 70, "br"]] },
+  // 9º-16º — Fase de grupos, wildcard da Turquia (base 72, fundo da tabela).
+  { id: "darkpassage-2014", team: "Dark Passage", short: "DP", year: 2014, league: "TR", champion: false,
+    players: [["TOP", "fabFabulous", 69, "tr"], ["JNG", "Crystal", 66, "tr"], ["MID", "Naru", 68, "tr"], ["BOT", "HolyPhoenix", 68, "tr"], ["SUP", "Touch", 69, "tr"]] },
 ];

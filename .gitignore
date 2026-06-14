@@ -27,3 +27,6 @@ dist-ssr
 .vercel
 *.tmp.*
 *.tmp.json
+
+# Diretório de trabalho temporário do scraping rft.gg (HTMLs grandes + scripts auxiliares)
+.scrape-tmp/

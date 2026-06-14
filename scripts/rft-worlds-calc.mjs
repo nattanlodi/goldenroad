@@ -64,7 +64,10 @@ export function mergeWorlds(label, players) {
   };
 
   // 3) geral CRU (sem força do oponente — decisão da memória).
-  const gVals = Object.values(players).map((p) => p.geral);
+  //    Jogadores SEM geral (ex.: Worlds 2013, times que entraram direto no mata-mata sem
+  //    fase de grupos no rft.gg) são excluídos da estatística do geral e ponderados 100% playoff.
+  const hasGeral = (p) => p.geral != null;
+  const gVals = Object.values(players).filter(hasGeral).map((p) => p.geral);
   const pPlayers = Object.values(players).filter((p) => p.playoff && p.playoff.length);
   const gStat = stats(gVals);
   const pStat = stats(pPlayers.map(playoffAvg));
@@ -74,9 +77,11 @@ export function mergeWorlds(label, players) {
   for (const [name, p] of Object.entries(players)) {
     const np = (p.playoff || []).length;
     const shrink = np ? Math.sqrt(np / (np + K_SHRINK)) : 0;
-    const zG = z(p.geral, gStat.m, gStat.sd);
+    const hasG = p.geral != null;
+    const zG = hasG ? z(p.geral, gStat.m, gStat.sd) : 0;
     const zP = np ? z(playoffAvg(p), pStat.m, pStat.sd) * shrink : zG; // shrink por sample
-    const zF = W_PLAYOFF * zP + W_GERAL * zG;
+    // sem geral → 100% playoff (não dilui com um zG=0 falso); sem playoff → 100% geral (zP=zG).
+    const zF = hasG ? (W_PLAYOFF * zP + W_GERAL * zG) : zP;
     const base = REBASE[p.base] ?? p.base; // base rebaixada -2
     let ov = base + Math.round(zF * SPREAD); // SEM caps[base] — overall cru
     // fMVP sozinho não passa de CAP_GLOBAL-1 (só duplo-MVP via override externo chega a 100).

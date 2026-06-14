@@ -1,52 +1,52 @@
 import type { Team } from "../../types";
 
 // Worlds 2013 — Season 3 World Championship (final no Staples Center, LA).
-// 14 times · campeão: SK Telecom T1 (1ª taça do Faker) sobre o Royal Club.
-// Tuplas: [role, nome, overall, país]. NOTAS: mescla colocação + RFT 1.0 (rft.gg),
-// com 80% do peso no RFT DOS PLAYOFFS (quartas/semi/final, agregado por série) e
-// 20% no geral; ver teams.ts. SEM curadoria — fórmula pura + notas reais dos prints.
+// 14 times · campeão: SK Telecom T1 (1ª taça do Faker) sobre o Royal Club (3-0).
+// Tuplas: [role, nome, overall, país]. NOTAS: motor novo — força do oponente + geral REAL dos
+// grupos (rft.gg), 80% playoff / 20% geral, bases −2, shrinkage. Ver scripts/rft-w-2013.mjs.
+// ⚠ FORMATO ESPECIAL: 4 times do mata-mata (Royal/NaJin/C9/Gamania) entraram direto, sem grupos no
+// rft.gg → ponderados 100% playoff. Impact = Finals MVP. Faker'13 cru 84 (rookie, grupos modestos).
 export const WORLDS_2013: Team[] = [
-  // 1º — Campeão (base 88). Notas de playoff [Final/Semi/QF] dos prints rft.gg:
-  // Impact 64/61/81 · Bengi 61/51/60 · Faker 59/62/63 (MVP) · Piglet 60/56/63 · Pooh 63/50/70.
-  { id: "skt-2013", team: "SK Telecom T1", short: "SKT", year: 2013, league: "OGN", champion: true,
-    players: [["TOP", "Impact", 97, "kr"], ["JNG", "Bengi", 89, "kr"], ["MID", "Faker", 94, "kr"], ["BOT", "Piglet", 91, "kr"], ["SUP", "PoohManDu", 91, "kr"]] },
-  // 2º — Vice (base 84). Vice fraco em rating (jogou mal o torneio todo); final pesa 0.5.
+  // 1º — Campeão (LCK). A 1ª SKT. Impact (fMVP) gigante; Faker rookie, brilhou no coletivo (cru 84).
+  { id: "skt-2013", team: "SK Telecom T1", short: "SKT", year: 2013, league: "LCK", champion: true,
+    players: [["TOP", "Impact", 92, "kr"], ["JNG", "Bengi", 82, "kr"], ["MID", "Faker", 84, "kr"], ["BOT", "Piglet", 87, "kr"], ["SUP", "PoohManDu", 87, "kr"]] },
+  // 2º — Vice (LPL). Uzi na 1ª final. Sem grupos (100% playoff) → Ackerman/Wh1t3zZ subiram a 91.
   { id: "royal-2013", team: "Royal Club", short: "RC", year: 2013, league: "LPL", champion: false, finalist: true,
-    players: [["TOP", "GoDlike", 82, "cn"], ["JNG", "Lucky", 78, "cn"], ["MID", "Wh1t3zZ", 88, "cn"], ["BOT", "Uzi", 86, "cn"], ["SUP", "Tabe", 85, "hk"]] },
-  // 3º — Semifinal (base 81). Watch (74 na semi) e Cain (66) brilharam mesmo perdendo.
-  { id: "najinbs-2013", team: "NaJin Black Sword", short: "NJBS", year: 2013, league: "OGN", champion: false,
-    players: [["TOP", "Expession", 85, "kr"], ["JNG", "Watch", 87, "kr"], ["MID", "Nagne", 84, "kr"], ["BOT", "PraY", 79, "kr"], ["SUP", "Cain", 84, "kr"]] },
-  // 4º — Semifinal (base 81). sOAZ dominante no playoff (74/71 — top do evento).
+    players: [["TOP", "Ackerman", 91, "cn"], ["JNG", "Lucky", 79, "cn"], ["MID", "Wh1t3zZ", 91, "cn"], ["BOT", "Uzi", 85, "cn"], ["SUP", "Tabe", 79, "hk"]] },
+  // 3º-4º — Semifinal (LCK). Sem grupos (100% playoff). Expession brilhou contra a SKT (88).
+  { id: "najinbs-2013", team: "NaJin Black Sword", short: "NJBS", year: 2013, league: "LCK", champion: false,
+    players: [["TOP", "Expession", 88, "kr"], ["JNG", "Watch", 76, "kr"], ["MID", "Nagne", 81, "kr"], ["BOT", "PraY", 76, "kr"], ["SUP", "Cain", 71, "kr"]] },
+  // 3º-4º — Semifinal (LEC). Jogou grupos. sOAZ o destaque (83); melhor campanha europeia até então.
   { id: "fnatic-2013", team: "Fnatic", short: "FNC", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "sOAZ", 94, "fr"], ["JNG", "Cyanide", 83, "fi"], ["MID", "xPeke", 89, "es"], ["BOT", "Puszu", 87, "ee"], ["SUP", "YellOwStaR", 86, "fr"]] },
-  // 5º-8º — Quartas (base 78). Varridos pela SKT na QF3 (todos 35-42) — RFT puxa pra baixo.
-  { id: "gamania-2013", team: "Gamania Bears", short: "GB", year: 2013, league: "GPL", champion: false,
-    players: [["TOP", "Steak", 70, "tw"], ["JNG", "Winds", 67, "tw"], ["MID", "Maple", 67, "tw"], ["BOT", "NL", 66, "tw"], ["SUP", "SwordArT", 70, "tw"]] },
-  // 5º-8º — Quartas (base 78). RFT playoff (QF2): Darien 58 o destaque.
+    players: [["TOP", "sOAZ", 83, "fr"], ["JNG", "Cyanide", 69, "fi"], ["MID", "xPeke", 78, "es"], ["BOT", "Puszu", 80, "ee"], ["SUP", "YellOwStaR", 78, "fr"]] },
+  // 5º-8º — Quartas (LEC). Jogou grupos. O lendário Gambit (ex-Moscow5); Darien/Alex Ich o melhor.
   { id: "gambit-2013", team: "Gambit Gaming", short: "GMB", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "Darien", 83, "ru"], ["JNG", "Diamondprox", 74, "ru"], ["MID", "Alex Ich", 78, "ru"], ["BOT", "Genja", 74, "ru"], ["SUP", "Voidle", 75, "ee"]] },
-  // 5º-8º — Quartas (base 78). Bons nos grupos, modestos na QF4 (perderam 0-2): Gogoing 56.
+    players: [["TOP", "Darien", 84, "ru"], ["JNG", "Diamondprox", 80, "ru"], ["MID", "Alex Ich", 81, "ru"], ["BOT", "Genja", 79, "ru"], ["SUP", "Voidle", 78, "ee"]] },
+  // 5º-8º — Quartas (LPL). Jogou grupos. Cool o destaque (84); perderam 0-2 pro Royal na QF.
   { id: "omg-2013", team: "Oh My God", short: "OMG", year: 2013, league: "LPL", champion: false,
-    players: [["TOP", "Gogoing", 82, "cn"], ["JNG", "LoveLin", 73, "cn"], ["MID", "Cool", 81, "cn"], ["BOT", "San", 69, "cn"], ["SUP", "Bigpomelo", 74, "cn"]] },
-  // 5º-8º — Quartas (base 78). RFT playoff (QF1): Balls 62 o destaque.
+    players: [["TOP", "Gogoing", 81, "cn"], ["JNG", "LoveLing", 73, "cn"], ["MID", "Cool", 84, "cn"], ["BOT", "san", 70, "cn"], ["SUP", "pomelo", 72, "cn"]] },
+  // 5º-8º — Quartas (LCS). Sem grupos (100% playoff). BalIs o destaque (83); varridos pela Fnatic.
   { id: "c9-2013", team: "Cloud9", short: "C9", year: 2013, league: "NA", champion: false,
-    players: [["TOP", "Balls", 85, "us"], ["JNG", "Meteos", 76, "us"], ["MID", "Hai", 71, "us"], ["BOT", "Sneaky", 73, "us"], ["SUP", "LemonNation", 75, "us"]] },
-  // 9º-10º — Fase de grupos (base 72).
+    players: [["TOP", "BalIs", 83, "us"], ["JNG", "Meteos", 68, "us"], ["MID", "Hai", 69, "us"], ["BOT", "Sneaky", 70, "us"], ["SUP", "LemonNation", 74, "us"]] },
+  // 5º-8º — Quartas (wild). Sem grupos (100% playoff). Varridos pela SKT na QF (todos 38-50).
+  { id: "gamania-2013", team: "Gamania Bears", short: "GB", year: 2013, league: "LMS", champion: false,
+    players: [["TOP", "Steak", 77, "tw"], ["JNG", "Winds", 71, "tw"], ["MID", "Maple", 70, "tw"], ["BOT", "NL", 67, "tw"], ["SUP", "SwordArt", 67, "tw"]] },
+  // 9º-14º — Fase de grupos (base 72). Surpresa europeia, melhor que o seed dizia nos grupos.
   { id: "lemondogs-2013", team: "Lemondogs", short: "LD", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "Zorozero", 73, "dk"], ["JNG", "Dexter", 73, "de"], ["MID", "Nukeduck", 74, "no"], ["BOT", "Tabzz", 73, "nl"], ["SUP", "Mithy", 74, "es"]] },
-  // 9º-10º — Fase de grupos (base 72). Núcleo talentoso (futuro Samsung White), mas caiu cedo.
-  { id: "ozone-2013", team: "Samsung Ozone", short: "OZ", year: 2013, league: "OGN", champion: false,
-    players: [["TOP", "Looper", 74, "kr"], ["JNG", "DanDy", 76, "kr"], ["MID", "Dade", 74, "kr"], ["BOT", "Imp", 75, "kr"], ["SUP", "Mata", 76, "kr"]] },
-  // 11º-12º — Fase de grupos (base 72).
+    players: [["TOP", "Zorozero", 74, "dk"], ["JNG", "Dexter", 72, "de"], ["MID", "Nukeduck", 73, "no"], ["BOT", "Tabzz", 72, "nl"], ["SUP", "Mithy", 71, "es"]] },
+  // 9º-14º — Fase de grupos (base 72). Núcleo do futuro Samsung White/campeão'14; caiu cedo aqui.
+  { id: "ozone-2013", team: "Samsung Ozone", short: "OZ", year: 2013, league: "LCK", champion: false,
+    players: [["TOP", "Looper", 75, "kr"], ["JNG", "DanDy", 73, "kr"], ["MID", "Dade", 74, "kr"], ["BOT", "imp", 73, "kr"], ["SUP", "Mata", 74, "kr"]] },
+  // 9º-14º — Fase de grupos (base 72). TSM clássico (Dyrus/Reginald/Xpecial).
   { id: "tsm-2013", team: "Team SoloMid", short: "TSM", year: 2013, league: "NA", champion: false,
-    players: [["TOP", "Dyrus", 73, "us"], ["JNG", "TheOddOne", 73, "ca"], ["MID", "Reginald", 74, "us"], ["BOT", "WildTurtle", 73, "ca"], ["SUP", "Xpecial", 73, "us"]] },
-  // 11º-12º — Fase de grupos (base 72).
+    players: [["TOP", "Dyrus", 73, "us"], ["JNG", "TheOddOne", 72, "ca"], ["MID", "Reginald", 72, "us"], ["BOT", "WildTurtle", 71, "ca"], ["SUP", "Xpecial", 73, "us"]] },
+  // 9º-14º — Fase de grupos (base 72). 2ª NA; campanha modesta.
   { id: "vulcun-2013", team: "Team Vulcun", short: "VUL", year: 2013, league: "NA", champion: false,
-    players: [["TOP", "Sycho Sid", 72, "us"], ["JNG", "Xmithie", 74, "ph"], ["MID", "Mancloud", 73, "us"], ["BOT", "Zuna", 72, "us"], ["SUP", "BloodWater", 72, "bg"]] },
-  // 13º-14º — Fase de grupos, wildcard (base 72, fundo da tabela).
+    players: [["TOP", "Benny", 73, "us"], ["JNG", "Xmithie", 71, "ph"], ["MID", "mancloud", 73, "us"], ["BOT", "Zuna", 71, "us"], ["SUP", "BloodWater", 73, "bg"]] },
+  // 9º-14º — Fase de grupos, wildcard europeia (base 72, fundo da tabela).
   { id: "gaminggear-2013", team: "GamingGear.eu", short: "GG", year: 2013, league: "EU", champion: false,
-    players: [["TOP", "NBs", 69, "lt"], ["JNG", "Alunir", 68, "lt"], ["MID", "Mazzerin", 69, "lt"], ["BOT", "DeadlyBrother", 69, "lt"], ["SUP", "Inspirro", 68, "lt"]] },
-  // 13º-14º — Fase de grupos, wildcard das Filipinas (base 72, fundo da tabela).
-  { id: "mineski-2013", team: "Mineski", short: "MSK", year: 2013, league: "GPL", champion: false,
-    players: [["TOP", "Snoy", 68, "ph"], ["JNG", "Kaigu", 67, "ph"], ["MID", "Yume", 68, "ph"], ["BOT", "Exo", 68, "ph"], ["SUP", "Tgee", 67, "ph"]] },
+    players: [["TOP", "Nbs", 71, "lt"], ["JNG", "Alunir", 70, "lt"], ["MID", "Mazzerin", 71, "lt"], ["BOT", "DeadlyBrother", 70, "lt"], ["SUP", "Inspirro", 71, "lt"]] },
+  // 9º-14º — Fase de grupos, wildcard das Filipinas (base 72, fundo da tabela).
+  { id: "mineski-2013", team: "Mineski", short: "MSK", year: 2013, league: "LMS", champion: false,
+    players: [["TOP", "Snoy", 71, "ph"], ["JNG", "Kaigu", 70, "ph"], ["MID", "Yume", 70, "ph"], ["BOT", "Exo", 69, "ph"], ["SUP", "Tgee", 71, "ph"]] },
 ];

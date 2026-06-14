@@ -17,7 +17,7 @@ const DRY = process.argv.includes("--dry");
 const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 // anos com motor novo
-const WORLDS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+const WORLDS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 const MSI = [2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025];
 
 // --- CURADORIAS (overrides manuais somados ao recálculo cru, por nome normalizado) ---
