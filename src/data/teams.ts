@@ -78,8 +78,8 @@ const champKey = (t: { tournament?: Tournament; year: number }): ChampKey => `${
 const WORLDS_PLAYOFF_COUNT: Record<number, number> = { 2011: 4 };
 const DEFAULT_WORLDS_PLAYOFF = 8;
 // MSI: nº de times do bracket principal por edição. 2023-2025 = 8 (bracket duplo);
-// 2019/2021/2022 = só 4 no knockout (semis + final). Default 8.
-const MSI_PLAYOFF_COUNT: Record<number, number> = { 2019: 4, 2021: 4, 2022: 4 };
+// 2015-2019/2021/2022 = só 4 no knockout (semis + final). Default 8.
+const MSI_PLAYOFF_COUNT: Record<number, number> = { 2015: 4, 2016: 4, 2017: 4, 2018: 4, 2019: 4, 2021: 4, 2022: 4 };
 const DEFAULT_MSI_PLAYOFF = 8;
 
 function playoffCountFor(tournament: Tournament, year: number): number {
