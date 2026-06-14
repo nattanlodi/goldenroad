@@ -7,28 +7,28 @@ import type { Team } from "../../types";
 export const WORLDS_2021: Team[] = [
   // 1º — Campeão (base 88). Meiko o destaque (95, sup MVP-tier); Flandre/Scout fortes.
   { id: "edg-2021", team: "EDward Gaming", short: "EDG", year: 2021, league: "LPL", champion: true,
-    players: [["TOP", "Flandre", 93, "cn"], ["JNG", "Jiejie", 88, "cn"], ["MID", "Scout", 93, "kr"], ["BOT", "Viper", 86, "kr"], ["SUP", "Meiko", 94, "cn"]] },
+    players: [["TOP", "Flandre", 91, "cn"], ["JNG", "Jiejie", 86, "cn"], ["MID", "Scout", 89, "kr"], ["BOT", "Viper", 81, "kr"], ["SUP", "Meiko", 89, "cn"]] },
   // 2º — Vice (base 84). Final em 5 jogos; BeryL/Canyon/ShowMaker fortes.
   { id: "dk-2021", team: "DWG KIA", short: "DK", year: 2021, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Khan", 90, "kr"], ["JNG", "Canyon", 92, "kr"], ["MID", "ShowMaker", 90, "kr"], ["BOT", "Ghost", 84, "kr"], ["SUP", "BeryL", 93, "kr"]] },
+    players: [["TOP", "Khan", 90, "kr"], ["JNG", "Canyon", 87, "kr"], ["MID", "ShowMaker", 88, "kr"], ["BOT", "Ghost", 79, "kr"], ["SUP", "BeryL", 89, "kr"]] },
   // 3º-4º — Semifinal (base 81). Demoliram a C9 na QF (Life 80); levaram a EDG ao 5º jogo.
   { id: "geng-2021", team: "Gen.G Esports", short: "GEN", year: 2021, league: "LCK", champion: false,
-    players: [["TOP", "Rascal", 87, "kr"], ["JNG", "Clid", 86, "kr"], ["MID", "Bdd", 91, "kr"], ["BOT", "Ruler", 82, "kr"], ["SUP", "Life", 92, "kr"]] },
+    players: [["TOP", "Rascal", 82, "kr"], ["JNG", "Clid", 79, "kr"], ["MID", "Bdd", 85, "kr"], ["BOT", "Ruler", 76, "kr"], ["SUP", "Life", 84, "kr"]] },
   // 3º-4º — Semifinal (base 81). O trio jovem (Oner/Gumayusi/Keria) despontando ao lado do Faker.
   { id: "t1-2021", team: "T1", short: "T1", year: 2021, league: "LCK", champion: false,
-    players: [["TOP", "Canna", 88, "kr"], ["JNG", "Oner", 86, "kr"], ["MID", "Faker", 83, "kr"], ["BOT", "Gumayusi", 86, "kr"], ["SUP", "Keria", 86, "kr"]] },
+    players: [["TOP", "Canna", 87, "kr"], ["JNG", "Oner", 84, "kr"], ["MID", "Faker", 80, "kr"], ["BOT", "Gumayusi", 81, "kr"], ["SUP", "Keria", 83, "kr"]] },
   // 5º-8º — Quartas (base 78). Xiaohu (de top) o destaque; perderam 2-3 épica pra EDG.
   { id: "rng-2021", team: "Royal Never Give Up", short: "RNG", year: 2021, league: "LPL", champion: false,
-    players: [["TOP", "Xiaohu", 86, "cn"], ["JNG", "Wei", 76, "cn"], ["MID", "Cryin", 77, "cn"], ["BOT", "GALA", 71, "cn"], ["SUP", "Ming", 80, "cn"]] },
+    players: [["TOP", "Xiaohu", 85, "cn"], ["JNG", "Wei", 76, "cn"], ["MID", "Cryin", 76, "cn"], ["BOT", "GALA", 71, "cn"], ["SUP", "Ming", 78, "cn"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela Gen.G; Zven afundou (37).
   { id: "c9-2021", team: "Cloud9", short: "C9", year: 2021, league: "LCS", champion: false,
-    players: [["TOP", "Fudge", 71, "au"], ["JNG", "Blaber", 75, "us"], ["MID", "Perkz", 71, "hr"], ["BOT", "Zven", 66, "dk"], ["SUP", "Vulcan", 68, "ca"]] },
+    players: [["TOP", "Fudge", 72, "au"], ["JNG", "Blaber", 75, "us"], ["MID", "Perkz", 72, "hr"], ["BOT", "Zven", 64, "dk"], ["SUP", "Vulcan", 69, "ca"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Chovy o único a resistir.
   { id: "hle-2021", team: "Hanwha Life Esports", short: "HLE", year: 2021, league: "LCK", champion: false,
-    players: [["TOP", "Morgan", 73, "kr"], ["JNG", "Willer", 66, "kr"], ["MID", "Chovy", 78, "kr"], ["BOT", "Deft", 69, "kr"], ["SUP", "Vsta", 66, "kr"]] },
+    players: [["TOP", "Morgan", 72, "kr"], ["JNG", "Willer", 65, "kr"], ["MID", "Chovy", 79, "kr"], ["BOT", "Deft", 69, "kr"], ["SUP", "Vsta", 69, "kr"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela DK; Kaiser o destaque.
   { id: "madlions-2021", team: "MAD Lions", short: "MAD", year: 2021, league: "LEC", champion: false,
-    players: [["TOP", "Armut", 74, "tr"], ["JNG", "Elyoya", 73, "es"], ["MID", "Humanoid", 77, "cz"], ["BOT", "Carzzy", 67, "cz"], ["SUP", "Kaiser", 80, "de"]] },
+    players: [["TOP", "Armut", 74, "tr"], ["JNG", "Elyoya", 72, "es"], ["MID", "Humanoid", 77, "cz"], ["BOT", "Carzzy", 66, "cz"], ["SUP", "Kaiser", 79, "de"]] },
   // 9º-16º — Fase de grupos (base 72).
   { id: "rogue-2021", team: "Rogue", short: "RGE", year: 2021, league: "LEC", champion: false,
     players: [["TOP", "Odoamne", 73, "ro"], ["JNG", "Inspired", 74, "pl"], ["MID", "Larssen", 74, "se"], ["BOT", "Hans Sama", 74, "fr"], ["SUP", "Trymbi", 73, "pl"]] },

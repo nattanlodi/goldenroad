@@ -3431,3 +3431,90 @@ export const RFT_SWISS: Record<number, SwissMatch[]> = {
   2024: SWISS_2024,
   2025: SWISS_2025,
 };
+
+// ============================================================================
+// 2021 — PROVENIÊNCIA (Worlds Reykjavík; EDG campeão sobre DK 3-2).
+// Os dados completos do 2021 estão CRAVADOS em scripts/rft-w-2021.mjs (geral real
+// da fase de grupos + playoff por série + tags de oponente), extraídos do rft.gg
+// em jun/2026 via a API REST nova (ver memória "extração via API REST"):
+//   - evento: id 1080, slug interno `worlds-2021` (≠ slug público).
+//   - GERAL = média dos avgRftRating das 53 partidas de GRUPO do main event
+//     (match ids 40384-40437, slugs `...-main-event-day-N-M` e `...-tiebreakers-N`).
+//   - PLAYOFF = avgRftRating por série, 7 séries (ids 40438-40444):
+//     QF1=40438(T1-HLE) QF2=40439(EDG-RNG) QF3=40440(DK-MAD) QF4=40441(GEN-C9)
+//     SF1=40442(DK-T1) SF2=40443(EDG-GEN) Final=40444(EDG-DK).
+//   - URL que funciona p/ extrair: `/match/<id>-<slug>` (COM id) → SSR traz avgRftRating.
+// Não duplicado aqui em SwissMatch[] (os 53 jogos × 10 jogadores ficariam imensos);
+// o .mjs é a fonte. Se precisar re-scrapear: ids acima + `curl -A Mozilla` + remover
+// barras + parsear objetos do array "stats":[...] por avgRftRating.
+// ============================================================================
+
+// ============================================================================
+// 2020 — PROVENIÊNCIA (Worlds Xangai; DAMWON campeão sobre Suning 3-1).
+// Dados completos em scripts/rft-w-2020.mjs (mesmo método do 2021).
+//   - evento: id 942, slug interno `worlds-2020`.
+//   - GERAL = média avgRftRating das 47 partidas de grupo (ids 34726-34774).
+//   - PLAYOFF: QF1=34775(DRX-DWG) QF2=34776(JDG-SN) QF3=34777(FNC-TES) QF4=34778(GEN-G2)
+//     SF1=34779(G2-DWG) SF2=34780(SN-TES) Final=34781(SN-DWG).
+//   - knight (TES) slug rft.gg = `knight-knight-zhuo-ding`. Canyon = Finals MVP.
+//   - Destaque: Canyon dominou os GRUPOS (geral 85.1, o maior do torneio) → overall 99.
+// ============================================================================
+
+// ============================================================================
+// 2019 — PROVENIÊNCIA (Worlds Paris; FunPlus Phoenix campeão sobre G2 3-0).
+// Dados completos em scripts/rft-w-2019.mjs (mesmo método).
+//   - evento: id 821, slug interno `worlds-2019`.
+//   - GERAL = média avgRftRating das 49 partidas de grupo (ids 30564-30613).
+//   - PLAYOFF: QF1=30614(GRF-IG) QF2=30615(FNC-FPX) QF3=30616(SPY-T1) QF4=30617(G2-DWG)
+//     SF1=30618(IG-FPX) SF2=30619(G2-T1) Final=30620(G2-FPX). Tian = Finals MVP.
+//   - FPX dominante: Crisp 97 (playoff 74/80/74) / Doinb 96 / Tian 93. Sem centão (sem duplo-MVP).
+// ============================================================================
+
+// ============================================================================
+// 2018 — PROVENIÊNCIA (Worlds Coreia; Invictus Gaming campeão sobre Fnatic 3-0).
+// Dados completos em scripts/rft-w-2018.mjs (mesmo método).
+//   - evento: id 712, slug interno `worlds-2018`. ⚠ Afreeca aparece como "SOOPers" no rft.gg.
+//   - GERAL = média avgRftRating das 50 partidas de grupo (ids 27246-27296).
+//   - PLAYOFF: QF1=27297(IG-KT) QF2=27298(G2-RNG) QF3=27299(AF-C9) QF4=27300(FNC-EDG)
+//     SF1=27301(G2-IG) SF2=27302(FNC-C9) Final=27303(IG-FNC). Ning = Finals MVP.
+//   - IG dominante: Rookie 98 (playoff 85/76/75) / TheShy 94 / Baolan 93. Sem centão.
+// ============================================================================
+
+// ============================================================================
+// 2017 — PROVENIÊNCIA (Worlds China; Samsung Galaxy campeão sobre SKT 3-0).
+// Dados completos em scripts/rft-w-2017.mjs (mesmo método).
+//   - evento: id 623, slug interno `worlds-2017` (nome "World Championship 2017").
+//   - GERAL = média avgRftRating das 50 partidas de grupo (ids 24695-24745).
+//   - PLAYOFF: QF1=24746(SSG-LZ) QF2=24747(MSF-SKT) QF3=24748(FNC-RNG) QF4=24749(C9-WE)
+//     SF1=24750(RNG-SKT) SF2=24751(SSG-WE) Final=24752(SSG-SKT). Ambition = Finals MVP.
+//   - SSG sólido sem transcendente: CuVee 93/CoreJJ 90/Crown 88/Ruler 88/Ambition 86.
+//   - ⚠ SKT rodiziou jng (Peanut titular do card; Blank jogou várias). Huni NÃO recebeu
+//     curadoria de MVP-torneio (usuário decidiu deixar cru 85). Longzhu(quartas) dominou
+//     grupos e subiu apesar de varrida: Khan 74/Bdd 82/GorillA 72/PraY 70.
+// ============================================================================
+
+// ============================================================================
+// 2016 — PROVENIÊNCIA (Worlds EUA; SKT TRICAMPEÃ sobre Samsung Galaxy 3-2).
+// Dados completos em scripts/rft-w-2016.mjs (mesmo método).
+//   - evento: id 542, slug interno `worlds-2016`. ⚠ slug de match SEM "main-event": só
+//     `2016-season-world-championship-day-N-M` (grupos, ids 22352-22401) e `-quarterfinals/...`.
+//   - PLAYOFF: QF1=22402(C9-SSG) QF2=22403(RNG-SKT) QF3=22404(EDG-ROX) QF4=22405(H2K-ANX)
+//     SF1=22406(SKT-ROX) SF2=22407(SSG-H2K) Final=22408(SSG-SKT). Faker = Finals MVP.
+//   - ⚠ rft.gg: Mann=ClearLove(jng EDG), aMiracle=Onesh0tiq(ANX). Koro1(top EDG) jogou SÓ
+//     playoff → geral dele = geral de grupos do Mouse (top que jogou grupos, 49.5). SKT
+//     rodiziou jng (Bengi/Blank).
+//   - Faker'16 = 97 CRU (sem curadoria — o motor já o reconhece como melhor do torneio,
+//     playoff 73/73/73). SKT: Duke91/Wolf89/Bang88/Bengi87. Crown(SSG vice)91 (playoff 84 na semi).
+// ============================================================================
+
+// ============================================================================
+// 2015 — PROVENIÊNCIA (Worlds Europa; SKT BICAMPEÃ sobre KOO Tigers 3-1).
+// Dados completos em scripts/rft-w-2015.mjs (mesmo método).
+//   - evento: id 470, slug interno `worlds-2015`. Grupos ids 20285-20333 (`...day-N-M`).
+//   - PLAYOFF: QF1=20334(OG-FW) QF2=20335(SKT-ahq) QF3=20336(FNC-EDG) QF4=20337(KOO-KT)
+//     SF1=20338(OG-SKT) SF2=20339(FNC-KOO) Final=20340(SKT-KOO). MaRin = Finals MVP.
+//   - ⚠ rft.gg: KOO Tigers="ROX Tigers"; Niels=Zven; ClearLove=Mann; Koro1(EDG top) jogou só
+//     playoff→geral=AmazingJ(52.8). SKT rodiziou mid (Faker n=4/Easyhoon n=2 grupos; Easyhoon SF1).
+//   - Faker'15 = 98 CRU (melhor do torneio, playoff 75/82/75, geral grupos 75.7). MaRin 95 (fMVP,
+//     geral grupos 82.8). SKT: Wolf89/Bang86/Bengi82. Febiven(FNC semi)94, Kuro(KOO)91. Sem centão.
+// ============================================================================

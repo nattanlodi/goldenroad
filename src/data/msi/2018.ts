@@ -9,14 +9,14 @@ import type { Team } from "../../types";
 export const MSI_2018: Team[] = [
   // 1º — Campeão (base 86). RNG; Uzi DUPLO MVP (+3 → 100), Letme/Karsa 95.
   { id: "rng-msi-2018", team: "Royal Never Give Up", short: "RNG", year: 2018, league: "LPL", tournament: "msi", champion: true,
-    players: [["TOP", "Letme", 95, "cn"], ["JNG", "Karsa", 95, "tw"], ["MID", "Xiaohu", 89, "cn"], ["BOT", "Uzi", 100, "cn"], ["SUP", "Ming", 93, "cn"]] },
+    players: [["TOP", "Letme", 92, "cn"], ["JNG", "Karsa", 92, "tw"], ["MID", "Xiaohu", 87, "cn"], ["BOT", "Uzi", 98, "cn"], ["SUP", "Ming", 90, "cn"]] },
   // 2º — Vice (base 84). Kingzone DragonX; foram bem na semi mas apagaram na final (PraY 35.1).
   { id: "kz-msi-2018", team: "Kingzone DragonX", short: "KZ", year: 2018, league: "LCK", tournament: "msi", champion: false, finalist: true,
-    players: [["TOP", "Khan", 81, "kr"], ["JNG", "Peanut", 77, "kr"], ["MID", "Bdd", 83, "kr"], ["BOT", "PraY", 81, "kr"], ["SUP", "GorillA", 78, "kr"]] },
+    players: [["TOP", "Khan", 79, "kr"], ["JNG", "Peanut", 76, "kr"], ["MID", "Bdd", 81, "kr"], ["BOT", "PraY", 79, "kr"], ["SUP", "GorillA", 77, "kr"]] },
   // 3º-4º — Semifinal (base 81). Fnatic; Caps o destaque (90), caiu pra RNG.
   { id: "fnc-msi-2018", team: "Fnatic", short: "FNC", year: 2018, league: "LEC", tournament: "msi", champion: false,
-    players: [["TOP", "Bwipo", 78, "be"], ["JNG", "Broxah", 78, "dk"], ["MID", "Caps", 90, "dk"], ["BOT", "Rekkles", 81, "se"], ["SUP", "Hylissang", 79, "bg"]] },
+    players: [["TOP", "Bwipo", 77, "be"], ["JNG", "Broxah", 77, "dk"], ["MID", "Caps", 87, "dk"], ["BOT", "Rekkles", 79, "se"], ["SUP", "Hylissang", 78, "bg"]] },
   // 3º-4º — Semifinal (base 81). Flash Wolves; varrida pela Kingzone, Maple/SwordArt os melhores.
   { id: "fw-msi-2018", team: "Flash Wolves", short: "FW", year: 2018, league: "LMS", tournament: "msi", champion: false,
-    players: [["TOP", "Hanabi", 76, "tw"], ["JNG", "Moojin", 71, "kr"], ["MID", "Maple", 78, "tw"], ["BOT", "Betty", 75, "tw"], ["SUP", "SwordArt", 81, "tw"]] },
+    players: [["TOP", "Hanabi", 75, "tw"], ["JNG", "Moojin", 71, "kr"], ["MID", "Maple", 76, "tw"], ["BOT", "Betty", 74, "tw"], ["SUP", "SwordArt", 79, "tw"]] },
 ];

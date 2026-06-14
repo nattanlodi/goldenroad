@@ -12,6 +12,10 @@
 //   intensidade: CHEIA no geral (peso aplicado direto) · MEIA no playoff (1+(W−1)×0.5)
 // ============================================================================
 
+// ⚙️ Estes dois mapas (PLACE_FORCE/REGION_FORCE) são os knobs da FORÇA DO OPONENTE.
+// Editá-los aqui muda Worlds E MSI (ambos importam via rft-config.mjs). Depois rode
+// `node scripts/reprocess-all.mjs` p/ propagar aos .ts.
+
 // força por COLOCAÇÃO final do oponente no torneio.
 export const PLACE_FORCE = {
   champion: 1.0, finalist: 0.96, semi: 0.9, quarter: 0.84, swiss: 0.74, playin: 0.66,

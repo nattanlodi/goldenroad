@@ -9,28 +9,28 @@ export const WORLDS_2022: Team[] = [
   // do oponente, MAIS +5 de curadoria em todos: a DRX teve o pior RFT entre os tops (68.2, abaixo de quem
   // eliminou) — venceram no CLUTCH/coletivo, não dominando. Run LENDÁRIA, título eternizado; a fórmula não captura clutch.
   { id: "drx-2022", team: "DRX", short: "DRX", year: 2022, league: "LCK", champion: true,
-    players: [["TOP", "Kingen", 95, "kr"], ["JNG", "Pyosik", 92, "kr"], ["MID", "Zeka", 93, "kr"], ["BOT", "Deft", 88, "kr"], ["SUP", "BeryL", 91, "kr"]] },
+    players: [["TOP", "Kingen", 91, "kr"], ["JNG", "Pyosik", 90, "kr"], ["MID", "Zeka", 90, "kr"], ["BOT", "Deft", 86, "kr"], ["SUP", "BeryL", 88, "kr"]] },
   // 2º — Vice (base 84). Trio jovem + Faker; monstros na semi. Final em 5 jogos.
   { id: "t1-2022", team: "T1", short: "T1", year: 2022, league: "LCK", champion: false, finalist: true,
-    players: [["TOP", "Zeus", 93, "kr"], ["JNG", "Oner", 87, "kr"], ["MID", "Faker", 86, "kr"], ["BOT", "Gumayusi", 93, "kr"], ["SUP", "Keria", 95, "kr"]] },
+    players: [["TOP", "Zeus", 90, "kr"], ["JNG", "Oner", 83, "kr"], ["MID", "Faker", 82, "kr"], ["BOT", "Gumayusi", 89, "kr"], ["SUP", "Keria", 91, "kr"]] },
   // 3º — Semifinal (base 81). Kanavi/369 gigantes nos grupos+QF.
   { id: "jdg-2022", team: "JD Gaming", short: "JDG", year: 2022, league: "LPL", champion: false,
-    players: [["TOP", "369", 89, "cn"], ["JNG", "Kanavi", 88, "kr"], ["MID", "Yagao", 75, "cn"], ["BOT", "Hope", 76, "cn"], ["SUP", "Missing", 83, "cn"]] },
+    players: [["TOP", "369", 85, "cn"], ["JNG", "Kanavi", 83, "kr"], ["MID", "Yagao", 73, "cn"], ["BOT", "Hope", 74, "cn"], ["SUP", "Missing", 79, "cn"]] },
   // 4º — Semifinal (base 81). Chovy/Ruler; varridos cedo pela DRX na semi.
   { id: "geng-2022", team: "Gen.G Esports", short: "GEN", year: 2022, league: "LCK", champion: false,
-    players: [["TOP", "Doran", 79, "kr"], ["JNG", "Peanut", 75, "kr"], ["MID", "Chovy", 82, "kr"], ["BOT", "Ruler", 82, "kr"], ["SUP", "Lehends", 79, "kr"]] },
+    players: [["TOP", "Doran", 78, "kr"], ["JNG", "Peanut", 76, "kr"], ["MID", "Chovy", 82, "kr"], ["BOT", "Ruler", 81, "kr"], ["SUP", "Lehends", 79, "kr"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela JDG; Larssen brilhou muito nos grupos.
   { id: "rogue-2022", team: "Rogue", short: "RGE", year: 2022, league: "LEC", champion: false,
-    players: [["TOP", "Odoamne", 68, "ro"], ["JNG", "Malrang", 66, "kr"], ["MID", "Larssen", 86, "se"], ["BOT", "Comp", 66, "gr"], ["SUP", "Trymbi", 67, "pl"]] },
+    players: [["TOP", "Odoamne", 67, "ro"], ["JNG", "Malrang", 60, "kr"], ["MID", "Larssen", 82, "se"], ["BOT", "Comp", 66, "gr"], ["SUP", "Trymbi", 66, "pl"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela T1; Xiaohu o destaque.
   { id: "rng-2022", team: "Royal Never Give Up", short: "RNG", year: 2022, league: "LPL", champion: false,
-    players: [["TOP", "Breathe", 74, "cn"], ["JNG", "Wei", 69, "cn"], ["MID", "Xiaohu", 75, "cn"], ["BOT", "GALA", 72, "cn"], ["SUP", "Ming", 69, "cn"]] },
+    players: [["TOP", "Breathe", 73, "cn"], ["JNG", "Wei", 69, "cn"], ["MID", "Xiaohu", 74, "cn"], ["BOT", "GALA", 72, "cn"], ["SUP", "Ming", 69, "cn"]] },
   // 5º-8º — Quartas (base 78). Perderam 2-3 pra Gen.G; Canyon/ShowMaker o destaque.
   { id: "dk-2022", team: "DWG KIA", short: "DK", year: 2022, league: "LCK", champion: false,
-    players: [["TOP", "Nuguri", 82, "kr"], ["JNG", "Canyon", 84, "kr"], ["MID", "ShowMaker", 84, "kr"], ["BOT", "deokdam", 76, "kr"], ["SUP", "Kellin", 81, "kr"]] },
+    players: [["TOP", "Nuguri", 79, "kr"], ["JNG", "Canyon", 81, "kr"], ["MID", "ShowMaker", 81, "kr"], ["BOT", "deokdam", 74, "kr"], ["SUP", "Kellin", 78, "kr"]] },
   // 5º-8º — Quartas (base 78). Perderam 2-3 pra DRX; Scout/Flandre o destaque.
   { id: "edg-2022", team: "EDward Gaming", short: "EDG", year: 2022, league: "LPL", champion: false,
-    players: [["TOP", "Flandre", 83, "cn"], ["JNG", "Jiejie", 79, "cn"], ["MID", "Scout", 87, "kr"], ["BOT", "Viper", 77, "kr"], ["SUP", "Meiko", 77, "cn"]] },
+    players: [["TOP", "Flandre", 81, "cn"], ["JNG", "Jiejie", 78, "cn"], ["MID", "Scout", 84, "kr"], ["BOT", "Viper", 77, "kr"], ["SUP", "Meiko", 77, "cn"]] },
   // 9º-10º — Fase de grupos (base 72). Razork de jungler.
   { id: "fnatic-2022", team: "Fnatic", short: "FNC", year: 2022, league: "LEC", champion: false,
     players: [["TOP", "Wunder", 73, "de"], ["JNG", "Razork", 73, "es"], ["MID", "Humanoid", 74, "cz"], ["BOT", "Upset", 74, "de"], ["SUP", "Hylissang", 73, "bg"]] },

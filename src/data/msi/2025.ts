@@ -8,26 +8,26 @@ import type { Team } from "../../types";
 export const MSI_2025: Team[] = [
   // 1º — Campeão (base 86). Gen.G superline; bateram só LCK/LPL. Chovy fMVP (+2), Kiin MVP torneio (+2).
   { id: "geng-msi-2025", team: "Gen.G Esports", short: "GEN", year: 2025, league: "LCK", tournament: "msi", champion: true,
-    players: [["TOP", "Kiin", 97, "kr"], ["JNG", "Canyon", 92, "kr"], ["MID", "Chovy", 97, "kr"], ["BOT", "Ruler", 93, "kr"], ["SUP", "Duro", 91, "kr"]] },
+    players: [["TOP", "Kiin", 93, "kr"], ["JNG", "Canyon", 89, "kr"], ["MID", "Chovy", 93, "kr"], ["BOT", "Ruler", 90, "kr"], ["SUP", "Duro", 89, "kr"]] },
   // 2º — Vice (base 84). T1 dos tetracampeões; Gumayusi monstro, enfrentaram Gen.G/AL.
   { id: "t1-msi-2025", team: "T1", short: "T1", year: 2025, league: "LCK", tournament: "msi", champion: false, finalist: true,
-    players: [["TOP", "Doran", 84, "kr"], ["JNG", "Oner", 90, "kr"], ["MID", "Faker", 88, "kr"], ["BOT", "Gumayusi", 94, "kr"], ["SUP", "Keria", 91, "kr"]] },
+    players: [["TOP", "Doran", 82, "kr"], ["JNG", "Oner", 88, "kr"], ["MID", "Faker", 86, "kr"], ["BOT", "Gumayusi", 91, "kr"], ["SUP", "Keria", 89, "kr"]] },
   // 3º — Semifinal (base 81). Anyone's Legend, surpresa da LPL; Kael e Tarzan brilharam.
   { id: "al-msi-2025", team: "Anyone's Legend", short: "AL", year: 2025, league: "LPL", tournament: "msi", champion: false,
-    players: [["TOP", "Flandre", 84, "cn"], ["JNG", "Tarzan", 87, "kr"], ["MID", "Shanks", 84, "cn"], ["BOT", "Hope", 86, "cn"], ["SUP", "Kael", 89, "kr"]] },
+    players: [["TOP", "Flandre", 82, "cn"], ["JNG", "Tarzan", 84, "kr"], ["MID", "Shanks", 82, "cn"], ["BOT", "Hope", 84, "cn"], ["SUP", "Kael", 86, "kr"]] },
   // 4º — Semifinal (base 81). Bilibili Gaming; Knight e Bin os destaques, resto irregular.
   { id: "blg-msi-2025", team: "Bilibili Gaming", short: "BLG", year: 2025, league: "LPL", tournament: "msi", champion: false,
-    players: [["TOP", "Bin", 84, "cn"], ["JNG", "Beichuan", 76, "cn"], ["MID", "knight", 84, "cn"], ["BOT", "Elk", 80, "cn"], ["SUP", "ON", 80, "cn"]] },
+    players: [["TOP", "Bin", 82, "cn"], ["JNG", "Beichuan", 75, "cn"], ["MID", "knight", 82, "cn"], ["BOT", "Elk", 79, "cn"], ["SUP", "ON", 78, "cn"]] },
   // 5º-6º — Quartas (base 78). FlyQuest brilhou na lower; parte do brilho foi vs G2 (LEC fraco).
   { id: "fly-msi-2025", team: "FlyQuest", short: "FLY", year: 2025, league: "LTA", tournament: "msi", champion: false,
-    players: [["TOP", "Bwipo", 82, "be"], ["JNG", "Inspired", 86, "pl"], ["MID", "Quad", 74, "kr"], ["BOT", "Massu", 78, "ca"], ["SUP", "Busio", 84, "us"]] },
+    players: [["TOP", "Bwipo", 80, "be"], ["JNG", "Inspired", 83, "pl"], ["MID", "Quad", 72, "kr"], ["BOT", "Massu", 76, "ca"], ["SUP", "Busio", 81, "us"]] },
   // 5º-6º — Quartas (base 78). CTBC Flying Oyster, campeã da LCP; Doggo o destaque.
   { id: "cfo-msi-2025", team: "CTBC Flying Oyster", short: "CFO", year: 2025, league: "LCP", tournament: "msi", champion: false,
-    players: [["TOP", "Driver", 78, "tw"], ["JNG", "JunJia", 76, "tw"], ["MID", "HongQ", 78, "tw"], ["BOT", "Doggo", 82, "tw"], ["SUP", "Kaiwing", 77, "hk"]] },
+    players: [["TOP", "Driver", 76, "tw"], ["JNG", "JunJia", 75, "tw"], ["MID", "HongQ", 76, "tw"], ["BOT", "Doggo", 79, "tw"], ["SUP", "Kaiwing", 75, "hk"]] },
   // 7º-8º — Quartas (base 78). G2, melhor da Europa; só Caps se salvou.
   { id: "g2-msi-2025", team: "G2 Esports", short: "G2", year: 2025, league: "LEC", tournament: "msi", champion: false,
-    players: [["TOP", "BrokenBlade", 69, "de"], ["JNG", "SkewMond", 67, "fr"], ["MID", "Caps", 75, "dk"], ["BOT", "Hans Sama", 67, "fr"], ["SUP", "Labrov", 67, "gr"]] },
+    players: [["TOP", "BrokenBlade", 68, "de"], ["JNG", "SkewMond", 66, "fr"], ["MID", "Caps", 73, "dk"], ["BOT", "Hans Sama", 67, "fr"], ["SUP", "Labrov", 67, "gr"]] },
   // 7º-8º — Quartas (base 78). Movistar KOI, 2ª seed da LEC (Elyoya); caiu cedo.
   { id: "mkoi-msi-2025", team: "Movistar KOI", short: "MKOI", year: 2025, league: "LEC", tournament: "msi", champion: false,
-    players: [["TOP", "Myrwn", 66, "es"], ["JNG", "Elyoya", 66, "es"], ["MID", "Jojopyun", 67, "ca"], ["BOT", "Supa", 66, "es"], ["SUP", "Alvaro", 69, "es"]] },
+    players: [["TOP", "Myrwn", 66, "es"], ["JNG", "Elyoya", 65, "es"], ["MID", "Jojopyun", 67, "ca"], ["BOT", "Supa", 66, "es"], ["SUP", "Alvaro", 68, "es"]] },
 ];

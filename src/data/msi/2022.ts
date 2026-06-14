@@ -7,14 +7,14 @@ import type { Team } from "../../types";
 export const MSI_2022: Team[] = [
   // 1º — Campeão (base 86). RNG; line chinesa equilibrada, Ming Finals MVP (+2).
   { id: "rng-msi-2022", team: "Royal Never Give Up", short: "RNG", year: 2022, league: "LPL", tournament: "msi", champion: true,
-    players: [["TOP", "Bin", 92, "cn"], ["JNG", "Wei", 90, "cn"], ["MID", "Xiaohu", 91, "cn"], ["BOT", "GALA", 86, "cn"], ["SUP", "Ming", 92, "cn"]] },
+    players: [["TOP", "Bin", 90, "cn"], ["JNG", "Wei", 87, "cn"], ["MID", "Xiaohu", 89, "cn"], ["BOT", "GALA", 84, "cn"], ["SUP", "Ming", 88, "cn"]] },
   // 2º — Vice (base 84). T1; Zeus MONSTRO o torneio todo (MVP do torneio, RFT geral líder), Guma mal.
   { id: "t1-msi-2022", team: "T1", short: "T1", year: 2022, league: "LCK", tournament: "msi", champion: false, finalist: true,
-    players: [["TOP", "Zeus", 97, "kr"], ["JNG", "Oner", 90, "kr"], ["MID", "Faker", 90, "kr"], ["BOT", "Gumayusi", 83, "kr"], ["SUP", "Keria", 89, "kr"]] },
+    players: [["TOP", "Zeus", 96, "kr"], ["JNG", "Oner", 87, "kr"], ["MID", "Faker", 87, "kr"], ["BOT", "Gumayusi", 81, "kr"], ["SUP", "Keria", 87, "kr"]] },
   // 3º-4º — Semifinal (base 81). Evil Geniuses, surpresa da LCS; line jovem (jojo/Danny).
   { id: "eg-msi-2022", team: "Evil Geniuses", short: "EG", year: 2022, league: "LCS", tournament: "msi", champion: false,
-    players: [["TOP", "Impact", 74, "kr"], ["JNG", "Inspired", 81, "pl"], ["MID", "Jojopyun", 82, "ca"], ["BOT", "Danny", 81, "us"], ["SUP", "Vulcan", 81, "ca"]] },
+    players: [["TOP", "Impact", 74, "kr"], ["JNG", "Inspired", 79, "pl"], ["MID", "Jojopyun", 80, "ca"], ["BOT", "Danny", 79, "us"], ["SUP", "Vulcan", 79, "ca"]] },
   // 3º-4º — Semifinal (base 81). G2; varridos pela T1 na semi, Caps abaixo no mata-mata.
   { id: "g2-msi-2022", team: "G2 Esports", short: "G2", year: 2022, league: "LEC", tournament: "msi", champion: false,
-    players: [["TOP", "BrokenBlade", 75, "de"], ["JNG", "Jankos", 70, "pl"], ["MID", "Caps", 73, "dk"], ["BOT", "Flakked", 72, "es"], ["SUP", "Targamas", 74, "be"]] },
+    players: [["TOP", "BrokenBlade", 74, "de"], ["JNG", "Jankos", 68, "pl"], ["MID", "Caps", 73, "dk"], ["BOT", "Flakked", 71, "es"], ["SUP", "Targamas", 73, "be"]] },
 ];

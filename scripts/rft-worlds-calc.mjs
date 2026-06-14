@@ -1,22 +1,30 @@
-// Motor de cálculo dos overalls do MSI: RFT geral + playoff (80/20, z-score) COM
-// FORÇA DO OPONENTE (opp-strength.mjs). Espelha a filosofia do Worlds adaptada ao
-// MSI (sem suíça): peso do oponente MEIA intensidade no playoff, CHEIA no geral
-// (via média de força dos oponentes enfrentados). MVP: +2 finals / +2 torneio / +3 duplo.
+// Motor de cálculo dos overalls do WORLDS: RFT geral + playoff (80/20, z-score) COM
+// FORÇA DO OPONENTE (opp-strength.mjs). Irmão do rft-msi-calc.mjs, adaptado ao Worlds:
+//   - placeKey cobre suíça (9-12) e play-in (13+) além de quartas, semis e finalistas;
+//   - o `geral` é mantido CRU (não recebe força do oponente) — decisão da memória
+//     overall-calibracao.md: o RFT da aba Players já ignora força do oponente e o usuário
+//     escolheu não corrigi-lo; só o PLAYOFF é ponderado pela força do oponente.
+//   - peso do oponente MEIA intensidade no playoff (a base de fase já protege campeões).
+// MVP da FINAL: +1 aqui (flag mvp), igual ao motor antigo; as curadorias e o MVP do
+// TORNEIO (+2) são overrides aplicados POR CIMA, fora do motor (decisão do usuário).
 //
-// Entrada por jogador: { base, geral, playoff: [[rating, "LIGA-COLOC"], ...], mvpFinal?, mvpTour? }
-//   "LIGA-COLOC" = liga + colocação final do oponente daquela série (ex.: "LCK-2").
+// Entrada por jogador: { base, geral, playoff: [[rating, "LIGA-COLOC"], ...], mvp?, vice? }
+//   "LIGA-COLOC" = liga + colocação final do oponente daquela série (ex.: "LPL-2").
 // playoff em ordem [mais avançada → menos]; vice (base 84) amacia a final (1ª pos).
 
-// TODOS os parâmetros da régua vêm da CONFIG ÚNICA rft-config.mjs (igual ao motor Worlds).
+// TODOS os parâmetros da régua (80/20, SPREAD, REBASE, K_SHRINK, MVP, teto) vêm da
+// CONFIG ÚNICA rft-config.mjs — mude lá e rode reprocess-all.mjs p/ propagar a tudo.
 import { rawForce, oppWeight } from "./opp-strength.mjs";
-import { W_PLAYOFF, W_GERAL, SPREAD, REBASE, K_SHRINK, MVP_FINAL, MVP_TOUR, MVP_BOTH, CAP_GLOBAL } from "./rft-config.mjs";
+import { W_PLAYOFF, W_GERAL, SPREAD, REBASE, K_SHRINK, MVP_FINAL, CAP_GLOBAL } from "./rft-config.mjs";
 
-// colocação (número) → chave de PLACE_FORCE.
+// colocação (número) do oponente → chave de PLACE_FORCE (força por fase alcançada).
 function placeKey(n) {
   if (n === 1) return "champion";
   if (n === 2) return "finalist";
   if (n <= 4) return "semi";
-  return "quarter"; // 5-8 no MSI (8 times no bracket)
+  if (n <= 8) return "quarter";
+  if (n <= 12) return "swiss";
+  return "playin";
 }
 function parseOpp(key) {
   const dash = key.lastIndexOf("-");
@@ -30,8 +38,8 @@ function stats(arr) {
   return { m, sd };
 }
 
-export function mergeMsi(label, players) {
-  // 1) média de rawForça do torneio = média da rawForça de TODOS os oponentes citados.
+export function mergeWorlds(label, players) {
+  // 1) média de rawForça do torneio = média da rawForça de TODOS os oponentes de playoff citados.
   const allOpps = [];
   for (const p of Object.values(players)) for (const s of p.playoff || []) {
     if (Array.isArray(s)) allOpps.push(parseOpp(s[1]));
@@ -55,36 +63,26 @@ export function mergeMsi(label, players) {
     return rs.reduce((a, v) => a + v, 0) / rs.length;
   };
 
-  // 3) geral ponderado: × peso CHEIO da MÉDIA de força dos oponentes do próprio time.
-  const geralAdj = (p) => {
-    const opps = (p.playoff || []).filter(Array.isArray).map((s) => parseOpp(s[1]));
-    if (!opps.length) return p.geral;
-    const myMean = opps.reduce((a, o) => a + rawForce(o.place, o.league), 0) / opps.length;
-    return p.geral * oppWeight(myMean, meanRaw, false);
-  };
-
-  const gVals = Object.values(players).map(geralAdj);
+  // 3) geral CRU (sem força do oponente — decisão da memória).
+  const gVals = Object.values(players).map((p) => p.geral);
   const pPlayers = Object.values(players).filter((p) => p.playoff && p.playoff.length);
   const gStat = stats(gVals);
   const pStat = stats(pPlayers.map(playoffAvg));
 
-  console.log(`\n== ${label} ==  meanRawForça ${meanRaw.toFixed(3)} · geral μ${gStat.m.toFixed(1)} · playoff μ${pStat.m.toFixed(1)}`);
+  console.log(`\n== ${label} ==  meanRawForça ${meanRaw.toFixed(3)} · geral μ${gStat.m.toFixed(1)}/σ${gStat.sd.toFixed(1)} · playoff μ${pStat.m.toFixed(1)}/σ${pStat.sd.toFixed(1)}`);
   const out = {};
   for (const [name, p] of Object.entries(players)) {
     const np = (p.playoff || []).length;
     const shrink = np ? Math.sqrt(np / (np + K_SHRINK)) : 0;
-    const zG = z(geralAdj(p), gStat.m, gStat.sd);
+    const zG = z(p.geral, gStat.m, gStat.sd);
     const zP = np ? z(playoffAvg(p), pStat.m, pStat.sd) * shrink : zG; // shrink por sample
     const zF = W_PLAYOFF * zP + W_GERAL * zG;
     const base = REBASE[p.base] ?? p.base; // base rebaixada -2
     let ov = base + Math.round(zF * SPREAD); // SEM caps[base] — overall cru
-    // MVP: MVP_FINAL / MVP_TOUR / MVP_BOTH (do config). Teto CAP_GLOBAL.
-    let bonus = 0, tag = "";
-    if (p.mvpFinal && p.mvpTour) { bonus = MVP_BOTH; tag = ` (DUPLO MVP +${MVP_BOTH})`; }
-    else if (p.mvpFinal) { bonus = MVP_FINAL; tag = ` (fMVP +${MVP_FINAL})`; }
-    else if (p.mvpTour) { bonus = MVP_TOUR; tag = ` (MVP torneio +${MVP_TOUR})`; }
-    ov = Math.min(CAP_GLOBAL, ov + bonus);
+    // fMVP sozinho não passa de CAP_GLOBAL-1 (só duplo-MVP via override externo chega a 100).
+    if (p.mvp) ov = Math.min(CAP_GLOBAL - 1, ov + MVP_FINAL);
     out[name] = ov;
+    const tag = p.mvp ? ` (fMVP +${MVP_FINAL})` : "";
     console.log(`  ${name.padEnd(12)} base ${base} zP ${zP.toFixed(2)} zG ${zG.toFixed(2)} => ${ov}${tag}`);
   }
   return out;

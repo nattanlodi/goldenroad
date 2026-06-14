@@ -7,28 +7,28 @@ import type { Team } from "../../types";
 export const WORLDS_2019: Team[] = [
   // 1º — Campeão (base 88). Varreram a final 3-0; Tian MVP, Doinb cérebro, Crisp sensacional (80 na semi).
   { id: "fpx-2019", team: "FunPlus Phoenix", short: "FPX", year: 2019, league: "LPL", champion: true,
-    players: [["TOP", "GimGoon", 91, "kr"], ["JNG", "Tian", 99, "cn"], ["MID", "doinb", 96, "kr"], ["BOT", "lwx", 94, "cn"], ["SUP", "Crisp", 97, "cn"]] },
+    players: [["TOP", "GimGoon", 86, "kr"], ["JNG", "Tian", 93, "cn"], ["MID", "doinb", 96, "kr"], ["BOT", "lwx", 87, "cn"], ["SUP", "Crisp", 97, "cn"]] },
   // 2º — Vice (base 84). A super-G2, mas massacrada 0-3 na final (Caps 37, Perkz 40).
   { id: "g2-2019", team: "G2 Esports", short: "G2", year: 2019, league: "LEC", champion: false, finalist: true,
-    players: [["TOP", "Wunder", 88, "dk"], ["JNG", "Jankos", 85, "pl"], ["MID", "Caps", 84, "dk"], ["BOT", "Perkz", 83, "hr"], ["SUP", "Mikyx", 85, "si"]] },
+    players: [["TOP", "Wunder", 85, "dk"], ["JNG", "Jankos", 81, "pl"], ["MID", "Caps", 83, "dk"], ["BOT", "Perkz", 79, "hr"], ["SUP", "Mikyx", 82, "si"]] },
   // 3º-4º — Semifinal (base 81). TheShy 77 na QF; Rookie consistente.
   { id: "ig-2019", team: "Invictus Gaming", short: "IG", year: 2019, league: "LPL", champion: false,
-    players: [["TOP", "TheShy", 87, "kr"], ["JNG", "Ning", 75, "cn"], ["MID", "Rookie", 86, "kr"], ["BOT", "JackeyLove", 79, "cn"], ["SUP", "Baolan", 75, "cn"]] },
+    players: [["TOP", "TheShy", 86, "kr"], ["JNG", "Ning", 72, "cn"], ["MID", "Rookie", 84, "kr"], ["BOT", "JackeyLove", 74, "cn"], ["SUP", "Baolan", 73, "cn"]] },
   // 3º-4º — Semifinal (base 81). Khan 90 (top do evento na fase); Faker sólido na derrota.
   { id: "skt-2019", team: "SK Telecom T1", short: "SKT", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Khan", 91, "kr"], ["JNG", "Clid", 86, "kr"], ["MID", "Faker", 81, "kr"], ["BOT", "Teddy", 77, "kr"], ["SUP", "Effort", 81, "kr"]] },
+    players: [["TOP", "Khan", 85, "kr"], ["JNG", "Clid", 80, "kr"], ["MID", "Faker", 78, "kr"], ["BOT", "Teddy", 73, "kr"], ["SUP", "Effort", 76, "kr"]] },
   // 5º-8º — Quartas (base 78). Os jovens talentos: Lehends 84, Tarzan 82, Viper 81.
   { id: "griffin-2019", team: "Griffin", short: "GRF", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Sword", 66, "kr"], ["JNG", "Tarzan", 83, "kr"], ["MID", "Chovy", 77, "kr"], ["BOT", "Viper", 82, "kr"], ["SUP", "Lehends", 86, "kr"]] },
+    players: [["TOP", "Sword", 65, "kr"], ["JNG", "Tarzan", 81, "kr"], ["MID", "Chovy", 78, "kr"], ["BOT", "Viper", 78, "kr"], ["SUP", "Lehends", 85, "kr"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra FPX; bot apagado.
   { id: "fnatic-2019", team: "Fnatic", short: "FNC", year: 2019, league: "LEC", champion: false,
-    players: [["TOP", "Bwipo", 75, "be"], ["JNG", "Broxah", 68, "dk"], ["MID", "Nemesis", 78, "si"], ["BOT", "Rekkles", 67, "se"], ["SUP", "Hylissang", 75, "bg"]] },
+    players: [["TOP", "Bwipo", 75, "be"], ["JNG", "Broxah", 70, "dk"], ["MID", "Nemesis", 79, "si"], ["BOT", "Rekkles", 68, "se"], ["SUP", "Hylissang", 75, "bg"]] },
   // 5º-8º — Quartas (base 78). Estreia da futura campeã 2020; ShowMaker/BeryL já brilhando.
   { id: "dwg-2019", team: "DAMWON Gaming", short: "DWG", year: 2019, league: "LCK", champion: false,
-    players: [["TOP", "Nuguri", 73, "kr"], ["JNG", "Canyon", 73, "kr"], ["MID", "ShowMaker", 82, "kr"], ["BOT", "Nuclear", 70, "kr"], ["SUP", "BeryL", 80, "kr"]] },
+    players: [["TOP", "Nuguri", 73, "kr"], ["JNG", "Canyon", 73, "kr"], ["MID", "ShowMaker", 80, "kr"], ["BOT", "Nuclear", 69, "kr"], ["SUP", "BeryL", 79, "kr"]] },
   // 5º-8º — Quartas (base 78). Subiu do play-in; Tore o destaque.
   { id: "splyce-2019", team: "Splyce", short: "SPY", year: 2019, league: "LEC", champion: false,
-    players: [["TOP", "Vizicsacsi", 67, "hu"], ["JNG", "Xerxe", 76, "ro"], ["MID", "Humanoid", 74, "cz"], ["BOT", "Kobbe", 77, "dk"], ["SUP", "Norskeren", 79, "dk"]] },
+    players: [["TOP", "Vizicsacsi", 69, "hu"], ["JNG", "Xerxe", 74, "ro"], ["MID", "Humanoid", 73, "cz"], ["BOT", "Kobbe", 75, "dk"], ["SUP", "Norskeren", 79, "dk"]] },
   // 9º-16º — Fase de grupos (base 72). Último Worlds do Uzi com a RNG.
   { id: "rng-2019", team: "Royal Never Give Up", short: "RNG", year: 2019, league: "LPL", champion: false,
     players: [["TOP", "Langx", 72, "cn"], ["JNG", "Karsa", 74, "tw"], ["MID", "Xiaohu", 74, "cn"], ["BOT", "Uzi", 75, "cn"], ["SUP", "Ming", 73, "cn"]] },

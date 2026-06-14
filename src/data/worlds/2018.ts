@@ -9,28 +9,28 @@ export const WORLDS_2018: Team[] = [
   // -2 geral (vs o cálculo bruto) porque o campo de 2018 era mais fraco e o IG não
   // achou resistência real — final 3-0 tranquila sobre uma Fnatic abaixo.
   { id: "ig-2018", team: "Invictus Gaming", short: "IG", year: 2018, league: "LPL", champion: true,
-    players: [["TOP", "TheShy", 95, "kr"], ["JNG", "Ning", 95, "cn"], ["MID", "Rookie", 95, "kr"], ["BOT", "JackeyLove", 91, "cn"], ["SUP", "Baolan", 95, "cn"]] },
+    players: [["TOP", "TheShy", 94, "kr"], ["JNG", "Ning", 91, "cn"], ["MID", "Rookie", 98, "kr"], ["BOT", "JackeyLove", 87, "cn"], ["SUP", "Baolan", 93, "cn"]] },
   // 2º — Vice (base 84). Demolidores na semi (Bwipo 86) mas massacrados 0-3 na final — bot/mid caíram.
   { id: "fnatic-2018", team: "Fnatic", short: "FNC", year: 2018, league: "EU", champion: false, finalist: true,
-    players: [["TOP", "Bwipo", 92, "be"], ["JNG", "Broxah", 90, "dk"], ["MID", "Caps", 86, "dk"], ["BOT", "Rekkles", 86, "se"], ["SUP", "Hylissang", 86, "bg"]] },
+    players: [["TOP", "Bwipo", 87, "be"], ["JNG", "Broxah", 88, "dk"], ["MID", "Caps", 84, "dk"], ["BOT", "Rekkles", 83, "se"], ["SUP", "Hylissang", 85, "bg"]] },
   // 3º-4º — Semifinal (base 81). 1º semifinalista da NA; Jensen/Svenskeren brilharam na QF.
   { id: "c9-2018", team: "Cloud9", short: "C9", year: 2018, league: "NA", champion: false,
-    players: [["TOP", "Licorice", 70, "ca"], ["JNG", "Svenskeren", 83, "dk"], ["MID", "Jensen", 85, "dk"], ["BOT", "Sneaky", 79, "us"], ["SUP", "Zeyzal", 80, "us"]] },
+    players: [["TOP", "Licorice", 71, "ca"], ["JNG", "Svenskeren", 80, "dk"], ["MID", "Jensen", 82, "dk"], ["BOT", "Sneaky", 74, "us"], ["SUP", "Zeyzal", 78, "us"]] },
   // 3º-4º — Semifinal (base 81). Perkz o destaque (79 na QF vs RNG).
   { id: "g2-2018", team: "G2 Esports", short: "G2", year: 2018, league: "EU", champion: false,
-    players: [["TOP", "Wunder", 81, "dk"], ["JNG", "Jankos", 79, "pl"], ["MID", "Perkz", 87, "hr"], ["BOT", "Hjärnan", 78, "se"], ["SUP", "Wadid", 84, "kr"]] },
+    players: [["TOP", "Wunder", 79, "dk"], ["JNG", "Jankos", 76, "pl"], ["MID", "Perkz", 84, "hr"], ["BOT", "Hjärnan", 78, "se"], ["SUP", "Wadid", 80, "kr"]] },
   // 5º-8º — Quartas (base 78). Varridos 0-3 pela C9; só Kiin apareceu (72).
   { id: "afreeca-2018", team: "Afreeca Freecs", short: "AFS", year: 2018, league: "LCK", champion: false,
-    players: [["TOP", "Kiin", 88, "kr"], ["JNG", "Spirit", 66, "kr"], ["MID", "Kuro", 69, "kr"], ["BOT", "Kramer", 68, "kr"], ["SUP", "TusiN", 77, "kr"]] },
+    players: [["TOP", "Kiin", 81, "kr"], ["JNG", "Spirit", 68, "kr"], ["MID", "Kuro", 68, "kr"], ["BOT", "Kramer", 66, "kr"], ["SUP", "TusiN", 73, "kr"]] },
   // 5º-8º — Quartas (base 78). Perderam 1-3 pra Fnatic; Scout/Meiko o destaque.
   { id: "edg-2018", team: "EDward Gaming", short: "EDG", year: 2018, league: "LPL", champion: false,
-    players: [["TOP", "Ray", 71, "kr"], ["JNG", "Haro", 75, "cn"], ["MID", "Scout", 84, "kr"], ["BOT", "iBoy", 77, "cn"], ["SUP", "Meiko", 80, "cn"]] },
+    players: [["TOP", "Ray", 72, "kr"], ["JNG", "Haro", 73, "cn"], ["MID", "Scout", 81, "kr"], ["BOT", "iBoy", 76, "cn"], ["SUP", "Meiko", 77, "cn"]] },
   // 5º-8º — Quartas (base 78). A maior zebra: favoritos absolutos, caíram 2-3 pra G2. Uzi só 78.
   { id: "rng-2018", team: "Royal Never Give Up", short: "RNG", year: 2018, league: "LPL", champion: false,
-    players: [["TOP", "Letme", 73, "cn"], ["JNG", "Karsa", 74, "tw"], ["MID", "Xiaohu", 70, "cn"], ["BOT", "Uzi", 77, "cn"], ["SUP", "Ming", 71, "cn"]] },
+    players: [["TOP", "Letme", 72, "cn"], ["JNG", "Karsa", 74, "tw"], ["MID", "Xiaohu", 70, "cn"], ["BOT", "Uzi", 75, "cn"], ["SUP", "Ming", 71, "cn"]] },
   // 5º-8º — Quartas (base 78). Quartas épica de 5 jogos contra a IG; Smeb/Deft o destaque.
   { id: "kt-2018", team: "KT Rolster", short: "KT", year: 2018, league: "LCK", champion: false,
-    players: [["TOP", "Smeb", 80, "kr"], ["JNG", "Score", 77, "kr"], ["MID", "Ucal", 69, "kr"], ["BOT", "Deft", 76, "kr"], ["SUP", "Mata", 73, "kr"]] },
+    players: [["TOP", "Smeb", 79, "kr"], ["JNG", "Score", 79, "kr"], ["MID", "Ucal", 73, "kr"], ["BOT", "Deft", 78, "kr"], ["SUP", "Mata", 78, "kr"]] },
   // 9º-16º — Fase de grupos (base 72). Campeã anterior (núcleo Samsung), naufragou.
   { id: "geng-2018", team: "Gen.G Esports", short: "GEN", year: 2018, league: "LCK", champion: false,
     players: [["TOP", "CuVee", 74, "kr"], ["JNG", "Haru", 73, "kr"], ["MID", "Crown", 74, "kr"], ["BOT", "Ruler", 75, "kr"], ["SUP", "CoreJJ", 75, "kr"]] },
