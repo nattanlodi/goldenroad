@@ -193,11 +193,11 @@ body {
    ============================================================ */
 
 /* fundo do app: o container que rola NÃO pinta a base — quem pinta é a camada
-   fixa .app-bg (edge-to-edge, cobre notch/home-bar/overscroll). Aqui só o
-   isolamento de stacking pro conteúdo ficar acima do fundo fixo. */
+   .app-bg. Sem isolation:isolate aqui de propósito — junto com o fundo fixo ele
+   criava um stacking context de viewport inteira que impedia o Safari iOS de
+   recolher a barra de endereço ao rolar. */
 .bg-app {
   position: relative;
-  isolation: isolate;
 }
 
 /* ── fundo animado global do app (componente AppBackground) ────────────── */

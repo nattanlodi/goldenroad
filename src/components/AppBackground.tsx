@@ -8,7 +8,11 @@
  * Tudo em CSS (GPU via transform/opacity) e respeita prefers-reduced-motion.
  */
 export function AppBackground({ dim = false, variant }: { dim?: boolean; variant?: "game" }) {
-  const cls = ["app-bg pointer-events-none fixed inset-0 z-0 overflow-hidden"];
+  // NÃO usar `fixed` aqui: um elemento position:fixed cobrindo a viewport inteira
+  // impede o Safari iOS de recolher a barra de endereço ao rolar. Usamos `absolute`
+  // ancorado no container (.bg-app, position:relative) — o fundo cobre toda a área
+  // do conteúdo e o documento rola livre, deixando a barra recolher como nos apps.
+  const cls = ["app-bg pointer-events-none absolute inset-0 z-0 overflow-hidden"];
   if (dim) cls.push("app-bg-dim");
   if (variant === "game") cls.push("app-bg-game");
   return (
