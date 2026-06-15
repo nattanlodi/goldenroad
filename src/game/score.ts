@@ -193,5 +193,5 @@ function championshipsWon(history: PlayedSeries[], finished: CampaignEnd | null)
   }
   // todos menos o último foram vencidos (só se avança sendo campeão);
   // o último só conta como vencido se a run terminou em título.
-  return order.filter((stage, idx) => (idx < order.length - 1 ? true : finished === "champion"));
+  return order.filter((_, idx) => (idx < order.length - 1 ? true : finished === "champion"));
 }
