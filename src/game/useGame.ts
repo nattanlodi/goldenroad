@@ -995,6 +995,9 @@ export function useGame() {
     state,
     muted: audio.muted,
     toggleMute: audio.toggleMute,
+    // sons compartilhados (reusados pelo modo torneio, que usa a MESMA instância
+    // de áudio — mesmo mute, mesmo AudioContext). Mesmo perfil do solo.
+    sounds: { sndTick, sndPick, sndReveal, sndWin, sndLose, sndPenta, sndMvp },
     begin,
     pickClassico,
     pickEspecialista,

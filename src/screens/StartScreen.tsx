@@ -7,6 +7,7 @@ interface Props {
   poolCount: number;
   onBegin: (mode: GameMode) => void;
   onCodex: () => void;
+  onTournament: () => void;
 }
 
 const STEPS = [
@@ -17,7 +18,7 @@ const STEPS = [
 
 const LEAGUES = ["LCK", "LPL", "LEC", "LMS"];
 
-export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
+export function StartScreen({ poolCount, onBegin, onCodex, onTournament }: Props) {
   const [mode, setMode] = useState<GameMode>("goldenroad");
 
   // delay escalonado de entrada por bloco
@@ -118,6 +119,31 @@ export function StartScreen({ poolCount, onBegin, onCodex }: Props) {
             </div>
           </button>
         </div>
+
+        {/* ── NOVO: Worlds ao Vivo (torneio de 8) ── */}
+        <button
+          type="button"
+          onClick={onTournament}
+          className="group mt-4 flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border px-4 py-3.5 text-left transition-all hover:-translate-y-0.5"
+          style={{
+            borderColor: "rgba(232,206,134,0.45)",
+            background: "linear-gradient(100deg,rgba(58,48,22,0.55),rgba(30,37,49,0.7))",
+            boxShadow: "0 0 22px -10px rgba(201,162,75,0.5)",
+          }}
+        >
+          <span className="text-[26px]" aria-hidden>🔴</span>
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-2">
+              <span className="font-display text-[17px] font-bold uppercase tracking-[1px] text-gold-bright">Worlds ao Vivo</span>
+              <span className="rounded-full px-2 py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-[1px]"
+                style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)" }}>Novo</span>
+            </span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#D0D4CC]">
+              Bracket de 8 — você + 7 bots num chaveamento real, com timeline de partida ao vivo.
+            </span>
+          </span>
+          <span className="font-display text-[20px] text-gold-bright transition-transform group-hover:translate-x-1">→</span>
+        </button>
       </div>
 
       {/* ── TIMELINE DE COMO JOGA ── */}

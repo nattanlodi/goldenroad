@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DRAFT_TEAMS } from "./data/teams";
 import { useGame } from "./game/useGame";
 import { AppBackground } from "./components/AppBackground";
@@ -9,12 +9,20 @@ import { DraftScreen } from "./screens/DraftScreen";
 import { SeriesScreen } from "./screens/SeriesScreen";
 import { ResultScreen } from "./screens/ResultScreen";
 import { CodexScreen } from "./screens/CodexScreen";
+import { TournamentScreen } from "./screens/tournament/TournamentScreen";
+import type { TournamentPhase } from "./game/tournamentReducer";
 
 export function App() {
   const game = useGame();
   const { phase } = game.state;
+  // modo "Worlds ao Vivo" — estado isolado do jogo solo, sobreposto à tela inicial.
+  const [tournament, setTournament] = useState(false);
+  // fase interna do torneio (reportada pelo TournamentScreen).
+  const [tournamentPhase, setTournamentPhase] = useState<TournamentPhase>("lobby");
 
-  const isGame = phase === "series";
+  // fundo "game" (escuro/dourado): jogo solo em série E só a TELA DE JOGANDO do
+  // torneio (bracket) — lobby/draft/resultado ficam no fundo padrão.
+  const isGame = phase === "series" || (tournament && tournamentPhase === "bracket");
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
   const isVictory = phase === "result" && game.state.finished === "champion";
 
@@ -36,13 +44,24 @@ export function App() {
       )}
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
+      {tournament ? (
+        <TournamentScreen active={tournament} onExit={() => setTournament(false)} sounds={game.sounds} onPhaseChange={setTournamentPhase} />
+      ) : (
+        <>
       {phase === "start" && (
-        <StartScreen poolCount={DRAFT_TEAMS.length} onBegin={(mode) => game.begin(mode)} onCodex={game.openCodex} />
+        <StartScreen
+          poolCount={DRAFT_TEAMS.length}
+          onBegin={(mode) => game.begin(mode)}
+          onCodex={game.openCodex}
+          onTournament={() => setTournament(true)}
+        />
       )}
       {phase === "play" && <DraftScreen game={game} />}
       {phase === "series" && <SeriesScreen game={game} />}
       {phase === "result" && <ResultScreen game={game} />}
       {phase === "codex" && <CodexScreen game={game} />}
+        </>
+      )}
     </div>
   );
 }
