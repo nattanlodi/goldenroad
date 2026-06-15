@@ -23,6 +23,7 @@ import type {
   StagePhase,
   Team,
 } from "../types";
+import type { RunScore } from "./score";
 import { emptyMods } from "./effects";
 
 /** Pacote de pré-série: forma do dia + evento sorteado, calculado em useGame. */
@@ -83,6 +84,10 @@ export interface GameState {
   copied: boolean;
   record: number;
   isNewRecord: boolean;
+  // pontuação de run (score arcade)
+  runScore: RunScore | null; // computado ao finalizar a campanha
+  scoreRecord: number; // melhor score de QUALQUER run (localStorage)
+  isNewScoreRecord: boolean;
 }
 
 const emptyLineup = (): Lineup => ({ TOP: null, JNG: null, MID: null, BOT: null, SUP: null });
@@ -132,6 +137,9 @@ export const initialState: GameState = {
   copied: false,
   record: 0,
   isNewRecord: false,
+  runScore: null,
+  scoreRecord: 0,
+  isNewScoreRecord: false,
 };
 
 export type Action =
@@ -177,7 +185,7 @@ export type Action =
       usedOppIds: string[];
       pre: PreSeries;
     }
-  | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean; finalsMvp: HighlightRef | null }
+  | { type: "finishCampaign"; played: PlayedSeries; finished: CampaignEnd; record: number; isNewRecord: boolean; finalsMvp: HighlightRef | null; runScore: RunScore; scoreRecord: number; isNewScoreRecord: boolean }
   | {
       type: "resolveEvent";
       lineup: Lineup;
@@ -216,6 +224,8 @@ export function reducer(state: GameState, action: Action): GameState {
         rolling: false,
         rollDisplay: null,
         ...freshCampaign,
+        runScore: null,
+        isNewScoreRecord: false,
       };
 
     case "setDifficulty":
@@ -418,6 +428,9 @@ export function reducer(state: GameState, action: Action): GameState {
         record: action.record,
         isNewRecord: action.isNewRecord,
         finalsMvp: action.finalsMvp,
+        runScore: action.runScore,
+        scoreRecord: action.scoreRecord,
+        isNewScoreRecord: action.isNewScoreRecord,
       };
 
     case "restart":

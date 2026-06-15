@@ -20,6 +20,7 @@ import { rollEventCards } from "../data/eventCards";
 import { buildMsiSeries, MSI_START, msiNext } from "./msi";
 import { buildFsSeries, FS_START, fsNext } from "./firstStand";
 import { initialState, reducer, type GameState, type PreSeries } from "./reducer";
+import { computeRunScore } from "./score";
 import { useAudio } from "./useAudio";
 
 /** Calcula o pacote de pré-série (forma do dia + evento) ao entrar numa série. */
@@ -34,6 +35,7 @@ function makePre(prev: GameState, series: SeriesSetup, isFirst: boolean): PreSer
 const clampRating = (n: number) => Math.max(40, Math.min(100, n));
 
 const RECORD_KEY = "w60_record";
+const SCORE_RECORD_KEY = "w60_score_record";
 
 /** Converte "#rrggbb" + alpha em "rgba(r,g,b,a)" (pro canvas do card). */
 function hexA(hex: string, a: number): string {
@@ -50,6 +52,37 @@ function loadRecord(): number {
   } catch {
     return 0;
   }
+}
+
+function loadScoreRecord(): number {
+  try {
+    return parseInt(localStorage.getItem(SCORE_RECORD_KEY) || "0", 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** Conta os destaques SEUS da run (pra pontuação): pentakills e séries vencidas com MVP seu. */
+function tallyHighlights(campaignGames: GameState["campaignGames"], history: GameState["history"]) {
+  const pentakillsYou = campaignGames.reduce((a, g) => a + g.pentakills.filter((k) => k.side === "you").length, 0);
+  // séries: agrupa os jogos por seriesIndex e, no bloco vencido por você, vê se o MVP da série foi seu.
+  const bySeries = new Map<number, typeof campaignGames>();
+  for (const g of campaignGames) {
+    const idx = g.seriesIndex ?? 0;
+    if (!bySeries.has(idx)) bySeries.set(idx, []);
+    bySeries.get(idx)!.push(g);
+  }
+  let seriesMvpWins = 0;
+  for (const games of bySeries.values()) {
+    if (games.length < 2) continue; // Bo1 não tem MVP de série
+    const yourW = games.filter((g) => g.youWon).length;
+    if (yourW <= games.length - yourW) continue; // só séries que VOCÊ venceu
+    // MVP da série = quem foi MVP de mais partidas do lado vencedor (igual ao SeriesScreen).
+    const cand = games.map((g) => g.mvp).filter((m): m is NonNullable<typeof m> => !!m && m.side === "you");
+    if (cand.length) seriesMvpWins++;
+  }
+  void history;
+  return { pentakillsYou, seriesMvpWins };
 }
 
 /**
@@ -253,6 +286,31 @@ export function useGame() {
       championship: S.mode === "goldenroad" ? S.careerStage : "worlds",
     };
 
+    // pontuação de run: computa a partir da run inteira (history + played já entra).
+    const computeScore = (finished: "champion" | "eliminated") => {
+      const fullHistory = [...S.history, played];
+      const { pentakillsYou, seriesMvpWins } = tallyHighlights(S.campaignGames, fullHistory);
+      const run = computeRunScore({
+        history: fullHistory,
+        lineup: lineupPicks(S.lineup),
+        pentakillsYou,
+        seriesMvpWins,
+        mode: S.mode,
+        difficulty: S.difficulty,
+        finished,
+      });
+      const bestScore = loadScoreRecord();
+      const isNewScoreRecord = run.total > bestScore;
+      if (isNewScoreRecord) {
+        try {
+          localStorage.setItem(SCORE_RECORD_KEY, String(run.total));
+        } catch {
+          /* ignore */
+        }
+      }
+      return { runScore: run, scoreRecord: Math.max(run.total, bestScore), isNewScoreRecord };
+    };
+
     const finishChampion = () => {
       const avg = lineScore(S.lineup);
       const best = loadRecord();
@@ -267,11 +325,13 @@ export function useGame() {
       sndTrophy();
       // MVP das Finais = MVP da série final (seu, pois você venceu a final).
       const finalsMvp = S.highlight?.mvp ?? null;
-      dispatch({ type: "finishCampaign", played, finished: "champion", record: Math.max(avg, best), isNewRecord, finalsMvp });
+      const sc = computeScore("champion");
+      dispatch({ type: "finishCampaign", played, finished: "champion", record: Math.max(avg, best), isNewRecord, finalsMvp, ...sc });
     };
     const finishEliminated = () => {
       sndDefeat();
-      dispatch({ type: "finishCampaign", played, finished: "eliminated", record: loadRecord(), isNewRecord: false, finalsMvp: null });
+      const sc = computeScore("eliminated");
+      dispatch({ type: "finishCampaign", played, finished: "eliminated", record: loadRecord(), isNewRecord: false, finalsMvp: null, ...sc });
     };
 
     // ---- FIRST STAND (modo GOLDENROAD): grupo (double-elim) + knockout ----
@@ -671,7 +731,8 @@ export function useGame() {
         : `GOLDENROAD — minha campanha terminou em ${wins}-${losses}.`;
     const fmvp = S.finished === "champion" ? S.finalsMvp : null;
     const mvpLine = fmvp ? `\n🏆 MVP das Finais: ${fmvp.name} (${fmvp.role === "BOT" ? "ADC" : fmvp.role})` : "";
-    const txt = `${header}\n${line}\nNota da line: ${avg}.${mvpLine} Consegue superar?`;
+    const scoreLine = S.runScore ? `\n⭐ Pontuação: ${S.runScore.total.toLocaleString("pt-BR")}${S.isNewScoreRecord ? " (recorde!)" : ""}` : "";
+    const txt = `${header}\n${line}\nNota da line: ${avg}.${scoreLine}${mvpLine} Consegue superar?`;
     const done = () => {
       dispatch({ type: "setCopied", copied: true });
       clearTimeout(copyTimer.current);
@@ -800,21 +861,37 @@ export function useGame() {
     x.lineWidth = 1.5;
     rr(nbX, nbY, nbW, 118, 22);
     x.stroke();
-    // nota grande à esquerda + tier à direita
+    // ESQUERDA: nota da line + tier (subtexto). DIREITA: PONTUAÇÃO da run (destaque).
+    const runScore = S.runScore;
     x.textAlign = "left";
-    x.fillStyle = "#e8ce86";
-    x.font = "700 86px 'Geist', sans-serif";
-    x.fillText(String(avg), nbX + 34, nbY + 86);
     x.fillStyle = "#9097a1";
     x.font = "400 17px 'Geist', sans-serif";
     x.fillText("NOTA DA LINE", nbX + 34, nbY + 26);
-    x.textAlign = "right";
-    x.fillStyle = "#f2ecde";
-    x.font = "700 30px 'Geist', sans-serif";
-    x.fillText(tierLabel, nbX + nbW - 30, nbY + 64);
+    x.fillStyle = "#e8ce86";
+    x.font = "700 70px 'Geist', sans-serif";
+    x.fillText(String(avg), nbX + 34, nbY + 84);
     x.fillStyle = "#9097a1";
-    x.font = "400 17px 'Geist', sans-serif";
-    x.fillText(`${champs}/5 CAMPEÕES MUNDIAIS`, nbX + nbW - 30, nbY + 96);
+    x.font = "400 15px 'Geist', sans-serif";
+    x.fillText(`${tierLabel} · ${champs}/5 CAMPEÕES`, nbX + 34, nbY + 108);
+    // direita: pontuação
+    x.textAlign = "right";
+    if (runScore) {
+      x.fillStyle = "#9097a1";
+      x.font = "400 17px 'Geist', sans-serif";
+      x.fillText("PONTUAÇÃO", nbX + nbW - 30, nbY + 26);
+      x.fillStyle = "#f4e4b0";
+      x.font = "800 58px 'Geist', sans-serif";
+      x.fillText(runScore.total.toLocaleString("pt-BR"), nbX + nbW - 30, nbY + 80);
+      if (runScore.zebraDiff >= 2) {
+        x.fillStyle = "#7fd18a";
+        x.font = "700 15px 'Geist', sans-serif";
+        x.fillText(`🐴 ZEBRA ×${runScore.zebraMult.toFixed(2)}`, nbX + nbW - 30, nbY + 106);
+      }
+    } else {
+      x.fillStyle = "#f2ecde";
+      x.font = "700 30px 'Geist', sans-serif";
+      x.fillText(tierLabel, nbX + nbW - 30, nbY + 64);
+    }
 
     // ---- linhas dos jogadores (estilo dos cards de raridade do draft) ----
     const hasFmvp = isChampion && !!S.finalsMvp;

@@ -4,6 +4,7 @@ import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 import { Logo6x0 } from "../components/Logo6x0";
 import { teamColor } from "../data/teamColors";
+import { ScorePanel } from "../components/ScorePanel";
 import type { CampaignEnd, CareerStage, PlayedSeries, Role } from "../types";
 
 const ROLE_LABEL: Record<Role, string> = { TOP: "TOP", JNG: "JNG", MID: "MID", BOT: "ADC", SUP: "SUP" };
@@ -146,7 +147,7 @@ function ChampionshipBlock({ group, bg }: { group: ChampGroup; bg: string }) {
 }
 
 export function ResultScreen({ game }: { game: Game }) {
-  const { lineup, history, record, isNewRecord, copied, finished, finalsMvp } = game.state;
+  const { lineup, history, record, isNewRecord, copied, finished, finalsMvp, runScore, scoreRecord, isNewScoreRecord } = game.state;
   // overall ORIGINAL (baseRating) — nota real do jogador, sem buffs de carta.
   const picks = lineupPicks(lineup).map((p) => ({ ...p, rating: p.baseRating }));
   const avg = picks.length ? Math.round(picks.reduce((a, p) => a + p.rating, 0) / picks.length) : 0;
@@ -234,6 +235,13 @@ export function ResultScreen({ game }: { game: Game }) {
           </>
         )}
       </div>
+
+      {/* PONTUAÇÃO DA RUN (score arcade) — o destaque da tela */}
+      {runScore && (
+        <div className="mx-auto mb-[26px] max-w-[560px]">
+          <ScorePanel score={runScore} isNewRecord={isNewScoreRecord} record={scoreRecord} isChampion={isChampion} />
+        </div>
+      )}
 
       {/* MVP das Finais + stats — tudo na MESMA linha (economiza vertical) */}
       <div className="mb-[26px] flex flex-wrap items-stretch justify-center gap-4">
