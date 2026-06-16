@@ -31,7 +31,7 @@ export function App() {
 
   // fundo "game" (escuro/dourado): jogo solo em série, a TELA DE JOGANDO do
   // torneio (bracket) E a série do 1v1 online — demais telas no fundo padrão.
-  const isGame = phase === "series" || (tournament && tournamentPhase === "bracket") || (online && onlinePhase === "series");
+  const isGame = phase === "series" || (tournament && tournamentPhase === "bracket") || (online && (onlinePhase === "series" || onlinePhase === "bracket"));
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
   const isVictory = phase === "result" && game.state.finished === "champion";
 

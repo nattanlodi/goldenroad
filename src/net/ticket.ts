@@ -12,6 +12,18 @@
 const TICKET_PREFIX = "w60_ticket:"; // + ROOM (uppercase)
 const NICK_KEY = "w60_tourney_nick"; // mesmo do LobbyScreen (último nick lembrado)
 
+/** Sufixo de identidade pra ISOLAR abas no teste LocalTransport: 2 abas NORMAIS do
+ * mesmo navegador compartilham o localStorage, então sem isso a 2ª aba reusa o
+ * MESMO playerId do host (entra como ele). `?local=guest` dá um ticket separado. */
+function localSuffix(): string {
+  try {
+    const v = new URLSearchParams(location.search).get("local");
+    return v ? `#${v}` : "";
+  } catch {
+    return "";
+  }
+}
+
 export interface Ticket {
   room: string;
   playerId: string;
@@ -32,7 +44,7 @@ export function newPlayerId(): string {
 }
 
 function keyFor(room: string): string {
-  return TICKET_PREFIX + room.toUpperCase();
+  return TICKET_PREFIX + room.toUpperCase() + localSuffix();
 }
 
 /** Lê o ticket salvo pra uma sala (ou null). */

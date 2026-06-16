@@ -12,7 +12,7 @@
 
 import { useState, type CSSProperties } from "react";
 import type { UseOnlineRoom } from "../../game/online/useOnlineRoom";
-import { canStart } from "../../game/online/roomState";
+import { canStart, BRACKET_SIZE } from "../../game/online/roomState";
 import type { RoomConfig } from "../../game/tournamentReducer";
 import { Logo6x0 } from "../../components/Logo6x0";
 
@@ -42,12 +42,16 @@ export function OnlineLobby({
 
   const st = r.state;
   const room = st?.code ?? "";
-  const me = st?.players.find((p) => p.playerId === r.myId) ?? null;
-  const other = st?.players.find((p) => p.playerId !== r.myId) ?? null;
+  const humans = (st?.players ?? []).filter((p) => !p.isBot);
+  const me = humans.find((p) => p.playerId === r.myId) ?? null;
   const meReady = me?.ready ?? false;
+  const botCount = Math.max(0, BRACKET_SIZE - humans.length); // bots que vão completar
 
   const copy = (kind: "code" | "link") => {
-    const txt = kind === "code" ? room : `${location.origin}/?sala=${room}`;
+    // preserva o ?local (modo de teste LocalTransport) no link, senão o convidado
+    // cairia no Supabase enquanto o host está no LocalTransport (não se enxergam).
+    const localFlag = new URLSearchParams(location.search).has("local") ? "&local" : "";
+    const txt = kind === "code" ? room : `${location.origin}/?sala=${room}${localFlag}`;
     const done = () => { setCopied(kind); setTimeout(() => setCopied(""), 1600); };
     if (navigator.clipboard?.writeText) navigator.clipboard.writeText(txt).then(done, done);
     else done();
@@ -66,7 +70,7 @@ export function OnlineLobby({
         </div>
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[2px]"
           style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)", boxShadow: "0 0 18px rgba(201,162,75,0.45)" }}>
-          🔴 Worlds ao Vivo <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">DUELO 1v1</span>
+          🔴 Worlds ao Vivo <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">TORNEIO DE 8</span>
         </span>
       </div>
 
@@ -92,23 +96,30 @@ export function OnlineLobby({
               {copied === "link" ? "✓ Copiado!" : "⧉ Copiar link"}
             </button>
           </div>
-          <div className="mt-3 max-w-[440px] text-center font-mono text-[10.5px] leading-relaxed text-dim">
+          <div className="mt-3 max-w-[460px] text-center font-mono text-[10.5px] leading-relaxed text-dim">
             {isHost
-              ? "Mande o código (ou link) pro seu adversário. Quando os dois estiverem prontos, você inicia o duelo."
-              : "Você entrou na sala. Marque que está pronto e aguarde o host iniciar."}
+              ? "Mande o código (ou link) pros amigos. De 2 a 8 jogam; os slots vazios viram BOTS 🤖. Quando todos estiverem prontos, você inicia."
+              : "Você entrou na sala. Marque que está pronto e aguarde o host iniciar o torneio."}
           </div>
         </div>
       </div>
 
-      {/* jogadores conectados (presence) */}
+      {/* jogadores: humanos presentes + bots completando até 8 */}
       <div className="mt-4 w-full rounded-2xl border border-gold/25 p-4" style={{ background: "rgba(30,30,33,0.55)" }}>
         <div className="mb-3 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">Jogadores ({st?.players.length ?? 0}/2)</span>
+          <span className="font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">
+            Competidores ({humans.length} humano{humans.length === 1 ? "" : "s"}{botCount > 0 ? ` · ${botCount} bot${botCount === 1 ? "" : "s"}` : ""})
+          </span>
           <ConnPill state={r.conn} />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <PlayerSlot label="Você" player={me} highlight />
-          <PlayerSlot label="Adversário" player={other} />
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          {Array.from({ length: BRACKET_SIZE }).map((_, i) => {
+            const h = humans[i];
+            if (h) return <PlayerSlot key={h.playerId} player={{ nick: h.nick, isHost: h.isHost, ready: h.ready }} mine={h.playerId === r.myId} />;
+            // slots restantes = bots (preenchidos ao iniciar).
+            const botIndex = i - humans.length;
+            return <BotSlot key={`bot-${i}`} active={botIndex < botCount} />;
+          })}
         </div>
       </div>
 
@@ -133,6 +144,10 @@ export function OnlineLobby({
               <Seg on={cfg.pace === "imersivo"} disabled={!isHost} onClick={() => set({ pace: "imersivo" })}>Imersivo</Seg>
               <Seg on={cfg.pace === "rapido"} disabled={!isHost} onClick={() => set({ pace: "rapido" })}>Rápido</Seg>
             </ConfigRow>
+            <ConfigRow label="🃏 Cartas de evento">
+              <Seg on={!!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: true })}>Ligadas</Seg>
+              <Seg on={!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: false })}>Desligadas</Seg>
+            </ConfigRow>
           </div>
         </div>
       )}
@@ -151,7 +166,7 @@ export function OnlineLobby({
             disabled={!ready}
             className="btn-gold w-full cursor-pointer rounded-[12px] border-none px-4 py-4 font-display text-[18px] font-semibold uppercase tracking-[2px] disabled:cursor-default disabled:opacity-45"
           >
-            {st && st.players.length < 2 ? "▶ Aguardando adversário…" : ready ? "▶ Iniciar duelo" : "▶ Aguardando ambos prontos…"}
+            {humans.length < 2 ? "▶ Aguardando jogadores (mín. 2)…" : ready ? `▶ Iniciar torneio${botCount > 0 ? ` (+${botCount} 🤖)` : ""}` : "▶ Aguardando todos prontos…"}
           </button>
         )}
       </div>
@@ -163,21 +178,27 @@ export function OnlineLobby({
   );
 }
 
-function PlayerSlot({ label, player, highlight }: { label: string; player: { nick: string; isHost: boolean; ready: boolean } | null; highlight?: boolean }) {
+function PlayerSlot({ player, mine }: { player: { nick: string; isHost: boolean; ready: boolean }; mine: boolean }) {
   return (
-    <div className={`flex flex-col items-center rounded-[12px] border px-3 py-4 ${highlight ? "border-gold/40" : "border-gold/15"}`}
-      style={{ background: player ? "rgba(12,13,16,0.55)" : "rgba(12,13,16,0.3)" }}>
-      <div className="mb-1 font-mono text-[9px] uppercase tracking-[2px] text-dim">{label}</div>
-      {player ? (
-        <>
-          <div className="font-display text-[18px] font-semibold text-cream">{player.nick} {player.isHost ? "👑" : ""}</div>
-          <div className={`mt-1.5 font-mono text-[11px] uppercase tracking-[1px] ${player.ready ? "text-win" : "text-dim"}`}>
-            {player.ready ? "✓ pronto" : "— aguardando"}
-          </div>
-        </>
-      ) : (
-        <div className="anim-fade font-display text-[15px] text-dim">conectando…</div>
-      )}
+    <div className={`anim-pop flex flex-col items-center rounded-[12px] border px-3 py-3.5 ${mine ? "border-gold/45" : "border-gold/18"}`}
+      style={{ background: "rgba(12,13,16,0.55)" }}>
+      <div className="mb-0.5 font-mono text-[8px] uppercase tracking-[1.5px] text-dim">{mine ? "Você" : "Jogador"}</div>
+      <div className="truncate font-display text-[16px] font-semibold text-cream">{player.nick} {player.isHost ? "👑" : ""}</div>
+      <div className={`mt-1 font-mono text-[10px] uppercase tracking-[1px] ${player.ready ? "text-win" : "text-dim"}`}>
+        {player.ready ? "✓ pronto" : "— aguardando"}
+      </div>
+    </div>
+  );
+}
+
+/** Slot de bot: "ativo" = vai virar bot ao iniciar; "vago" = pode entrar humano. */
+function BotSlot({ active }: { active: boolean }) {
+  return (
+    <div className="flex flex-col items-center rounded-[12px] border border-dashed border-gold/15 px-3 py-3.5"
+      style={{ background: "rgba(12,13,16,0.28)" }}>
+      <div className="mb-0.5 font-mono text-[8px] uppercase tracking-[1.5px] text-dim">{active ? "Bot" : "Vago"}</div>
+      <div className="font-display text-[16px] font-semibold text-dim">{active ? "🤖" : "—"}</div>
+      <div className="mt-1 font-mono text-[10px] uppercase tracking-[1px] text-dim">{active ? "completa" : "aberto"}</div>
     </div>
   );
 }

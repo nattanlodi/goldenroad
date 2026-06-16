@@ -210,13 +210,15 @@ export function buildBracket(rng: Rng, competitors: Competitor[]): Bracket {
   // ordem dos 8 slots das quartas (q0a,q0b, q1a,q1b, q2a,q2b, q3a,q3b).
   let order: Competitor[];
   if (humans.length <= 4) {
-    // espalha humanos em confrontos distintos (slot "a" de cada quarta),
-    // completa os "b" com bots; bots restantes vão pros confrontos sobrando.
+    // espalha humanos em confrontos distintos, priorizando LADOS/SEMIS opostos
+    // (assim 2 humanos só podem se cruzar na FINAL; 3-4 distribuem o mais longe
+    // possível). Ordem de confrontos pra espalhar: qf0(L), qf2(R), qf1(L), qf3(R).
+    const SPREAD = [0, 2, 1, 3]; // índices de confronto, alternando lados
     const hShuffled = rng.shuffle(humans);
     const bShuffled = rng.shuffle(bots);
     const slots: (Competitor | null)[] = new Array(8).fill(null);
-    // 1 humano por confronto, no slot "a" (índices pares).
-    hShuffled.forEach((h, i) => { slots[i * 2] = h; });
+    // 1 humano por confronto, no slot "a" (índice par do confronto), na ordem SPREAD.
+    hShuffled.forEach((h, i) => { slots[SPREAD[i] * 2] = h; });
     // preenche o resto com bots, na ordem.
     let bi = 0;
     for (let s = 0; s < 8; s++) if (!slots[s]) slots[s] = bShuffled[bi++];

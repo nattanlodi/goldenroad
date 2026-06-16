@@ -12,8 +12,11 @@ import type { Transport } from "./transport";
 
 export type TransportKind = "supabase" | "local";
 
-/** Qual transporte está disponível agora (online se há credenciais). */
+/** Qual transporte está disponível agora (online se há credenciais).
+ * `?local` na URL FORÇA o LocalTransport (BroadcastChannel) — útil pra testar a
+ * LÓGICA com 2 abas NORMAIS do mesmo navegador, isolando bugs de rede do Supabase. */
 export function availableTransport(): TransportKind {
+  if (typeof location !== "undefined" && new URLSearchParams(location.search).has("local")) return "local";
   return hasSupabase() ? "supabase" : "local";
 }
 

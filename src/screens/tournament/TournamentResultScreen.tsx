@@ -1,6 +1,6 @@
 import type { Tournament } from "../../game/useTournament";
 import type { Role } from "../../types";
-import { competitorLabel, competitorSubtitle, placements, type Competitor } from "../../game/tournament";
+import { competitorLabel, competitorSubtitle, placements, type Bracket, type Competitor } from "../../game/tournament";
 import { Flag } from "../../components/Flag";
 import { RoleBadge } from "../../components/RoleBadge";
 
@@ -12,10 +12,29 @@ function placeStyle(place: number): { label: string; color: string; medal: strin
   return { label: "Quartas", color: "#8a8f98", medal: "" };
 }
 
+/** Wrapper do OFFLINE: extrai os dados do controller e renderiza o pódio. */
 export function TournamentResultScreen({ t }: { t: Tournament }) {
   const { state, reset } = t;
-  const { bracket, competitors, championId, myId } = state;
-  if (!bracket) return null;
+  if (!state.bracket) return null;
+  return (
+    <TournamentPodium
+      bracket={state.bracket}
+      competitors={state.competitors}
+      championId={state.championId}
+      myId={state.myId}
+      onReset={reset}
+    />
+  );
+}
+
+/** Pódio do torneio de 8 — REUSADO no offline (1×7) e no online (Degrau 2). */
+export function TournamentPodium({ bracket, competitors, championId, myId, onReset }: {
+  bracket: Bracket;
+  competitors: Competitor[];
+  championId: string | null;
+  myId: string;
+  onReset: () => void;
+}) {
   const byId = new Map(competitors.map((c) => [c.id, c]));
   const places = placements(bracket);
   const champion = championId ? byId.get(championId) : null;
@@ -69,39 +88,36 @@ export function TournamentResultScreen({ t }: { t: Tournament }) {
             const st = placeStyle(place);
             const mine = c.id === myId;
             return (
-              <div key={c.id} className="flex items-center gap-3 border-b border-gold/10 px-4 py-2.5 last:border-b-0"
+              <div key={c.id} className="border-b border-gold/10 last:border-b-0"
                 style={mine ? { background: "rgba(201,162,75,0.09)" } : undefined}>
-                <span className="w-[28px] text-center font-mono text-[15px] font-black" style={{ color: st.color }}>
-                  {st.medal || i + 1}
-                </span>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className={`truncate font-display text-[15px] font-bold ${mine ? "text-gold-bright" : "text-cream"}`}>
-                    {competitorLabel(c)}{mine ? " (você)" : ""}
+                {/* cabeçalho do time */}
+                <div className="flex items-center gap-3 px-4 pt-2.5 pb-1.5">
+                  <span className="w-[28px] text-center font-mono text-[15px] font-black" style={{ color: st.color }}>
+                    {st.medal || i + 1}
                   </span>
-                  <span className="truncate font-mono text-[9.5px] text-dim">{competitorSubtitle(c)}</span>
-                </span>
-                <span className="rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[1px]"
-                  style={{ color: st.color, background: `color-mix(in srgb, ${st.color} 14%, transparent)`, border: `1px solid color-mix(in srgb, ${st.color} 35%, transparent)` }}>
-                  {st.label}
-                </span>
-                <span className="w-[34px] text-right font-mono text-[14px] font-bold text-muted">{c.avg}</span>
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className={`truncate font-display text-[15px] font-bold ${mine ? "text-gold-bright" : "text-cream"}`}>
+                      {competitorLabel(c)}{mine ? " (você)" : ""}
+                    </span>
+                    <span className="truncate font-mono text-[9.5px] text-dim">{competitorSubtitle(c)}</span>
+                  </span>
+                  <span className="rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[1px]"
+                    style={{ color: st.color, background: `color-mix(in srgb, ${st.color} 14%, transparent)`, border: `1px solid color-mix(in srgb, ${st.color} 35%, transparent)` }}>
+                    {st.label}
+                  </span>
+                  <span className="w-[34px] text-right font-mono text-[14px] font-bold text-muted">{c.avg}</span>
+                </div>
+                {/* line do time (5 jogadores, compacto) */}
+                <RankLine c={c} />
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* caminho do campeão (lines) */}
-      {champion && (
-        <div className="mt-6">
-          <div className="mb-2 text-center font-mono text-[10px] uppercase tracking-[2px] text-muted">A line campeã</div>
-          <ChampionLine c={champion} />
-        </div>
-      )}
-
       {/* CTA */}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onClick={reset} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
+        <button onClick={onReset} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
           🔁 Novo torneio
         </button>
       </div>
@@ -139,15 +155,16 @@ function PodiumStep({ c, place, height, big, mine, second }: { c: Competitor | n
   );
 }
 
-function ChampionLine({ c }: { c: Competitor }) {
+/** Line compacta de um time na classificação (5 chips por role). */
+function RankLine({ c }: { c: Competitor }) {
   return (
-    <div className="mx-auto flex max-w-[560px] flex-wrap items-center justify-center gap-2">
+    <div className="flex flex-wrap gap-1.5 px-4 pb-2.5 pl-[44px]">
       {c.line.map((p) => (
-        <div key={p.role} className="flex items-center gap-2 rounded-[10px] border border-gold/25 px-3 py-2" style={{ background: "rgba(30,30,33,0.6)" }}>
+        <div key={p.role} className="flex items-center gap-1.5 rounded-[8px] border border-gold/15 px-2 py-1" style={{ background: "rgba(30,30,33,0.5)" }}>
           <RoleBadge role={p.role as Role} variant="gold" size="sm" />
-          <Flag cc={p.country} size={11} />
-          <span className="font-display text-[14px] font-semibold text-cream">{p.name}</span>
-          <span className="font-mono text-[13px] font-bold text-gold-bright">{p.rating}</span>
+          <Flag cc={p.country} size={10} />
+          <span className="font-display text-[12px] font-semibold text-cream">{p.name}</span>
+          <span className="font-mono text-[11px] font-bold text-gold-bright">{p.rating}</span>
         </div>
       ))}
     </div>

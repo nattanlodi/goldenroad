@@ -54,3 +54,17 @@ export function seriesNarrationMs(s: SeriesState, imersivo: boolean): number {
   }
   return total + 600; // respiro final
 }
+
+/** Placar de uma série após `elapsedMs` de narração — usando o MESMO timing
+ * determinístico da narração local. Pro bracket mostrar o placar das OUTRAS
+ * séries paralelas no instante EXATO em que cada jogo acaba (nem antes). */
+export function scoreAtElapsed(s: SeriesState, imersivo: boolean, elapsedMs: number): { a: number; b: number; done: boolean } {
+  let cur: SeriesState = { ...s, startDeadline: null, scoreA: 0, scoreB: 0, gameIndex: 0, eventIndex: 0, finished: false };
+  let t = 0;
+  for (let i = 0; i < 5000 && !cur.finished; i++) {
+    t += stepDelayMs(cur, imersivo);
+    if (t > elapsedMs) break; // ainda não chegou o próximo passo
+    cur = advanceSeries(cur, imersivo);
+  }
+  return { a: cur.scoreA, b: cur.scoreB, done: cur.finished };
+}

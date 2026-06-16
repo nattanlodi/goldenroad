@@ -9,8 +9,9 @@ import { ROLES } from "../../data/teams";
 import { type Competitor, type TournamentPick } from "../../game/tournament";
 import { Logo6x0 } from "../../components/Logo6x0";
 import { LineColumn } from "../tournament/LineColumn";
+import { TournamentPodium } from "../tournament/TournamentResultScreen";
 
-export function OnlineResult({ r, myId, onExit }: { r: UseOnlineRoom; myId: string | null; onExit: () => void }) {
+export function OnlineResult({ r, myId, overrideBracket = null, onExit }: { r: UseOnlineRoom; myId: string | null; overrideBracket?: import("../../game/tournament").Bracket | null; onExit: () => void }) {
   const st = r.state;
   const s = st?.series ?? null;
   const showRatings = !(st?.config.hideRatings ?? false);
@@ -19,8 +20,22 @@ export function OnlineResult({ r, myId, onExit }: { r: UseOnlineRoom; myId: stri
     const p = st?.players.find((pp) => pp.playerId === pid);
     const line = p ? ROLES.map((rr) => p.picks[rr]).filter((x): x is TournamentPick => !!x) : [];
     const avg = line.length ? Math.round(line.reduce((a, x) => a + x.rating, 0) / line.length) : 0;
-    return { id: pid ?? "?", name: p?.nick ?? "—", isBot: false, line, avg, form: {} };
+    return { id: pid ?? "?", name: p?.nick ?? "—", isBot: p?.isBot ?? false, line, avg, form: {} };
   };
+
+  // ── TORNEIO de 8: pódio idêntico ao offline (1×7) ──
+  // `overrideBracket` = bracket completado LOCALMENTE pelo convidado eliminado
+  // (quando o host não confirmou o fim via rede). Senão usa o do estado.
+  const bracket = overrideBracket ?? st?.bracket ?? null;
+  if (bracket) {
+    const competitors = (st?.players ?? []).map((p) => comp(p.playerId));
+    const championId = bracket.gf.winner ?? st?.winnerId ?? null;
+    return (
+      <div className="anim-fade mx-auto w-full">
+        <TournamentPodium bracket={bracket} competitors={competitors} championId={championId} myId={myId ?? ""} onReset={onExit} />
+      </div>
+    );
+  }
   // VISÃO EGOCÊNTRICA: minha line à esquerda, adversário à direita.
   const iAmA = s?.aId === myId;
   const meC = comp(iAmA ? s?.aId : s?.bId);

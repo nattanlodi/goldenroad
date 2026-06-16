@@ -93,6 +93,7 @@ export class RoomClient<S, I> {
   private rev = 0;
 
   private cbs: RoomCallbacks<S> | null = null;
+  private heartbeat: ReturnType<typeof setInterval> | null = null;
 
   constructor(opts: RoomClientOpts<S, I>) {
     this.tx = opts.transport;
@@ -113,12 +114,43 @@ export class RoomClient<S, I> {
     await this.tx.join(this.room, this.me, handlers);
     // Anuncia que cheguei; o host responde com o snapshot atual.
     this.post({ w: "hello", playerId: this.me.playerId });
-    // Se EU sou o host, já publico o estado inicial pra quem entrar ver algo.
-    if (this.isHost()) this.broadcast();
+    if (this.isHost()) {
+      // Se EU sou o host, já publico o estado inicial pra quem entrar ver algo.
+      this.broadcast();
+      // HEARTBEAT de snapshot: reenvia o estado atual periodicamente. Garante que
+      // qualquer snapshot perdido no Realtime seja recuperado (mitiga dessincronia
+      // — design §6). Barato porque o snapshot não carrega timelines.
+      // Reenvia via broadcast() pra o rev SEMPRE crescer — um snapshot com rev
+      // repetido seria descartado pelo cliente e poderia fixar um estado defasado.
+      // 1,5s (e não 3s): uma transição de fase perdida pelo Realtime tem que se
+      // curar rápido, senão o convidado parece "travado" (ex.: preso em "aguardando
+      // o host iniciar a rodada" no modo paralelo).
+      this.heartbeat = setInterval(() => {
+        if (this.isTerminal()) return; // jogo acabou (pódio) → não precisa mais sincronizar
+        if (this.rev > 0) this.broadcast();
+      }, 3000);
+    } else {
+      // CLIENTE: re-pede sync periodicamente (hello → o host rebroadcast o estado
+      // atual). Cura snapshots perdidos. 4s (não 2s) pra NÃO sobrecarregar o canal
+      // Realtime (cada hello faz o host re-broadcastar; hello+heartbeat frequentes
+      // demais estouram o eventsPerSecond e o Supabase cai pra REST/throttle).
+      this.heartbeat = setInterval(() => {
+        if (this.isTerminal()) return; // jogo acabou → para de pedir sync
+        this.post({ w: "hello", playerId: this.me.playerId });
+      }, 4000);
+    }
+  }
+
+  /** Estado TERMINAL (jogo acabou) — para o tráfego periódico de sincronia.
+   * Genérico: checa a `phase` do estado, se houver (o jogo usa "result"). */
+  private isTerminal(): boolean {
+    const s = this.state as { phase?: string } | null;
+    return s?.phase === "result";
   }
 
   /** Encerra a conexão. Se for o host, avisa a sala (bye). */
   async stop(): Promise<void> {
+    if (this.heartbeat) { clearInterval(this.heartbeat); this.heartbeat = null; }
     if (this.isHost()) this.post({ w: "bye" });
     await this.tx.leave();
   }
@@ -188,10 +220,10 @@ export class RoomClient<S, I> {
         }
         break;
       case "hello":
-        // host reenvia o snapshot atual pra quem (re)entrou.
-        if (this.isHost() && ev.from !== this.me.playerId) {
-          this.post({ w: "snapshot", rev: this.rev, state: this.state });
-        }
+        // host reenvia o snapshot atual pra quem (re)entrou — via broadcast() pra
+        // o rev SEMPRE crescer (snapshot com rev repetido seria descartado pelo
+        // filtro `m.rev > this.rev` do cliente e poderia travar a entrada).
+        if (this.isHost() && ev.from !== this.me.playerId) this.broadcast();
         break;
       case "bye":
         // host encerrou a sala (§5.1: "host saiu — sala encerrada").
@@ -205,11 +237,10 @@ export class RoomClient<S, I> {
 
   private onPresence(members: PresenceMeta[]): void {
     this.members = members;
-    // Host re-sincroniza quem está na sala sempre que a presença muda
-    // (garante que um reconectado receba estado mesmo se o "hello" se perdeu).
-    if (this.isHost() && this.rev > 0) {
-      this.post({ w: "snapshot", rev: this.rev, state: this.state });
-    }
+    // Host re-sincroniza quem está na sala sempre que a presença muda (garante que
+    // um reconectado receba estado mesmo se o "hello" se perdeu). Via broadcast()
+    // pra o rev sempre crescer (ver nota no case "hello").
+    if (this.isHost() && this.rev > 0) this.broadcast();
     this.emit();
   }
 

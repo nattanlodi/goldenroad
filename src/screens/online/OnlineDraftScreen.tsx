@@ -43,7 +43,7 @@ function useCountdown(deadline: number | null): number {
 export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myId: string | null; sounds: TournamentSounds; onExit: () => void }) {
   const st = r.state;
   const me = st?.players.find((p) => p.playerId === myId) ?? null;
-  const other = st?.players.find((p) => p.playerId !== myId) ?? null;
+  const others = (st?.players ?? []).filter((p) => p.playerId !== myId);
 
   const showRatings = !(st?.config.hideRatings ?? false);
   const timed = (st?.config.pickSeconds ?? 0) > 0;
@@ -53,23 +53,24 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
   const round = st?.draftRound ?? 1;
   const myPicks = me?.picks ?? {};
   const pickedThisRound = me?.pickedThisRound ?? false;
+  // humanos (fora eu) que ainda não escolheram nesta rodada.
+  const waitingHumans = others.filter((p) => !p.isBot && !p.pickedThisRound).length;
   const filledCount = ROLES.filter((rr) => myPicks[rr]).length;
   const myLine = ROLES.map((rr) => myPicks[rr]).filter((p): p is TournamentPick => !!p);
   const avg = lineAvg(myLine);
   const tier = tierFor(avg);
   const lineup = picksToLineup(myPicks);
 
-  // adversário no formato Competitor (pro MESMO card "ao vivo" do offline 1×7).
-  const oppLine = ROLES.map((rr) => other?.picks[rr]).filter((p): p is TournamentPick => !!p);
-  const oppRevealed = oppLine.length;
-  const oppCompetitor: Competitor = {
-    id: other?.playerId ?? "opp",
-    name: other?.nick ?? "Adversário",
-    isBot: false,
-    line: oppLine,
-    avg: lineAvg(oppLine),
-    form: {},
-  };
+  // os OUTROS competidores (humanos + bots) no formato Competitor — MESMO card
+  // "ao vivo" do offline 1×7. Os BOTS revelam 1 lane por rodada acompanhando o
+  // SEU ritmo (filledCount), igual ao offline — suspense de ir aparecendo. Os
+  // humanos mostram o que já pickaram de fato (privado pra eles, público aqui).
+  const otherCompetitors: Competitor[] = others.map((p) => {
+    const full = ROLES.map((rr) => p.picks[rr]).filter((x): x is TournamentPick => !!x);
+    // bot: corta a line pelas lanes "reveladas até agora" = quantas EU já fechei.
+    const line = p.isBot ? full.slice(0, filledCount) : full;
+    return { id: p.playerId, name: p.nick, isBot: p.isBot, line, avg: lineAvg(line), form: {} };
+  });
 
   // ── rolagem LOCAL (privada): MESMA mecânica do solo (3 resorteios, outro
   // time / outro ano). Só o PICK final vira intenção pro host. ──
@@ -177,7 +178,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
           <div onClick={onExit} title="Sair do duelo" className="-m-1 cursor-pointer rounded-lg p-1 transition-opacity hover:opacity-70">
             <Logo6x0 className="h-auto w-[180px]" />
           </div>
-          <span className="font-display text-[12px] font-bold uppercase tracking-[2px] text-gold-bright">🔴 Draft 1v1 ao Vivo</span>
+          <span className="font-display text-[12px] font-bold uppercase tracking-[2px] text-gold-bright">🔴 Draft ao Vivo</span>
         </div>
         <div className="flex items-center gap-[14px]">
           <div className="flex items-center gap-[7px]">
@@ -234,9 +235,9 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
               <div className="mt-2 font-mono text-[12px] leading-relaxed text-muted">
                 {!pickedThisRound
                   ? "confirmando com o host…"
-                  : other?.pickedThisRound
-                    ? "Os dois escolheram — avançando…"
-                    : "Aguardando o adversário escolher…"}
+                  : waitingHumans > 0
+                    ? `Aguardando ${waitingHumans} jogador${waitingHumans === 1 ? "" : "es"}…`
+                    : "Todos escolheram — avançando…"}
               </div>
             </div>
           ) : rolling ? (
@@ -328,9 +329,11 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
           <RiftMap lineup={lineup} showRatings={showRatings} filledCount={filledCount} />
         </div>
 
-        {/* direita: line do adversário ao vivo — MESMO card do offline (1×7) */}
+        {/* direita: lines dos OUTROS competidores ao vivo — MESMO card do 1×7.
+            revealed acompanha o SEU ritmo (filledCount) → bots vão aparecendo 1
+            lane por rodada, com o "pop" no slot recém-revelado, igual ao offline. */}
         <div className="w-full wide:w-[388px] wide:flex-none">
-          <LiveRostersColumn others={[oppCompetitor]} revealed={oppRevealed} showRatings={showRatings} title="Adversário" />
+          <LiveRostersColumn others={otherCompetitors} revealed={filledCount} showRatings={showRatings} title="Outros times" />
         </div>
       </div>
     </div>

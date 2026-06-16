@@ -17,6 +17,11 @@ export type TournamentPhase = "lobby" | "draft" | "drafted" | "bracket" | "resul
 /** Ritmo das séries: imersivo (timeline) ou rápido (placar direto). */
 export type Pace = "imersivo" | "rapido";
 
+/** Como as séries COM humano da fase são assistidas (online):
+ *  - "coletivo": uma por vez, todos assistem a mesma (evento coletivo);
+ *  - "paralelo": todas rodam juntas, cada jogador vê só a SUA série. */
+export type SeriesMode = "coletivo" | "paralelo";
+
 /** Config da sala (no offline, ajustada antes de começar). */
 export interface RoomConfig {
   humanCount: number; // quantos humanos (1 no offline; 2..8 no online)
@@ -24,6 +29,7 @@ export interface RoomConfig {
   hideRatings: boolean; // modo especialista (esconde overalls no draft)
   cardsOn: boolean; // cartas de evento ligadas
   pace: Pace; // imersivo | rapido
+  seriesMode?: SeriesMode; // online: coletivo (default) | paralelo
 }
 
 /** Estado de uma série EM ANDAMENTO sendo assistida (timeline imersiva). */
