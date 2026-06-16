@@ -8,6 +8,7 @@ interface Props {
   onBegin: (mode: GameMode) => void;
   onCodex: () => void;
   onTournament: () => void;
+  onOnline: () => void;
 }
 
 const STEPS = [
@@ -18,7 +19,7 @@ const STEPS = [
 
 const LEAGUES = ["LCK", "LPL", "LEC", "LMS"];
 
-export function StartScreen({ poolCount, onBegin, onCodex, onTournament }: Props) {
+export function StartScreen({ poolCount, onBegin, onCodex, onTournament, onOnline }: Props) {
   const [mode, setMode] = useState<GameMode>("goldenroad");
 
   // delay escalonado de entrada por bloco
@@ -140,6 +141,31 @@ export function StartScreen({ poolCount, onBegin, onCodex, onTournament }: Props
             </span>
             <span className="mt-0.5 block text-[12.5px] leading-snug text-[#D0D4CC]">
               Bracket de 8 — você + 7 bots num chaveamento real, com timeline de partida ao vivo.
+            </span>
+          </span>
+          <span className="font-display text-[20px] text-gold-bright transition-transform group-hover:translate-x-1">→</span>
+        </button>
+
+        {/* ── NOVO: Duelo 1v1 ONLINE (jogar com um amigo) ── */}
+        <button
+          type="button"
+          onClick={onOnline}
+          className="group mt-3 flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border px-4 py-3.5 text-left transition-all hover:-translate-y-0.5"
+          style={{
+            borderColor: "rgba(232,206,134,0.32)",
+            background: "linear-gradient(100deg,rgba(30,37,49,0.7),rgba(58,48,22,0.4))",
+            boxShadow: "0 0 22px -12px rgba(201,162,75,0.5)",
+          }}
+        >
+          <span className="text-[26px]" aria-hidden>🤝</span>
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-2">
+              <span className="font-display text-[17px] font-bold uppercase tracking-[1px] text-gold-bright">Duelo 1v1 online</span>
+              <span className="rounded-full px-2 py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-[1px]"
+                style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)" }}>Beta</span>
+            </span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#D0D4CC]">
+              Crie uma sala, mande o código pra um amigo e disputem uma série ao vivo, cada um com sua line.
             </span>
           </span>
           <span className="font-display text-[20px] text-gold-bright transition-transform group-hover:translate-x-1">→</span>

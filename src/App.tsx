@@ -10,19 +10,28 @@ import { SeriesScreen } from "./screens/SeriesScreen";
 import { ResultScreen } from "./screens/ResultScreen";
 import { CodexScreen } from "./screens/CodexScreen";
 import { TournamentScreen } from "./screens/tournament/TournamentScreen";
+import { NetTestScreen } from "./screens/net/NetTestScreen";
+import { OnlineScreen } from "./screens/online/OnlineScreen";
 import type { TournamentPhase } from "./game/tournamentReducer";
 
 export function App() {
   const game = useGame();
   const { phase } = game.state;
+  // diagnóstico da camada de rede (Degrau 1) — abre com ?nettest, fora do fluxo normal.
+  const [netTest, setNetTest] = useState(() => new URLSearchParams(location.search).has("nettest"));
+  // duelo 1v1 ONLINE — link direto ?sala=GOLD-XXXX entra como convidado.
+  const initialRoom = (() => { try { return new URLSearchParams(location.search).get("sala") || undefined; } catch { return undefined; } })();
+  const [online, setOnline] = useState(() => !!initialRoom);
+  // fase interna do duelo 1v1 online (reportada pelo OnlineScreen).
+  const [onlinePhase, setOnlinePhase] = useState<string>("lobby");
   // modo "Worlds ao Vivo" — estado isolado do jogo solo, sobreposto à tela inicial.
   const [tournament, setTournament] = useState(false);
   // fase interna do torneio (reportada pelo TournamentScreen).
   const [tournamentPhase, setTournamentPhase] = useState<TournamentPhase>("lobby");
 
-  // fundo "game" (escuro/dourado): jogo solo em série E só a TELA DE JOGANDO do
-  // torneio (bracket) — lobby/draft/resultado ficam no fundo padrão.
-  const isGame = phase === "series" || (tournament && tournamentPhase === "bracket");
+  // fundo "game" (escuro/dourado): jogo solo em série, a TELA DE JOGANDO do
+  // torneio (bracket) E a série do 1v1 online — demais telas no fundo padrão.
+  const isGame = phase === "series" || (tournament && tournamentPhase === "bracket") || (online && onlinePhase === "series");
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado.
   const isVictory = phase === "result" && game.state.finished === "champion";
 
@@ -44,7 +53,11 @@ export function App() {
       )}
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 
-      {tournament ? (
+      {netTest ? (
+        <NetTestScreen onExit={() => setNetTest(false)} />
+      ) : online ? (
+        <OnlineScreen initialCode={initialRoom} onExit={() => setOnline(false)} sounds={game.sounds} onPhaseChange={setOnlinePhase} />
+      ) : tournament ? (
         <TournamentScreen active={tournament} onExit={() => setTournament(false)} sounds={game.sounds} onPhaseChange={setTournamentPhase} />
       ) : (
         <>
@@ -54,6 +67,7 @@ export function App() {
           onBegin={(mode) => game.begin(mode)}
           onCodex={game.openCodex}
           onTournament={() => setTournament(true)}
+          onOnline={() => setOnline(true)}
         />
       )}
       {phase === "play" && <DraftScreen game={game} />}
