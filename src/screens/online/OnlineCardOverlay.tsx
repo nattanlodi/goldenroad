@@ -1,7 +1,7 @@
 // ============================================================
 // OnlineCardOverlay — escolha de carta na série ONLINE (PvP simétrico)
 // ============================================================
-// Mostra MEU trio (3 cartas do nível sorteado) + timer de 10s. Escolho 1; se a
+// Mostra MEU trio (3 cartas do nível sorteado) + timer de 15s. Escolho 1; se a
 // carta precisa de alvo (nerf no rival, troca, curinga…), abre a etapa de alvo.
 // Ao zerar o timer, o host faz auto-pick aleatório (não chamamos nada aqui).
 // Reusa a skin `.event-card` do solo (mesma língua visual, §1.5 do design).
@@ -41,7 +41,7 @@ export function OnlineCardOverlay({
   const [swapRole, setSwapRole] = useState<Role | null>(null);
   const [query, setQuery] = useState("");
   const [done, setDone] = useState(false); // já enviei minha escolha
-  const [secs, setSecs] = useState(10);
+  const [secs, setSecs] = useState(15);
 
   // countdown visual até o deadline (o host faz o auto-pick ao zerar).
   useEffect(() => {

@@ -204,6 +204,11 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
   // bracket EXIBIDO: sempre o do host (o espectador segue o ritmo dele).
   const bracket = st.bracket;
   const liveId = s?.aId && s?.bId ? matchIdOf(bracket, s.aId, s.bId) : null;
+  // a fase a iniciar tem algum confronto com humano? (senão é uma rodada só de
+  // bots — o texto do botão "Iniciar" muda pra deixar claro.)
+  const pendingWithHuman = [...bracket.qf, ...bracket.sf, bracket.gf].some(
+    (m) => !m.done && m.a && m.b && (!byId.get(m.a)?.isBot || !byId.get(m.b)?.isBot)
+  );
 
   // placares "ao vivo" no bracket = bot×bot (schedule) + outras séries humanas (paralelo).
   const liveScores = new Map(sideScores);
@@ -234,20 +239,32 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
 
       {/* painel da série */}
       <div className="mt-10 border-t border-gold/10 pt-7">
-        {s ? (
+        {st.tournamentOver ? (
+          // grande final acabou: o resultado fica AQUI (no bracket) até o host clicar
+          // "Ver classificação final" — não pula direto pro pódio.
+          <TournamentOverPanel champion={st.winnerId ? byId.get(st.winnerId) ?? null : null} showButton={r.isHost} onShow={r.showFinalResult} />
+        ) : s ? (
           <SeriesPanel s={s} secs={secs} byId={byId} myId={myId} showRatings={showRatings} />
         ) : cardsPending && mySeries ? (
           // subfase de cartas: o overlay (se for minha vez) fica por cima; aqui
           // mostro o confronto + "evento em andamento".
           <CardsPhasePanel s={mySeries} byId={byId} myId={myId} showRatings={showRatings} iSent={pickedSeriesRef.current.has(mySeries.seedSalt)} />
         ) : st.parallelPending ? (
-          // host ATIVO clica "Iniciar rodada"; se eliminado/espectador, auto-inicia
-          // ("preparando…"). showButton = sou host E ainda estou no torneio.
-          <ParallelStartPanel showButton={r.isHost && !eliminated} onStart={r.startBracketSeries} />
+          // o HOST sempre comanda o início da rodada — mesmo eliminado e mesmo numa
+          // fase só de bots (organizador do evento). Os demais aguardam o clique.
+          <ParallelStartPanel showButton={r.isHost} hasHuman={pendingWithHuman} onStart={r.startBracketSeries} />
         ) : st.parallelSeries.length ? (
           // séries rolando mas a MINHA já acabou (ou não estou em nenhuma) → aguarda a fase.
           <div className="rounded-2xl border border-gold/20 px-4 py-10 text-center font-mono text-[13px] text-muted" style={{ background: "rgba(22,23,28,0.6)" }}>
             ⏳ Sua série terminou — aguardando as outras da fase…
+          </div>
+        ) : st.sideMatches.length ? (
+          // fase SÓ de bots (todos os humanos eliminados): as partidas rolam no
+          // bracket acima (placar ao vivo). O campeonato continua até a final.
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-gold/20 px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.6)" }}>
+            <div className="text-[26px]">🤖</div>
+            <div className="mt-2 font-display text-[15px] font-bold uppercase tracking-[1px] text-cream">Partidas dos bots em andamento</div>
+            <div className="mt-2 font-mono text-[11px] uppercase tracking-[2px] text-muted">acompanhe os placares no bracket acima ↑</div>
           </div>
         ) : (
           <div className="rounded-2xl border border-gold/20 px-4 py-8 text-center font-mono text-[12px] text-muted" style={{ background: "rgba(22,23,28,0.6)" }}>
@@ -295,12 +312,37 @@ function matchIdOf(bracket: { qf: BracketMatch[]; sf: BracketMatch[]; gf: Bracke
   return m?.id ?? null;
 }
 
-// ── painel "iniciar rodada" do modo paralelo (host ativo clica; senão auto) ──
-function ParallelStartPanel({ showButton, onStart }: { showButton: boolean; onStart: () => void }) {
+// ── painel "fim do torneio" — a final acabou; o host decide quando ir ao pódio ──
+function TournamentOverPanel({ champion, showButton, onShow }: { champion: Competitor | null; showButton: boolean; onShow: () => void }) {
+  return (
+    <div className="anim-pop flex min-h-[220px] flex-col items-center justify-center rounded-2xl border border-gold/45 px-4 py-10 text-center"
+      style={{ background: "linear-gradient(160deg,rgba(58,48,22,0.5),rgba(22,23,28,0.85))" }}>
+      <div className="text-[40px]">🏆</div>
+      <div className="mt-2 font-mono text-[10px] uppercase tracking-[3px] text-muted">Grande final encerrada</div>
+      <div className="mt-2 font-display text-[24px] font-black uppercase tracking-[1px] text-gold-fill">
+        {champion ? `${competitorLabel(champion)} é campeão!` : "Torneio encerrado"}
+      </div>
+      {showButton ? (
+        <button onClick={onShow} className="btn-gold mt-6 cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
+          🏅 Ver classificação final
+        </button>
+      ) : (
+        <span className="mt-5 font-mono text-[12px] text-muted">aguardando o host abrir a classificação final…</span>
+      )}
+    </div>
+  );
+}
+
+// ── painel "iniciar rodada" do modo paralelo (o host comanda, sempre) ──
+function ParallelStartPanel({ showButton, hasHuman, onStart }: { showButton: boolean; hasHuman: boolean; onStart: () => void }) {
   return (
     <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border border-gold/25 px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.7)" }}>
       <div className="font-mono text-[10px] uppercase tracking-[2px] text-muted">Fase pronta</div>
-      <div className="mt-2 mb-5 font-display text-[18px] font-bold uppercase tracking-[1px] text-cream">Todas as séries com humano rodam juntas — cada um vê a sua</div>
+      <div className="mt-2 mb-5 font-display text-[18px] font-bold uppercase tracking-[1px] text-cream">
+        {hasHuman
+          ? "Todas as séries com humano rodam juntas — cada um vê a sua"
+          : "Rodada só de bots — acompanhe os placares no bracket acima"}
+      </div>
       {showButton ? (
         <button onClick={onStart} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
           ▶ Iniciar rodada

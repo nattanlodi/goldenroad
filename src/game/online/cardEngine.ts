@@ -82,11 +82,15 @@ export function rollSymmetricEvent(
   code: string,
   matchId: string,
   vsBot: boolean,
-  decisive: boolean
+  decisive: boolean,
+  always = false
 ): SymmetricEvent | null {
   const rng = makeRng(seedFromCode(`${code}:cards:${matchId}`));
   const chance = decisive ? BASE_CHANCE + 0.12 : BASE_CHANCE;
-  if (rng.next() >= chance) return null;
+  // `always`: no torneio com cartas ligadas, TODA série vem com carta. Ainda
+  // consome o rng (mantém o resto da sequência determinística inalterado).
+  const roll = rng.next();
+  if (!always && roll >= chance) return null;
 
   const hostileChance = decisive ? HOSTILE_CHANCE + 0.08 : HOSTILE_CHANCE;
   const hostile = rng.next() < hostileChance;

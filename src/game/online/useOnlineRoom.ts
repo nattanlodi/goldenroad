@@ -74,6 +74,8 @@ export interface UseOnlineRoom {
   draftPick: (role: Role, pick: TournamentPick) => void;
   /** host: inicia a série pendente do bracket (botão "Iniciar"). */
   startBracketSeries: () => void;
+  /** host: final acabou e o host clicou "Ver classificação final" → pódio. */
+  showFinalResult: () => void;
   /** subfase de cartas: registra MINHA escolha (carta + alvo) na minha série. */
   pickCard: (choice: CardChoice) => void;
   leave: () => void;
@@ -240,24 +242,27 @@ export function useOnlineRoom(opts: {
   };
   useEffect(() => {
     if (!isHostNow || !st || st.phase !== "bracket" || !st.bracket) return;
+    // torneio já resolvido, aguardando o host clicar "Ver classificação final" —
+    // não orquestra mais nada (senão re-armaria fases ou re-disparararia o fim).
+    if (st.tournamentOver) return;
     const imersivo = st.config.pace === "imersivo";
     const competitors = st.players.map((p) => competitorFrom(p, []));
     const byId = new Map(competitors.map((c) => [c.id, c]));
     const code = st.code;
-    // o HOST foi eliminado? (já jogou e não está em nenhum confronto pendente). Se
-    // sim, a fase auto-inicia (ele virou espectador e não vê o botão "Iniciar").
-    const hostId = view?.me.playerId ?? null;
-    const b = st.bracket;
-    const hostEliminated = !!hostId && !isTournamentOver(b) &&
-      [...b.qf, ...b.sf, b.gf].some((m) => m.done && (m.a === hostId || m.b === hostId)) &&
-      ![...b.qf, ...b.sf, b.gf].some((m) => !m.done && (m.a === hostId || m.b === hostId));
+    // (o host comanda o início de TODA fase com o botão "Iniciar rodada", mesmo
+    // eliminado e mesmo numa fase só de bots — vira o "organizador" do evento.)
 
     // ── MODO PARALELO (único): todas as séries com humano da fase rodam juntas,
     // cada jogador vê a SUA. (O modo coletivo "uma por vez" foi removido.)
     {
-      // (P.0) subfase de CARTAS: se alguma série da fase ainda tem cartas pendentes,
-      // espera os jogadores escolherem (cada um a sua, 10s) e SÓ ENTÃO simula todas.
-      if (st.parallelSeries.length && st.parallelSeries.some((s) => s.cards && (!s.cards.pickA || !s.cards.pickB))) {
+      // (P.0) subfase de CARTAS: enquanto houver série com cartas AINDA NÃO simulada
+      // (games vazios), ficamos aqui — espera os dois escolherem (cada um a sua, 15s)
+      // e SÓ ENTÃO simula todas. NOTA: a condição é "não simulada" (games.length===0),
+      // NÃO "pick faltando" — senão, quando os DOIS já pickaram mas a simulação ainda
+      // não rodou, o efeito saía deste branch (pick completo) e também não entrava no
+      // de resolução (games vazios) → ninguém chamava resolveCardsParallel e travava
+      // em "aguardando o rival escolher" pra sempre. (era o bug da final c/ azar.)
+      if (st.parallelSeries.some((s) => s.cards && s.games.length === 0)) {
         // dirigido por interval fixo (mesma robustez do resolveParallel) — o disparo
         // não se perde se o efeito re-rodar/cair noutro branch. Resolve quando todos
         // os HUMANOS já escolheram (bots não bloqueiam) OU o deadline (10s) passou.
@@ -290,7 +295,12 @@ export function useOnlineRoom(opts: {
       // setTimeout que o cleanup do efeito poderia cancelar e nunca re-armar — esse
       // era o bug que deixava o HOST preso na série que perdeu, sem avançar o
       // bracket). Idempotente por chave de fase (resolvedPhaseRef).
-      if (st.parallelSeries.length && st.parallelSeries.every((s) => s.games.length > 0)) {
+      // a fase está "rodando" se há séries com humano simuladas OU (fase só-bot) há
+      // bot×bot agendadas — nos dois casos esperamos o fim e resolvemos. (Antes,
+      // fase só-bot resolvia na hora; agora ela também roda visível até a final.)
+      const seriesRunning = st.parallelSeries.length > 0 && st.parallelSeries.every((s) => s.games.length > 0);
+      const sideRunning = st.parallelSeries.length === 0 && st.sideMatches.length > 0;
+      if (seriesRunning || sideRunning) {
         const sideEnd = st.sideMatches.reduce((mx, sm) => Math.max(mx, sm.schedule[sm.schedule.length - 1] ?? 0), 0);
         const seriesEnd = st.parallelSeries.reduce((mx, s) => {
           const start = s.startDeadline ?? Date.now();
@@ -299,33 +309,31 @@ export function useOnlineRoom(opts: {
           return Math.max(mx, endAt);
         }, 0);
         const endAt = Math.max(seriesEnd, sideEnd);
-        const phaseKey = st.parallelSeries.map((s) => s.seedSalt).sort().join(",");
+        // chave de fase: salts das séries (se houver) ou ids das bot×bot (fase só-bot).
+        const phaseKey = st.parallelSeries.length
+          ? st.parallelSeries.map((s) => s.seedSalt).sort().join(",")
+          : "bots:" + st.sideMatches.map((sm) => sm.matchId).sort().join(",");
         const tryResolve = () => {
           if (resolvedPhaseRef.current === phaseKey) return; // já resolvi esta fase
           if (Date.now() < endAt) return; // ainda narrando
           resolvedPhaseRef.current = phaseKey;
           const next = resolveParallel(st, byId, code);
-          if (next.done) dispatch({ kind: "finishTournament", winnerId: next.winnerId!, bracket: next.bracket });
+          // final terminou: NÃO vai direto pro pódio — fica no bracket aguardando o
+          // host clicar "Ver classificação final" (bracketFinished). Senão, avança.
+          if (next.done) dispatch({ kind: "bracketFinished", winnerId: next.winnerId!, bracket: next.bracket });
           else dispatch({ kind: "resolveBracketSeries", bracket: next.bracket, queue: next.queue, queueIndex: 0 });
         };
         tryResolve(); // checa já (caso o prazo já tenha passado)
         const id = setInterval(tryResolve, 300);
         return () => clearInterval(id);
       }
-      // fase ARMADA (parallelPending): o host ATIVO clica "Iniciar rodada" (controle
-      // manual). Mas se o host está ELIMINADO (espectador, não vê o botão), a fase
-      // AUTO-INICIA — senão os jogadores ainda ativos ficariam presos pra sempre.
-      if (st.parallelPending) {
-        if (hostEliminated) {
-          const { series, sideMatches } = buildParallelPhase(st, byId, code, imersivo);
-          const t = setTimeout(() => dispatch({ kind: "startParallel", series, sideMatches }), 1500);
-          return () => clearTimeout(t);
-        }
-        return; // host ativo: espera o clique no botão
-      }
-      // calcula a fase: se há séries com humano, arma; senão resolve bot×bot/avança.
-      const plan = planParallelPhase(st, byId, code);
-      if (plan.kind === "tournamentOver") dispatch({ kind: "finishTournament", winnerId: plan.winnerId, bracket: plan.bracket });
+      // fase ARMADA (parallelPending): o host SEMPRE comanda o início — mesmo
+      // eliminado (vira o "organizador" do evento) e mesmo numa fase só de bots.
+      // Espera o clique no botão "Iniciar rodada".
+      if (st.parallelPending) return;
+      // calcula a fase: se há confronto jogável (humano OU bot×bot), arma.
+      const plan = planParallelPhase(st);
+      if (plan.kind === "tournamentOver") dispatch({ kind: "bracketFinished", winnerId: plan.winnerId, bracket: plan.bracket });
       else if (plan.kind === "resolvedBots") dispatch({ kind: "resolveBracketSeries", bracket: plan.bracket, queue: plan.queue, queueIndex: 0 });
       else if (plan.kind === "arm") {
         const t = setTimeout(() => dispatch({ kind: "armParallel" }), 300);
@@ -375,6 +383,12 @@ export function useOnlineRoom(opts: {
       const byId = new Map(cur.players.map((p) => [p.playerId, competitorFrom(p, [])]));
       const { series, sideMatches } = buildParallelPhase(cur, byId, code, imersivo);
       dispatch({ kind: "startParallel", series, sideMatches });
+    }, [dispatch, view?.state]),
+    /** host: a final acabou — clicou "Ver classificação final" → todos vão pro pódio. */
+    showFinalResult: useCallback(() => {
+      const cur = view?.state;
+      if (!cur?.bracket || !cur.winnerId) return;
+      dispatch({ kind: "finishTournament", winnerId: cur.winnerId, bracket: cur.bracket });
     }, [dispatch, view?.state]),
     leave,
   };
@@ -556,7 +570,7 @@ function maybeCards(st: RoomState, a: Competitor, b: Competitor, code: string, d
   if (!st.config.cardsOn) return null;
   if (a.isBot && b.isBot) return null; // bot×bot resolve rápido (com cartas internas, não interativas)
   const vsBot = a.isBot || b.isBot;
-  const ev = rollSymmetricEvent(code, `${a.id}|${b.id}`, vsBot, decisive);
+  const ev = rollSymmetricEvent(code, `${a.id}|${b.id}`, vsBot, decisive, true);
   if (!ev) return null;
   return { rarity: ev.rarity, hostile: ev.hostile, trioA: ev.trioA, trioB: ev.trioB, pickA: null, pickB: null, deadline: null };
 }
@@ -584,17 +598,18 @@ type ParallelPlan =
   | { kind: "resolvedBots"; bracket: Bracket; queue: string[] }
   | { kind: "tournamentOver"; winnerId: string; bracket: Bracket };
 
-/** Decide o que o host faz na fase, no modo paralelo: armar (há séries com humano),
- * resolver bot×bot/avançar fase, ou encerrar. */
-function planParallelPhase(st: RoomState, byId: Map<string, Competitor>, code: string): ParallelPlan {
+/** Decide o que o host faz na fase, no modo paralelo: armar (há séries pra mostrar),
+ * ou encerrar. Mesmo fases SÓ de bots são ARMADAS — o campeonato continua visível
+ * até a final (o host comanda cada rodada com o botão "Iniciar"). */
+function planParallelPhase(st: RoomState): ParallelPlan {
   const bracket = st.bracket!;
   if (isTournamentOver(bracket)) return { kind: "tournamentOver", winnerId: bracket.gf.winner!, bracket };
-  if (humanMatchesOfPhase(bracket, byId).length > 0) return { kind: "arm" };
-  // fase sem humano (só bots ou já resolvida) → resolve e avança.
-  const botRes = resolveBotMatches(bracket, byId, code);
-  if (botRes.changed) return { kind: "resolvedBots", bracket: botRes.bracket, queue: [] };
-  if (isTournamentOver(botRes.bracket)) return { kind: "tournamentOver", winnerId: botRes.bracket.gf.winner!, bracket: botRes.bracket };
-  return { kind: "resolvedBots", bracket: botRes.bracket, queue: [] };
+  // há confronto jogável nesta fase (humano OU bot×bot)? arma pra mostrar/comandar.
+  const stage = currentStageMatches(bracket);
+  const playable = stage.some((m) => !m.done && m.a && m.b);
+  if (playable) return { kind: "arm" };
+  // nada jogável (fase vazia/incompleta) → mantém estado (não deve ocorrer no fluxo).
+  return { kind: "resolvedBots", bracket, queue: [] };
 }
 
 /** Resolve TODO o resto do bracket DETERMINISTICAMENTE (por seed), a partir do
@@ -636,8 +651,8 @@ function buildParallelPhase(st: RoomState, byId: Map<string, Competitor>, code: 
     const b = byId.get(m.b!)!;
     const cards = maybeCards(st, a, b, code, isDecisiveStage(bracket, m.id));
     // no paralelo não há `seriesTick` do host pra abrir a janela de cartas; já
-    // deixamos o deadline armado pro fim do countdown (start) + 10s de escolha.
-    const cardsWithDeadline = cards ? { ...cards, deadline: start + 10_000 } : null;
+    // deixamos o deadline armado pro fim do countdown (start) + 15s de escolha.
+    const cardsWithDeadline = cards ? { ...cards, deadline: start + 15_000 } : null;
     return buildConfrontSeries(a, b, code, m.id, cardsWithDeadline, start);
   });
   // bot×bot da fase (matches sem humano) — todas em paralelo, casadas com o início.

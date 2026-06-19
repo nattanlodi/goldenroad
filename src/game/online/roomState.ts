@@ -86,6 +86,10 @@ export interface RoomState {
   // ── resultado (fase "result") ──
   /** playerId do vencedor (duelo 1v1 OU campeão do torneio). */
   winnerId: string | null;
+  /** grande final JÁ resolvida (bracket completo) mas AINDA na tela de bracket,
+   * aguardando o HOST clicar "Ver classificação final" pra ir ao pódio. Evita
+   * pular direto pro resultado assim que a final acaba. */
+  tournamentOver: boolean;
 }
 
 /** Uma série bot×bot revelando em paralelo (jogo a jogo) no bracket. */
@@ -191,6 +195,7 @@ export function initialRoomState(code: string): RoomState {
     parallelPending: false,
     sideMatches: [],
     winnerId: null,
+    tournamentOver: false,
   };
 }
 
@@ -214,7 +219,8 @@ export type RoomIntent =
   | { kind: "resolveCardsParallel"; series: SeriesState[]; sideMatches: SideMatch[] } // host: resolve as cartas de TODAS as séries paralelas de uma vez
   | { kind: "seriesTick"; series: SeriesState } // host avança a narração da série (placar/timeline)
   | { kind: "resolveBracketSeries"; bracket: Bracket; queue: string[]; queueIndex: number } // host aplica resultado(s) + propaga + avança a fila
-  | { kind: "finishTournament"; winnerId: string; bracket: Bracket } // final terminou → pódio (com o bracket FINAL resolvido)
+  | { kind: "bracketFinished"; winnerId: string; bracket: Bracket } // final terminou → fica no bracket (tournamentOver) aguardando o host clicar
+  | { kind: "finishTournament"; winnerId: string; bracket: Bracket } // host clicou "Ver classificação final" → pódio (com o bracket FINAL resolvido)
   | { kind: "leave" }; // sair da sala
 
 /** Auto-pick que o host aplica a quem não escolheu ao zerar o timer. */
@@ -447,10 +453,27 @@ export function reduceRoom(state: RoomState, intent: RoomIntent, ctx: ReduceCtx)
       };
     }
 
-    case "finishTournament": {
+    case "bracketFinished": {
+      // grande final resolvida: aplica o BRACKET FINAL mas FICA na tela de bracket
+      // (tournamentOver) — o host vê o resultado da final + botão "Ver classificação
+      // final". Só ao clicar (finishTournament) é que todos vão pro pódio.
       if (ctx.from !== ctx.hostId || state.phase !== "bracket") return state;
-      // aplica o BRACKET FINAL (com a grande final resolvida) — senão o pódio
-      // mostraria os finalistas como "quartas" (bracket sem os últimos resultados).
+      return {
+        ...state,
+        bracket: intent.bracket,
+        winnerId: intent.winnerId,
+        tournamentOver: true,
+        series: null,
+        parallelSeries: [],
+        sideMatches: [],
+        bracketStartDeadline: null,
+      };
+    }
+
+    case "finishTournament": {
+      // host clicou "Ver classificação final" → pódio. O bracket já está completo
+      // (aplicado em bracketFinished); reusa o do estado se o intent não trouxer.
+      if (ctx.from !== ctx.hostId || (state.phase !== "bracket")) return state;
       return { ...state, phase: "result", winnerId: intent.winnerId, bracket: intent.bracket, series: null, parallelSeries: [], bracketStartDeadline: null };
     }
 
