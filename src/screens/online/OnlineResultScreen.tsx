@@ -1,7 +1,8 @@
 // ============================================================
-// OnlineResultScreen — resultado do duelo 1v1 (Degrau 1)
+// OnlineResultScreen — resultado do Duelo online
 // ============================================================
-// Tela final: quem venceu o duelo + placar + as duas lines. Reusa o LineColumn.
+// Torneio de 8: mostra o pódio (TournamentPodium, igual ao offline). No caminho
+// de série única (confronto direto, legado) mostra o placar + as duas lines.
 // "Jogar de novo" volta pro início do online (nova sala).
 
 import type { UseOnlineRoom } from "../../game/online/useOnlineRoom";

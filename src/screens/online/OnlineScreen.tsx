@@ -1,5 +1,5 @@
 // ============================================================
-// OnlineScreen — container do modo 1v1 ONLINE (Degrau 1)
+// OnlineScreen — container do Duelo online (torneio de 8 / confronto direto)
 // ============================================================
 // Segura UMA conexão (useOnlineRoom) durante toda a sessão e renderiza a tela
 // conforme a FASE oficial da sala (lobby → draft → série → resultado). Manter a
@@ -56,7 +56,7 @@ function OnlineRoom({ session, sounds, onExit, onExitAll, onPhaseChange }: { ses
   const st = r.state;
   const phase = st?.phase ?? "lobby";
   // o convidado avança pro resultado quando SUA narração termina (não espera o
-  // snapshot final do host, que pode se perder no Realtime). Só vale pro 1v1 legado.
+  // snapshot final do host, que pode se perder no Realtime). Só vale pro confronto direto legado.
   const [localFinished, setLocalFinished] = useState(false);
 
   // fase efetiva (pro fundo "game" do App): série/bracket usam fundo escuro/dourado.
@@ -71,7 +71,7 @@ function OnlineRoom({ session, sounds, onExit, onExitAll, onPhaseChange }: { ses
   if (phase === "result") return <OnlineResult r={r} myId={r.myId} onExit={finishAll} />;
   if (phase === "bracket") return <OnlineBracket r={r} myId={r.myId} sounds={sounds} onExit={back} />;
   if (phase === "series") {
-    // duelo 1v1 puro (Degrau 1) — não ocorre no fluxo de 8, mantido por compat.
+    // confronto direto (série única, legado) — não ocorre no fluxo de 8, mantido por compat.
     if (localFinished) return <OnlineResult r={r} myId={r.myId} onExit={finishAll} />;
     return <OnlineSeries r={r} myId={r.myId} sounds={sounds} onExit={back} onLocalFinish={() => setLocalFinished(true)} />;
   }

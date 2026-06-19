@@ -1,5 +1,5 @@
 // ============================================================
-// OnlineSeriesScreen — a Bo5 1v1 assistida pelos DOIS (Degrau 1)
+// OnlineSeriesScreen — a Bo5 do confronto direto, assistida pelos DOIS (legado)
 // ============================================================
 // Reusa o painel de série do bracket (LineColumn dos dois lados + centro com
 // placar/feed). O host narra (avança o estado via seriesTick); os dois clientes

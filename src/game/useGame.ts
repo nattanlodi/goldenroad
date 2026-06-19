@@ -92,7 +92,7 @@ function tallyHighlights(campaignGames: GameState["campaignGames"], history: Gam
 export function useGame() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const audio = useAudio();
-  const { sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat, sndPenta, sndMvp } = audio;
+  const { sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat, sndPenta, sndMvp, sndChampion } = audio;
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -997,7 +997,7 @@ export function useGame() {
     toggleMute: audio.toggleMute,
     // sons compartilhados (reusados pelo modo torneio, que usa a MESMA instância
     // de áudio — mesmo mute, mesmo AudioContext). Mesmo perfil do solo.
-    sounds: { sndTick, sndPick, sndReveal, sndWin, sndLose, sndPenta, sndMvp },
+    sounds: { sndTick, sndPick, sndReveal, sndWin, sndLose, sndPenta, sndMvp, sndChampion },
     begin,
     pickClassico,
     pickEspecialista,

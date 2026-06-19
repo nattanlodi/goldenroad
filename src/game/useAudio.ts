@@ -77,6 +77,15 @@ export function useAudio() {
   const sndTrophy = useCallback(() => {
     [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.34, "triangle", 0.13, i * 0.11));
   }, [tone]);
+  // campeão do bracket: fanfarra NOBRE e GRAVE (sem agudos) — arpejo macio que
+  // sobe pouco e remata num acorde redondo. Registro médio-grave (≤ ~587Hz).
+  const sndChampion = useCallback(() => {
+    [262, 330, 392, 440].forEach((f, i) => tone(f, 0.4, "triangle", 0.12, i * 0.12));
+    // remate: acorde grave sustentado (terça + quinta), bem redondo.
+    tone(330, 0.6, "sine", 0.1, 0.48);
+    tone(392, 0.6, "sine", 0.085, 0.48);
+    tone(523, 0.6, "triangle", 0.07, 0.48);
+  }, [tone]);
   const sndDefeat = useCallback(() => {
     [440, 349, 262].forEach((f, i) => tone(f, 0.4, "sine", 0.12, i * 0.16));
   }, [tone]);
@@ -109,7 +118,7 @@ export function useAudio() {
     });
   }, [ensureAudio]);
 
-  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat, sndPenta, sndMvp };
+  return { muted, toggleMute, ensureAudio, sndTick, sndPick, sndReveal, sndWin, sndLose, sndTrophy, sndDefeat, sndPenta, sndMvp, sndChampion };
 }
 
 export type AudioApi = ReturnType<typeof useAudio>;

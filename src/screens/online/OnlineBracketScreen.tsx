@@ -141,6 +141,17 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
   // Cada jogador vê só a sua série (modo único = paralelo).
   const mySeries = (st?.parallelSeries ?? []).find((s) => s.aId === myId || s.bId === myId) ?? null;
 
+  // som do CAMPEÃO: dispara UMA vez quando o torneio é decidido (tournamentOver
+  // vira true) — vale pra todos (host e espectadores), no momento em que o painel
+  // de campeão aparece na tela de bracket.
+  const championSoundedRef = useRef(false);
+  useEffect(() => {
+    if (st?.tournamentOver && !championSoundedRef.current) {
+      championSoundedRef.current = true;
+      sounds.sndChampion();
+    }
+  }, [st?.tournamentOver, sounds]);
+
   // tick local pra abrir o overlay de cartas quando o countdown da minha série
   // acaba (a janela de escolha começa só depois do "começa em Xs").
   const [, forceTick] = useState(0);
@@ -219,26 +230,26 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
   }
 
   return (
-    <div className="anim-fade-fast mx-auto w-full max-w-[1240px]">
+    <div className="anim-fade-fast mx-auto w-full max-w-[1360px]">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-[13px]">
           <div onClick={onExit} title="Sair" className="-m-1 cursor-pointer rounded-lg p-1 transition-opacity hover:opacity-70">
             <Logo6x0 className="h-auto w-[170px]" />
           </div>
-          <span className="font-display text-[12px] font-bold uppercase tracking-[2px] text-gold-bright">🏆 Worlds ao Vivo · Bracket de 8</span>
+          <span className="font-display text-[14px] font-bold uppercase tracking-[2px] text-gold-bright">🏆 Duelo online · Bracket de 8</span>
           {eliminated && (
-            <span className="rounded-full border border-gold/30 px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[2px] text-muted">👁 modo espectador</span>
+            <span className="rounded-full border border-gold/30 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[2px] text-muted">👁 modo espectador</span>
           )}
         </div>
       </div>
 
-      <div className="mb-2 text-center font-mono text-[9px] uppercase tracking-[2px] text-dim">toque num confronto pra ver as lines</div>
+      <div className="mb-3 text-center font-mono text-[10px] uppercase tracking-[2px] text-dim">toque num confronto pra ver as lines</div>
 
       {/* bracket borboleta */}
       <Butterfly bracket={bracket} byId={byId} myId={myId} liveId={liveId} liveScore={s ? { a: s.scoreA, b: s.scoreB, aId: s.aId } : null} sideScores={liveScores} onInspect={setInspectId} />
 
       {/* painel da série */}
-      <div className="mt-10 border-t border-gold/10 pt-7">
+      <div className="mt-10 pt-7">
         {st.tournamentOver ? (
           // grande final acabou: o resultado fica AQUI (no bracket) até o host clicar
           // "Ver classificação final" — não pula direto pro pódio.
@@ -319,8 +330,15 @@ function TournamentOverPanel({ champion, showButton, onShow }: { champion: Compe
       style={{ background: "linear-gradient(160deg,rgba(58,48,22,0.5),rgba(22,23,28,0.85))" }}>
       <div className="text-[40px]">🏆</div>
       <div className="mt-2 font-mono text-[10px] uppercase tracking-[3px] text-muted">Grande final encerrada</div>
-      <div className="mt-2 font-display text-[24px] font-black uppercase tracking-[1px] text-gold-fill">
-        {champion ? `${competitorLabel(champion)} é campeão!` : "Torneio encerrado"}
+      <div className="mt-2 font-display text-[24px] font-black uppercase tracking-[1px]">
+        {champion ? (
+          <>
+            {champion.isBot && <span className="text-cream">🤖 </span>}
+            <span className="text-gold-fill">{champion.name} é campeão!</span>
+          </>
+        ) : (
+          <span className="text-gold-fill">Torneio encerrado</span>
+        )}
       </div>
       {showButton ? (
         <button onClick={onShow} className="btn-gold mt-6 cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
@@ -481,28 +499,29 @@ function Butterfly({ bracket, byId, myId, liveId, liveScore, sideScores, onInspe
   };
 
   return (
-    <div className="grid items-center gap-2 [grid-template-columns:1fr_1fr_minmax(150px,1.2fr)_1fr_1fr]">
+    <div className="grid items-center gap-3 [grid-template-columns:1fr_1fr_minmax(180px,1.25fr)_1fr_1fr]">
       {/* quartas esq */}
-      <Column>{left.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} />)}</Column>
+      <Column>{left.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Quartas" />)}</Column>
       {/* semis esq */}
-      <Column>{left.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} />)}</Column>
+      <Column>{left.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Semifinal" />)}</Column>
       {/* final */}
       <Column><MatchCard m={bracket.gf} byId={byId} myId={myId} live={liveId === bracket.gf.id} score={scoreOf(bracket.gf)} onInspect={onInspect} final /></Column>
       {/* semis dir */}
-      <Column>{right.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} />)}</Column>
+      <Column>{right.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Semifinal" />)}</Column>
       {/* quartas dir */}
-      <Column>{right.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} />)}</Column>
+      <Column>{right.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Quartas" />)}</Column>
     </div>
   );
 }
 
 function Column({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col justify-center gap-3">{children}</div>;
+  return <div className="flex flex-col justify-center gap-4">{children}</div>;
 }
 
-function MatchCard({ m, byId, myId, live, score, final, onInspect }: {
+function MatchCard({ m, byId, myId, live, score, final, stage, onInspect }: {
   m: BracketMatch; byId: Map<string, Competitor>; myId: string | null;
   live: boolean; score: { a: number; b: number; live: boolean; done: boolean }; final?: boolean;
+  stage?: string;
   onInspect: (id: string) => void;
 }) {
   const a = m.a ? byId.get(m.a) : null;
@@ -511,9 +530,13 @@ function MatchCard({ m, byId, myId, live, score, final, onInspect }: {
   const canInspect = !!a && !!b;
   return (
     <div onClick={canInspect ? () => onInspect(m.id) : undefined}
-      className={`overflow-hidden rounded-[12px] border transition-shadow ${live ? "border-gold/70" : final ? "border-gold/45" : "border-gold/20"} ${canInspect ? "cursor-pointer hover:border-gold/55" : ""}`}
-      style={{ background: final ? "linear-gradient(160deg,rgba(58,48,22,0.55),rgba(30,37,49,0.85))" : "rgba(26,27,31,0.7)", boxShadow: live ? "0 0 16px -4px rgba(201,162,75,0.6)" : undefined }}>
-      {final && <div className="border-b border-gold/25 py-1 text-center font-mono text-[8px] uppercase tracking-[2px] text-gold-bright">🏆 Grande Final</div>}
+      className={`overflow-hidden rounded-[14px] border transition-shadow ${live ? "border-gold/70" : final ? "border-gold/45" : "border-gold/20"} ${canInspect ? "cursor-pointer hover:border-gold/55" : ""}`}
+      style={{ background: final ? "linear-gradient(160deg,rgba(74,60,26,0.6),rgba(36,29,12,0.88))" : "rgba(26,27,31,0.7)", boxShadow: live ? "0 0 18px -4px rgba(201,162,75,0.6)" : undefined }}>
+      {final ? (
+        <div className="border-b border-gold/25 py-1.5 text-center font-mono text-[9.5px] uppercase tracking-[2px] text-gold-bright">🏆 Grande Final</div>
+      ) : stage ? (
+        <div className="border-b border-gold/10 py-1 text-center font-mono text-[8.5px] uppercase tracking-[2px] text-muted">{stage}</div>
+      ) : null}
       <Slot c={a} mine={m.a === myId} score={started ? score.a : null} win={score.done && score.a > score.b} eliminated={score.done && score.a < score.b} />
       <div className="h-px bg-gold/15" />
       <Slot c={b} mine={m.b === myId} score={started ? score.b : null} win={score.done && score.b > score.a} eliminated={score.done && score.b < score.a} />
@@ -523,11 +546,11 @@ function MatchCard({ m, byId, myId, live, score, final, onInspect }: {
 
 function Slot({ c, mine, score, win, eliminated }: { c: Competitor | null | undefined; mine: boolean; score: number | null; win: boolean; eliminated: boolean }) {
   return (
-    <div className={`flex items-center gap-1.5 px-2 py-1.5 ${eliminated ? "opacity-45" : ""}`} style={{ background: eliminated ? "rgba(0,0,0,0.25)" : undefined }}>
-      <span className={`min-w-0 flex-1 truncate font-display text-[12px] font-semibold ${mine ? "text-gold-bright" : win ? "text-cream" : "text-muted"}`}>
+    <div className={`flex items-center gap-2 px-2.5 py-2.5 ${eliminated ? "opacity-45" : ""}`} style={{ background: eliminated ? "rgba(0,0,0,0.55)" : undefined }}>
+      <span className={`min-w-0 flex-1 truncate font-display text-[14px] font-semibold ${mine ? "text-gold-bright" : win ? "text-cream" : "text-muted"}`}>
         {c ? competitorLabel(c) : <span className="text-dim">a definir</span>}
       </span>
-      <span className={`shrink-0 font-mono text-[14px] font-bold tabular-nums ${score === null || score === 0 ? "text-dim" : win ? "text-win" : "text-muted"}`}>
+      <span className={`shrink-0 font-mono text-[16px] font-bold tabular-nums ${score === null || score === 0 ? "text-dim" : win ? "text-win" : "text-muted"}`}>
         {score ?? "–"}
       </span>
     </div>

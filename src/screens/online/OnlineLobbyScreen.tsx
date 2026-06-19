@@ -1,14 +1,15 @@
 // ============================================================
-// OnlineLobbyScreen — LOBBY do duelo 1v1 ONLINE (Degrau 1)
+// OnlineLobbyScreen — LOBBY do Duelo online
 // ============================================================
 // Reusa a língua visual do LobbyScreen offline (§1.5): mesmo card de código,
-// botões de copiar, configs em pills. A diferença é a REDE: o código é real, o
-// 2º jogador entra por ele, e os dois se veem conectados (presence) antes do
-// host iniciar.
+// botões de copiar, configs em pills. A diferença é a REDE: o código é real, os
+// demais jogadores (2-8) entram por ele, e todos se veem conectados (presence)
+// antes do host iniciar. Com 2 humanos é um confronto direto; com 3+ vira um
+// torneio de 8 (o host completa com bots).
 //
 // Dois papéis na mesma tela:
-//   • HOST  — vê código + copiar + edita configs + botão "Iniciar duelo".
-//   • CONVIDADO — vê os dois conectados, só marca "pronto" (não edita config).
+//   • HOST  — vê código + copiar + edita configs + botão "Iniciar torneio".
+//   • CONVIDADO — vê todos conectados, só marca "pronto" (não edita config).
 
 import { useState, type CSSProperties } from "react";
 import type { UseOnlineRoom } from "../../game/online/useOnlineRoom";
@@ -22,7 +23,7 @@ const segOff: CSSProperties = { border: "1px solid rgba(201,162,75,0.22)", backg
 function Seg({ on, onClick, disabled, children }: { on: boolean; onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
   return (
     <button type="button" onClick={onClick} disabled={disabled}
-      className="flex-1 cursor-pointer rounded-[10px] px-3 py-2.5 font-display text-[13px] font-semibold uppercase tracking-[1px] transition-all disabled:cursor-default disabled:opacity-60"
+      className="flex-1 cursor-pointer rounded-[9px] px-2.5 py-2 font-display text-[12.5px] font-semibold uppercase tracking-[1px] transition-all disabled:cursor-default disabled:opacity-60"
       style={on ? segOn : segOff}>
       {children}
     </button>
@@ -64,13 +65,13 @@ export function OnlineLobby({
   return (
     <div className="anim-fade mx-auto flex w-full max-w-[680px] flex-col items-center">
       {/* topo */}
-      <div className="mb-6 flex w-full flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-3">
         <div onClick={onExit} title="Voltar ao início" className="-m-1 flex cursor-pointer items-center rounded-lg p-1 transition-opacity hover:opacity-70">
           <Logo6x0 className="h-auto w-[200px]" />
         </div>
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[2px]"
           style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)", boxShadow: "0 0 18px rgba(201,162,75,0.45)" }}>
-          🔴 Worlds ao Vivo <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">TORNEIO DE 8</span>
+          🔴 Duelo online <span className="font-mono text-[10px] font-bold tracking-[1px] opacity-80">TORNEIO DE 8</span>
         </span>
       </div>
 
@@ -81,32 +82,35 @@ export function OnlineLobby({
         </div>
       )}
 
-      {/* código da sala + copiar */}
+      {/* código da sala + copiar — layout horizontal (código à esquerda, botões à
+          direita) pra economizar altura; empilha no mobile estreito. */}
       <div className="w-full overflow-hidden rounded-2xl border border-gold/30" style={{ background: "linear-gradient(150deg,rgba(58,48,22,0.45),rgba(30,37,49,0.7))" }}>
-        <div className="flex flex-col items-center px-5 py-5">
-          <div className="font-mono text-[10px] uppercase tracking-[2px] text-muted">Código da sala</div>
-          <div className="mt-1.5 font-mono text-[34px] font-black tracking-[4px] text-gold-bright" style={{ filter: "drop-shadow(0 0 14px rgba(201,162,75,0.35))" }}>
-            {room}
+        <div className="flex flex-col items-center gap-3 px-5 py-3.5 sm:flex-row sm:justify-between">
+          <div className="flex flex-col items-center sm:items-start">
+            <div className="font-mono text-[9px] uppercase tracking-[2px] text-muted">Código da sala</div>
+            <div className="font-mono text-[30px] font-black leading-tight tracking-[4px] text-gold-bright" style={{ filter: "drop-shadow(0 0 14px rgba(201,162,75,0.35))" }}>
+              {room}
+            </div>
           </div>
-          <div className="mt-3.5 flex gap-2.5">
+          <div className="flex gap-2.5">
             <button onClick={() => copy("code")} className="btn-soft-gold cursor-pointer rounded-[10px] px-4 py-2 font-display text-[12px] font-semibold uppercase tracking-[1px]">
-              {copied === "code" ? "✓ Copiado!" : "⧉ Copiar código"}
+              {copied === "code" ? "✓ Copiado!" : "⧉ Código"}
             </button>
             <button onClick={() => copy("link")} className="btn-ghost cursor-pointer rounded-[10px] px-4 py-2 font-display text-[12px] font-semibold uppercase tracking-[1px]">
-              {copied === "link" ? "✓ Copiado!" : "⧉ Copiar link"}
+              {copied === "link" ? "✓ Copiado!" : "⧉ Link"}
             </button>
           </div>
-          <div className="mt-3 max-w-[460px] text-center font-mono text-[10.5px] leading-relaxed text-dim">
-            {isHost
-              ? "Mande o código (ou link) pros amigos. De 2 a 8 jogam; os slots vazios viram BOTS 🤖. Quando todos estiverem prontos, você inicia."
-              : "Você entrou na sala. Marque que está pronto e aguarde o host iniciar o torneio."}
-          </div>
+        </div>
+        <div className="border-t border-gold/15 px-5 py-2 text-center font-mono text-[10px] leading-relaxed text-dim">
+          {isHost
+            ? "Mande o código pros amigos. 2 a 8 jogam; os vazios viram BOTS 🤖."
+            : "Você entrou. Marque que está pronto e aguarde o host iniciar."}
         </div>
       </div>
 
       {/* jogadores: humanos presentes + bots completando até 8 */}
-      <div className="mt-4 w-full rounded-2xl border border-gold/25 p-4" style={{ background: "rgba(30,30,33,0.55)" }}>
-        <div className="mb-3 flex items-center justify-between">
+      <div className="mt-3 w-full rounded-2xl border border-gold/25 px-4 py-3" style={{ background: "rgba(30,30,33,0.55)" }}>
+        <div className="mb-2.5 flex items-center justify-between">
           <span className="font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">
             Competidores ({humans.length} humano{humans.length === 1 ? "" : "s"}{botCount > 0 ? ` · ${botCount} bot${botCount === 1 ? "" : "s"}` : ""})
           </span>
@@ -125,26 +129,26 @@ export function OnlineLobby({
 
       {/* configs — só host edita */}
       {cfg && (
-        <div className="mt-4 w-full rounded-2xl border border-gold/25 p-4" style={{ background: "rgba(30,30,33,0.55)" }}>
-          <div className="mb-3 font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">
+        <div className="mt-3 w-full rounded-2xl border border-gold/25 px-4 py-3" style={{ background: "rgba(30,30,33,0.55)" }}>
+          <div className="mb-2.5 font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">
             ⚙ Configurações {isHost ? "da sala" : "(definidas pelo host)"}
           </div>
-          <div className="flex flex-col gap-3.5">
-            <ConfigRow label="⏱️ Tempo por escolha">
+          <div className="flex flex-col gap-2.5">
+            <ConfigRow label="Tempo por escolha">
               {[15, 30, 45, 60].map((s) => (
                 <Seg key={s} on={cfg.pickSeconds === s} disabled={!isHost} onClick={() => set({ pickSeconds: s })}>{s}s</Seg>
               ))}
               <Seg on={cfg.pickSeconds === 0} disabled={!isHost} onClick={() => set({ pickSeconds: 0 })}>Sem limite</Seg>
             </ConfigRow>
-            <ConfigRow label="👁️ Visualização">
+            <ConfigRow label="Visualização">
               <Seg on={!cfg.hideRatings} disabled={!isHost} onClick={() => set({ hideRatings: false })}>Normal</Seg>
               <Seg on={cfg.hideRatings} disabled={!isHost} onClick={() => set({ hideRatings: true })}>Especialista</Seg>
             </ConfigRow>
-            <ConfigRow label="🎬 Ritmo da partida">
+            <ConfigRow label="Ritmo da partida">
               <Seg on={cfg.pace === "imersivo"} disabled={!isHost} onClick={() => set({ pace: "imersivo" })}>Imersivo</Seg>
               <Seg on={cfg.pace === "rapido"} disabled={!isHost} onClick={() => set({ pace: "rapido" })}>Rápido</Seg>
             </ConfigRow>
-            <ConfigRow label="🃏 Cartas de evento">
+            <ConfigRow label="Cartas de evento">
               <Seg on={!!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: true })}>Ligadas</Seg>
               <Seg on={!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: false })}>Desligadas</Seg>
             </ConfigRow>
@@ -153,10 +157,10 @@ export function OnlineLobby({
       )}
 
       {/* ações: pronto + (host) iniciar */}
-      <div className="mt-5 flex w-full flex-col gap-3">
+      <div className="mt-3 flex w-full flex-col gap-2.5">
         <button
           onClick={() => r.setReady(!meReady)}
-          className={`w-full cursor-pointer rounded-[12px] px-4 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px] transition-all ${meReady ? "btn-ghost" : "btn-soft-gold"}`}
+          className={`w-full cursor-pointer rounded-[12px] px-4 py-3 font-display text-[15px] font-semibold uppercase tracking-[2px] transition-all ${meReady ? "btn-ghost" : "btn-soft-gold"}`}
         >
           {meReady ? "✓ Você está pronto (clique pra cancelar)" : "Estou pronto"}
         </button>
@@ -164,14 +168,14 @@ export function OnlineLobby({
           <button
             onClick={r.start}
             disabled={!ready}
-            className="btn-gold w-full cursor-pointer rounded-[12px] border-none px-4 py-4 font-display text-[18px] font-semibold uppercase tracking-[2px] disabled:cursor-default disabled:opacity-45"
+            className="btn-gold w-full cursor-pointer rounded-[12px] border-none px-4 py-3.5 font-display text-[17px] font-semibold uppercase tracking-[2px] disabled:cursor-default disabled:opacity-45"
           >
             {humans.length < 2 ? "▶ Aguardando jogadores (mín. 2)…" : ready ? `▶ Iniciar torneio${botCount > 0 ? ` (+${botCount} 🤖)` : ""}` : "▶ Aguardando todos prontos…"}
           </button>
         )}
       </div>
 
-      <button onClick={onExit} className="btn-ghost mt-3 cursor-pointer rounded-[10px] px-6 py-2.5 font-display text-[13px] font-semibold uppercase tracking-[1px]">
+      <button onClick={onExit} className="btn-ghost mt-2.5 cursor-pointer rounded-[10px] px-6 py-2 font-display text-[13px] font-semibold uppercase tracking-[1px]">
         ← Sair
       </button>
     </div>
@@ -180,11 +184,11 @@ export function OnlineLobby({
 
 function PlayerSlot({ player, mine }: { player: { nick: string; isHost: boolean; ready: boolean }; mine: boolean }) {
   return (
-    <div className={`anim-pop flex flex-col items-center rounded-[12px] border px-3 py-3.5 ${mine ? "border-gold/45" : "border-gold/18"}`}
+    <div className={`anim-pop flex flex-col items-center rounded-[12px] border px-3 py-2.5 ${mine ? "border-gold/45" : "border-gold/18"}`}
       style={{ background: "rgba(12,13,16,0.55)" }}>
       <div className="mb-0.5 font-mono text-[8px] uppercase tracking-[1.5px] text-dim">{mine ? "Você" : "Jogador"}</div>
-      <div className="truncate font-display text-[16px] font-semibold text-cream">{player.nick} {player.isHost ? "👑" : ""}</div>
-      <div className={`mt-1 font-mono text-[10px] uppercase tracking-[1px] ${player.ready ? "text-win" : "text-dim"}`}>
+      <div className="truncate font-display text-[15px] font-semibold text-cream">{player.nick} {player.isHost ? "👑" : ""}</div>
+      <div className={`mt-0.5 font-mono text-[9px] uppercase tracking-[1px] ${player.ready ? "text-win" : "text-dim"}`}>
         {player.ready ? "✓ pronto" : "— aguardando"}
       </div>
     </div>
@@ -194,11 +198,11 @@ function PlayerSlot({ player, mine }: { player: { nick: string; isHost: boolean;
 /** Slot de bot: "ativo" = vai virar bot ao iniciar; "vago" = pode entrar humano. */
 function BotSlot({ active }: { active: boolean }) {
   return (
-    <div className="flex flex-col items-center rounded-[12px] border border-dashed border-gold/15 px-3 py-3.5"
+    <div className="flex flex-col items-center rounded-[12px] border border-dashed border-gold/15 px-3 py-2.5"
       style={{ background: "rgba(12,13,16,0.28)" }}>
       <div className="mb-0.5 font-mono text-[8px] uppercase tracking-[1.5px] text-dim">{active ? "Bot" : "Vago"}</div>
-      <div className="font-display text-[16px] font-semibold text-dim">{active ? "🤖" : "—"}</div>
-      <div className="mt-1 font-mono text-[10px] uppercase tracking-[1px] text-dim">{active ? "completa" : "aberto"}</div>
+      <div className="font-display text-[15px] font-semibold text-dim">{active ? "🤖" : "—"}</div>
+      <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[1px] text-dim">{active ? "completa" : "aberto"}</div>
     </div>
   );
 }
@@ -217,10 +221,12 @@ function ConnPill({ state }: { state: string }) {
 }
 
 function ConfigRow({ label, children }: { label: string; children: React.ReactNode }) {
+  // label à ESQUERDA e segmentos à DIREITA na mesma linha (telas largas) — empilha
+  // só no mobile estreito. Mantém a tela inteira sem scroll no desktop.
   return (
-    <div>
-      <div className="mb-1.5 px-0.5 font-mono text-[10px] uppercase tracking-[1.5px] text-muted">{label}</div>
-      <div className="flex gap-2">{children}</div>
+    <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+      <div className="shrink-0 px-0.5 font-mono text-[10px] uppercase tracking-[1.5px] text-muted sm:w-[150px]">{label}</div>
+      <div className="flex flex-1 gap-2">{children}</div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 // ============================================================
-// OnlineDraftScreen — DRAFT 1v1 sincronizado (Degrau 1)
+// OnlineDraftScreen — DRAFT sincronizado do Duelo online
 // ============================================================
 // Reusa a língua visual do draft offline (card de média + card do time rolável +
 // mapa do Rift), com a mecânica ONLINE do design:
@@ -171,7 +171,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
   if (!st) return null;
 
   return (
-    <div className="anim-fade-fast mx-auto w-full max-w-[1280px]">
+    <div className="anim-fade-fast mx-auto w-full max-w-[1440px]">
       {/* top bar */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-4 sm:mb-[22px]">
         <div className="flex items-center gap-[13px]">
@@ -206,7 +206,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
 
       <div className="flex flex-col items-stretch gap-3 wide:flex-row wide:gap-[26px]">
         {/* esquerda: média + card do time / estado pós-pick */}
-        <div className="w-full wide:w-[344px] wide:flex-none">
+        <div className="w-full wide:w-[312px] wide:flex-none">
           {showRatings && (
             <div className="anim-fade-fast mb-3 overflow-hidden rounded-2xl border border-gold/30 sm:mb-[18px]"
               style={{ background: "linear-gradient(150deg,rgba(58,48,22,0.5),rgba(30,37,49,0.7))" }}>
@@ -332,7 +332,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
         {/* direita: lines dos OUTROS competidores ao vivo — MESMO card do 1×7.
             revealed acompanha o SEU ritmo (filledCount) → bots vão aparecendo 1
             lane por rodada, com o "pop" no slot recém-revelado, igual ao offline. */}
-        <div className="w-full wide:w-[388px] wide:flex-none">
+        <div className="w-full wide:w-[336px] wide:flex-none">
           <LiveRostersColumn others={otherCompetitors} revealed={filledCount} showRatings={showRatings} title="Outros times" />
         </div>
       </div>

@@ -1,5 +1,5 @@
 // ============================================================
-// OnlineEntryScreen — porta de entrada do duelo 1v1 ONLINE
+// OnlineEntryScreen — porta de entrada do Duelo online
 // ============================================================
 // Antes de cair no lobby, o jogador: (1) escolhe CRIAR uma sala ou ENTRAR por
 // código, e (2) digita o nick. Reusa o último nick do localStorage. Se a URL já
@@ -64,7 +64,7 @@ export function OnlineEntryScreen({
         </div>
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[12px] font-bold uppercase tracking-[2px]"
           style={{ color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)" }}>
-          🔴 Duelo 1v1
+          🔴 Duelo online
         </span>
       </div>
 

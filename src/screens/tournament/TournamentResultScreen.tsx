@@ -54,12 +54,17 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
     <div className="anim-fade mx-auto w-full max-w-[860px]">
       {/* manchete */}
       <div className="mb-7 text-center">
-        <div className="font-mono text-[11px] uppercase tracking-[3px] text-muted">Worlds ao Vivo</div>
+        <div className="font-mono text-[11px] uppercase tracking-[3px] text-muted">Duelo online</div>
         <div className="mt-2 font-display text-[clamp(26px,5vw,44px)] font-black uppercase tracking-[1px]">
           {champion ? (
-            <span className="text-gold-fill">
-              {iWon ? "Você é o campeão do mundo!" : `${competitorLabel(champion)} venceu!`}
-            </span>
+            iWon ? (
+              <span className="text-gold-fill">Você é o campeão do mundo!</span>
+            ) : (
+              <>
+                {champion.isBot && <span className="text-cream">🤖 </span>}
+                <span className="text-gold-fill">{champion.name} venceu!</span>
+              </>
+            )
           ) : (
             "Torneio encerrado"
           )}

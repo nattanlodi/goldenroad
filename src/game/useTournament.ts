@@ -163,9 +163,11 @@ export interface TournamentSounds {
   sndLose: () => void;
   sndPenta: () => void;
   sndMvp: () => void;
+  /** fanfarra do campeão do bracket (grave, sem agudos). */
+  sndChampion: () => void;
 }
 const noop = () => {};
-const NO_SOUND: TournamentSounds = { sndTick: noop, sndPick: noop, sndReveal: noop, sndWin: noop, sndLose: noop, sndPenta: noop, sndMvp: noop };
+const NO_SOUND: TournamentSounds = { sndTick: noop, sndPick: noop, sndReveal: noop, sndWin: noop, sndLose: noop, sndPenta: noop, sndMvp: noop, sndChampion: noop };
 
 /**
  * Controller do modo "Worlds ao Vivo" (Degrau 0 — offline). Orquestra lobby →
