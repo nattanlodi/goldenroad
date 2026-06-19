@@ -54,8 +54,9 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
   const round = st?.draftRound ?? 1;
   const myPicks = me?.picks ?? {};
   const pickedThisRound = me?.pickedThisRound ?? false;
-  // humanos (fora eu) que ainda não escolheram nesta rodada.
-  const waitingHumans = others.filter((p) => !p.isBot && !p.pickedThisRound).length;
+  // humanos (fora eu) que ainda não escolheram nesta rodada (nicks pra mostrar).
+  const waitingNames = others.filter((p) => !p.isBot && !p.pickedThisRound).map((p) => p.nick);
+  const waitingHumans = waitingNames.length;
   const filledCount = ROLES.filter((rr) => myPicks[rr]).length;
   const myLine = ROLES.map((rr) => myPicks[rr]).filter((p): p is TournamentPick => !!p);
   const avg = lineAvg(myLine);
@@ -237,7 +238,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
                 {!pickedThisRound
                   ? "confirmando com o host…"
                   : waitingHumans > 0
-                    ? `Aguardando ${waitingHumans} jogador${waitingHumans === 1 ? "" : "es"}…`
+                    ? <>Aguardando <span className="font-semibold text-cream">{waitingNames.join(", ")}</span>…</>
                     : "Todos escolheram — avançando…"}
               </div>
             </div>

@@ -44,6 +44,16 @@ export function OnlineCardOverlay({
   const [query, setQuery] = useState("");
   const [done, setDone] = useState(false); // já enviei minha escolha
   const [secs, setSecs] = useState(15);
+  // dois delays locais ao abrir o overlay: 1s pras CARTAS aparecerem + mais 1s pra
+  // poder CLICAR (anti-clique-acidental). Cartas viram visíveis em `revealed`,
+  // clicáveis em `canPick`.
+  const [revealed, setRevealed] = useState(false);
+  const [canPick, setCanPick] = useState(false);
+  useEffect(() => {
+    const t1 = setTimeout(() => setRevealed(true), 1000); // 1s → cartas aparecem
+    const t2 = setTimeout(() => setCanPick(true), 2000);  // +1s → libera o clique
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
 
   // countdown visual até o deadline (o host faz o auto-pick ao zerar). Usa o
   // relógio do HOST (serverNow) pra não mostrar tempo errado num cliente com
@@ -123,21 +133,35 @@ export function OnlineCardOverlay({
           {sel ? targetHint(sel, swapRole) : "os dois lados receberam evento do mesmo nível"}
         </div>
         <div className="mt-3 flex items-center justify-center">
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px] tabular-nums transition-colors"
-            style={secs <= 3
-              ? { color: "#f0867a", borderColor: "rgba(224,88,74,0.55)", background: "rgba(224,88,74,0.12)" }
-              : { color: "#e8ce86", borderColor: "rgba(201,162,75,0.4)", background: "rgba(201,162,75,0.08)" }}
-          >
-            ⏱ {secs}s{secs === 0 ? " · escolhendo por você…" : ""}
-          </span>
+          {!canPick ? (
+            // cartas aparecendo / ainda travadas pro clique (anti-clique-acidental).
+            <span className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px]"
+              style={{ color: "#9aa3b0", borderColor: "rgba(154,163,176,0.4)", background: "rgba(154,163,176,0.08)" }}>
+              🔒 {revealed ? "Já vai liberar…" : "Preparando…"}
+            </span>
+          ) : (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px] tabular-nums transition-colors"
+              style={secs <= 3
+                ? { color: "#f0867a", borderColor: "rgba(224,88,74,0.55)", background: "rgba(224,88,74,0.12)" }
+                : { color: "#e8ce86", borderColor: "rgba(201,162,75,0.4)", background: "rgba(201,162,75,0.08)" }}
+            >
+              ⏱ {secs}s{secs === 0 ? " · escolhendo por você…" : ""}
+            </span>
+          )}
         </div>
       </div>
 
       <div className="flex flex-1 items-center justify-center py-4 sm:py-8">
         <div className="w-full max-w-[1000px]">
+          {/* 1s inicial: cartas ainda não reveladas → placeholder discreto. */}
+          {!revealed && (
+            <div className="flex min-h-[168px] items-center justify-center sm:min-h-[440px]">
+              <div className="anim-pulse font-display text-[15px] uppercase tracking-[3px] text-muted">distribuindo as cartas…</div>
+            </div>
+          )}
           {/* fase 1: as 3 cartas */}
-          {!sel && (
+          {revealed && !sel && (
             <div className="grid gap-4 [grid-template-columns:1fr] sm:gap-12 sm:[grid-template-columns:repeat(3,1fr)]">
               {trio.map((card, i) => {
                 const r = hostile
@@ -145,8 +169,8 @@ export function OnlineCardOverlay({
                   : RARITY[card.rarity];
                 const legendary = !hostile && card.rarity === "lendaria";
                 return (
-                  <button key={`${card.id}-${i}`} onClick={() => choose(card)}
-                    className={`event-card anim-pop group relative flex min-h-[168px] flex-col items-center overflow-hidden rounded-[20px] border px-4 pb-4 pt-6 text-center transition-all duration-300 sm:min-h-[440px] sm:px-6 sm:pb-8 sm:pt-11 ${legendary ? "event-card--legendary" : ""} cursor-pointer hover:-translate-y-2.5`}
+                  <button key={`${card.id}-${i}`} onClick={() => canPick && choose(card)} disabled={!canPick}
+                    className={`event-card anim-pop group relative flex min-h-[168px] flex-col items-center overflow-hidden rounded-[20px] border px-4 pb-4 pt-6 text-center transition-all duration-300 sm:min-h-[440px] sm:px-6 sm:pb-8 sm:pt-11 ${legendary ? "event-card--legendary" : ""} ${canPick ? "cursor-pointer hover:-translate-y-2.5" : "cursor-not-allowed opacity-65"}`}
                     style={{
                       background: `linear-gradient(180deg, color-mix(in srgb, ${r.accent} 13%, rgba(28,29,33,0.96)), rgba(16,17,20,0.97))`,
                       borderColor: `color-mix(in srgb, ${r.accent} 45%, transparent)`,

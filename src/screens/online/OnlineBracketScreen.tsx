@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   withTimelines,
+  effectiveCompetitors,
   type UseOnlineRoom,
 } from "../../game/online/useOnlineRoom";
 import type { TournamentSounds } from "../../game/useTournament";
@@ -178,11 +179,9 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
     const myPick = iAmA ? s.cards.pickA : s.cards.pickB;
     if (myPick) return null; // já escolhi (confirmado pelo host)
     if (pickedSeriesRef.current.has(s.seedSalt)) return null; // já enviei (otimista)
-    // compara com o relógio do HOST (serverNow), não Date.now() local — senão um
-    // cliente com relógio dessincronizado (ex.: celular) acharia que o countdown
-    // ainda não acabou e o overlay de cartas NUNCA abriria (era o bug do guest mobile).
-    const countdownOver = s.startDeadline == null || r.serverNow() >= s.startDeadline;
-    if (!countdownOver) return null;
+    // o overlay APARECE assim que a fase de cartas existe (cartas pendentes) — NÃO
+    // espera o countdown de início. Os delays (1s pra revelar + 1s pra liberar o
+    // clique) são LOCAIS dentro do overlay.
     const myComp = byId.get(myId);
     const oppComp = byId.get(iAmA ? s.bId : s.aId);
     if (!myComp || !oppComp) return null;
@@ -282,7 +281,7 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
           // "Ver classificação final" — não pula direto pro pódio.
           <TournamentOverPanel champion={st.winnerId ? byId.get(st.winnerId) ?? null : null} showButton={r.isHost} onShow={r.showFinalResult} />
         ) : s ? (
-          <SeriesPanel s={s} secs={secs} byId={byId} myId={myId} showRatings={showRatings} />
+          <SeriesPanel s={s} secs={secs} byId={byId} myId={myId} showRatings={showRatings} code={st.code} />
         ) : cardsPending && mySeries ? (
           // subfase de cartas: o overlay (se for minha vez) fica por cima; aqui
           // mostro o confronto + "evento em andamento".
@@ -497,14 +496,18 @@ function CardsPhasePanel({ s, byId, myId, showRatings, iSent }: { s: SeriesState
 }
 
 // ── painel da série corrente (egocêntrico: eu à esquerda) ──
-function SeriesPanel({ s, secs, byId, myId, showRatings }: { s: NonNullable<ReturnType<typeof useSeriesNarration>>["s"]; secs: number; byId: Map<string, Competitor>; myId: string | null; showRatings: boolean }) {
+function SeriesPanel({ s, secs, byId, myId, showRatings, code }: { s: NonNullable<ReturnType<typeof useSeriesNarration>>["s"]; secs: number; byId: Map<string, Competitor>; myId: string | null; showRatings: boolean; code: string }) {
   if (!s) return null;
   const iAmA = s.aId === myId;
   // se eu não estou no confronto, mostro A à esquerda (espectador).
   const leftId = iAmA || s.bId !== myId ? s.aId : s.bId;
   const rightId = leftId === s.aId ? s.bId : s.aId;
-  const left = byId.get(leftId);
-  const right = byId.get(rightId);
+  // competidores EFETIVOS (com as cartas aplicadas) — pro LineColumn mostrar os
+  // overalls BUFFADOS/NERFADOS (selo +/− e 🔥/🧊). Sem cartas, são as lines cruas.
+  const eff = effectiveCompetitors(s, byId, code);
+  const byIdEff = eff ? new Map([[s.aId, eff.a], [s.bId, eff.b]]) : byId;
+  const left = byIdEff.get(leftId) ?? byId.get(leftId);
+  const right = byIdEff.get(rightId) ?? byId.get(rightId);
   if (!left || !right) return null;
   const leftSide: "a" | "b" = leftId === s.aId ? "a" : "b";
   const leftScore = leftSide === "a" ? s.scoreA : s.scoreB;

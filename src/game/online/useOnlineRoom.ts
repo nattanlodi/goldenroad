@@ -422,7 +422,7 @@ function competitorFrom(p: RoomPlayer, autopicks: AutoPick[]): Competitor {
 
 /** Competidores EFETIVOS de uma série (com as cartas resolvidas aplicadas, se
  * houver). Se as cartas ainda não foram escolhidas, usa as lines cruas. */
-function effectiveCompetitors(s: SeriesState, byId: Map<string, Competitor>, code: string): { a: Competitor; b: Competitor } | null {
+export function effectiveCompetitors(s: SeriesState, byId: Map<string, Competitor>, code: string): { a: Competitor; b: Competitor } | null {
   const a = byId.get(s.aId);
   const b = byId.get(s.bId);
   if (!a || !b) return null;

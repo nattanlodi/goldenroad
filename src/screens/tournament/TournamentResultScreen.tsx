@@ -86,7 +86,9 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
         </div>
         {champion && (
           <div className="mt-1.5 font-mono text-[12px] tracking-[1px] text-dim">
-            {competitorSubtitle(champion)} · line média {champion.avg}
+            {/* subtítulo "time '22" só faz sentido pro BOT (line de 1 time); o humano
+                tem line MISTURADA, então mostra só a média. */}
+            {champion.isBot ? `${competitorSubtitle(champion)} · ` : ""}line média {champion.avg}
           </div>
         )}
       </div>
@@ -119,7 +121,8 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
                     <span className={`truncate font-display text-[15px] font-bold ${mine ? "text-gold-bright" : "text-cream"}`}>
                       <CName c={c} />{mine ? " (você)" : ""}
                     </span>
-                    <span className="truncate font-mono text-[9.5px] text-dim">{competitorSubtitle(c)}</span>
+                    {/* subtítulo "time '22" só pro BOT (line de 1 time); humano tem line misturada. */}
+                    {c.isBot && <span className="truncate font-mono text-[9.5px] text-dim">{competitorSubtitle(c)}</span>}
                   </span>
                   <span className="rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[1px]"
                     style={{ color: st.color, background: `color-mix(in srgb, ${st.color} 14%, transparent)`, border: `1px solid color-mix(in srgb, ${st.color} 35%, transparent)` }}>
