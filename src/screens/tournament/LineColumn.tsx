@@ -33,13 +33,13 @@ export function LineColumn({ c, mine, side, showRatings, subtitle, compactMobile
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border" style={{ borderColor: mine ? "rgba(201,162,75,0.4)" : "rgba(201,162,75,0.2)", background: "linear-gradient(180deg,rgba(40,41,44,0.82),rgba(28,29,31,0.84))" }}>
       {/* cabeçalho: nome (sem placar — o placar fica no centro e no bracket) */}
-      <div className={`flex items-center border-b border-gold/20 px-4 py-3 ${revText}`}>
+      <div className={`flex items-center border-b border-gold/20 px-3 py-2 wide:px-4 wide:py-3 ${revText}`}>
         <div className="min-w-0">
-          <div className="flex min-w-0 items-center gap-1.5 truncate font-display text-[16px] font-bold leading-tight" style={{ color: accent }}>
-            {c.isBot && <BotIcon size={15} className="-mt-px" />}
+          <div className="flex min-w-0 items-center gap-1.5 truncate font-display text-[14px] font-bold leading-tight wide:text-[16px]" style={{ color: accent }}>
+            {c.isBot && <BotIcon size={13} className="-mt-px" />}
             <span className="truncate">{c.name}</span>
           </div>
-          {sub && <div className="truncate font-mono text-[10px] text-dim">{sub}</div>}
+          {sub && <div className="truncate font-mono text-[9px] text-dim wide:text-[10px]">{sub}</div>}
         </div>
       </div>
       <div className="flex flex-col gap-1 p-1.5 sm:gap-1.5 sm:p-2">
@@ -50,7 +50,7 @@ export function LineColumn({ c, mine, side, showRatings, subtitle, compactMobile
           // pill de overall IGUAL ao solo: fundo tingido pela raridade + selo +/− no
           // canto quando há delta (verde sobe, coral desce) + altura do solo.
           const pill = showRatings && (
-            <span className="relative inline-flex min-w-[34px] items-center justify-center rounded-[7px] px-[7px] py-[6px] text-center font-mono text-[17px] font-black leading-none tabular-nums"
+            <span className="relative inline-flex min-w-[30px] items-center justify-center rounded-[7px] px-[6px] py-[4px] text-center font-mono text-[15px] font-black leading-none tabular-nums wide:min-w-[34px] wide:px-[7px] wide:py-[6px] wide:text-[17px]"
               style={{
                 color: skin.ratingColor,
                 background: `color-mix(in srgb, ${skin.ratingColor} 16%, rgba(8,9,11,0.85))`,
@@ -82,7 +82,7 @@ export function LineColumn({ c, mine, side, showRatings, subtitle, compactMobile
               ) : (
                 <Flag cc={p.country} size={13} />
               )}
-              <span className="truncate font-display text-[14px] font-semibold text-cream wide:text-[15px]">{p.name}</span>
+              <span className="truncate font-display text-[13px] font-semibold text-cream wide:text-[15px]">{p.name}</span>
               {mod !== 0 && (
                 <span
                   title={mod > 0 ? "Em chamas" : "Gelado"}
@@ -112,9 +112,9 @@ export function LineColumn({ c, mine, side, showRatings, subtitle, compactMobile
         })}
       </div>
       {showRatings && (
-        <div className={`flex items-center justify-between border-t border-gold/15 px-3.5 py-2 ${rev}`}>
+        <div className={`flex items-center justify-between border-t border-gold/15 px-3 py-1.5 wide:px-3.5 wide:py-2 ${rev}`}>
           <span className="font-mono text-[9px] uppercase tracking-[1px] text-muted">Média</span>
-          <span className="font-mono text-[18px] font-bold" style={{ color: accent }}>{avg}</span>
+          <span className="font-mono text-[15px] font-bold wide:text-[18px]" style={{ color: accent }}>{avg}</span>
         </div>
       )}
     </div>
