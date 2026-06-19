@@ -15,7 +15,29 @@ import { useState, type CSSProperties } from "react";
 import type { UseOnlineRoom } from "../../game/online/useOnlineRoom";
 import { canStart, BRACKET_SIZE } from "../../game/online/roomState";
 import type { RoomConfig } from "../../game/tournamentReducer";
+import type { Tournament } from "../../types";
 import { Logo6x0 } from "../../components/Logo6x0";
+import { BotIcon } from "../../components/BotIcon";
+
+/** Campeonatos selecionáveis no pool de draft (extensível a novos torneios). */
+const CAMPAIGNS: { id: Tournament; label: string }[] = [
+  { id: "worlds", label: "Worlds" },
+  { id: "msi", label: "MSI" },
+];
+
+/** Resumo legível das configs (pro guest ver em chips read-only). */
+function summarizeConfig(cfg: RoomConfig): { label: string; value: string }[] {
+  const camps = (cfg.campaigns ?? ["worlds", "msi"])
+    .map((c) => CAMPAIGNS.find((x) => x.id === c)?.label ?? c)
+    .join(" + ");
+  return [
+    { label: "Tempo", value: cfg.pickSeconds === 0 ? "Sem limite" : `${cfg.pickSeconds}s` },
+    { label: "Visual", value: cfg.hideRatings ? "Especialista" : "Normal" },
+    { label: "Ritmo", value: cfg.pace === "rapido" ? "Rápido" : "Imersivo" },
+    { label: "Cartas", value: cfg.cardsOn ? "Ligadas" : "Desligadas" },
+    { label: "Pool", value: camps },
+  ];
+}
 
 const segOn: CSSProperties = { border: "1.5px solid #E8CE86", background: "rgba(201,162,75,0.14)", color: "#F2ECDE", boxShadow: "0 0 0 3px rgba(201,162,75,0.08)" };
 const segOff: CSSProperties = { border: "1px solid rgba(201,162,75,0.22)", background: "rgba(42,51,65,0.5)", color: "#C9C7BD" };
@@ -102,9 +124,14 @@ export function OnlineLobby({
           </div>
         </div>
         <div className="border-t border-gold/15 px-5 py-2 text-center font-mono text-[10px] leading-relaxed text-dim">
-          {isHost
-            ? "Mande o código pros amigos. 2 a 8 jogam; os vazios viram BOTS 🤖."
-            : "Você entrou. Marque que está pronto e aguarde o host iniciar."}
+          {isHost ? (
+            <span className="inline-flex flex-wrap items-center justify-center gap-x-1">
+              Mande o código pros amigos. 2 a 8 jogam; os vazios viram BOTS
+              <BotIcon size={11} className="-mt-px" />.
+            </span>
+          ) : (
+            "Você entrou. Marque que está pronto e aguarde o host iniciar."
+          )}
         </div>
       </div>
 
@@ -127,11 +154,11 @@ export function OnlineLobby({
         </div>
       </div>
 
-      {/* configs — só host edita */}
-      {cfg && (
+      {/* configs — SÓ o host vê/edita (o guest nem vê o bloco) */}
+      {cfg && isHost && (
         <div className="mt-3 w-full rounded-2xl border border-gold/25 px-4 py-3" style={{ background: "rgba(30,30,33,0.55)" }}>
           <div className="mb-2.5 font-mono text-[10px] uppercase tracking-[2px] text-gold-bright">
-            ⚙ Configurações {isHost ? "da sala" : "(definidas pelo host)"}
+            ⚙ Configurações da sala
           </div>
           <div className="flex flex-col gap-2.5">
             <ConfigRow label="Tempo por escolha">
@@ -152,6 +179,41 @@ export function OnlineLobby({
               <Seg on={!!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: true })}>Ligadas</Seg>
               <Seg on={!cfg.cardsOn} disabled={!isHost} onClick={() => set({ cardsOn: false })}>Desligadas</Seg>
             </ConfigRow>
+            <ConfigRow label="Campeonatos no pool">
+              {CAMPAIGNS.map((c) => {
+                const cur = cfg.campaigns ?? ["worlds", "msi"];
+                const on = cur.includes(c.id);
+                return (
+                  <Seg key={c.id} on={on} disabled={!isHost}
+                    onClick={() => {
+                      // toggle mantendo SEMPRE pelo menos 1 selecionado.
+                      const next = on ? cur.filter((x) => x !== c.id) : [...cur, c.id];
+                      if (next.length === 0) return; // não deixa zerar
+                      set({ campaigns: next });
+                    }}>
+                    {c.label}
+                  </Seg>
+                );
+              })}
+            </ConfigRow>
+          </div>
+        </div>
+      )}
+
+      {/* configs pro GUEST: resumo READ-ONLY (sem botões), visual simples em chips */}
+      {cfg && !isHost && (
+        <div className="mt-3 w-full rounded-2xl border border-gold/20 px-4 py-3" style={{ background: "rgba(30,30,33,0.4)" }}>
+          <div className="mb-2 font-mono text-[10px] uppercase tracking-[2px] text-muted">
+            Configurações (definidas pelo host)
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {summarizeConfig(cfg).map((s) => (
+              <span key={s.label} className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 px-2.5 py-1 font-mono text-[11px]"
+                style={{ background: "rgba(201,162,75,0.06)" }}>
+                <span className="text-dim">{s.label}</span>
+                <span className="font-semibold text-cream">{s.value}</span>
+              </span>
+            ))}
           </div>
         </div>
       )}
@@ -170,7 +232,7 @@ export function OnlineLobby({
             disabled={!ready}
             className="btn-gold w-full cursor-pointer rounded-[12px] border-none px-4 py-3.5 font-display text-[17px] font-semibold uppercase tracking-[2px] disabled:cursor-default disabled:opacity-45"
           >
-            {humans.length < 2 ? "▶ Aguardando jogadores (mín. 2)…" : ready ? `▶ Iniciar torneio${botCount > 0 ? ` (+${botCount} 🤖)` : ""}` : "▶ Aguardando todos prontos…"}
+            {humans.length < 2 ? "▶ Aguardando jogadores (mín. 2)…" : ready ? "▶ Iniciar torneio" : "▶ Aguardando todos prontos…"}
           </button>
         )}
       </div>
@@ -201,7 +263,7 @@ function BotSlot({ active }: { active: boolean }) {
     <div className="flex flex-col items-center rounded-[12px] border border-dashed border-gold/15 px-3 py-2.5"
       style={{ background: "rgba(12,13,16,0.28)" }}>
       <div className="mb-0.5 font-mono text-[8px] uppercase tracking-[1.5px] text-dim">{active ? "Bot" : "Vago"}</div>
-      <div className="font-display text-[15px] font-semibold text-dim">{active ? "🤖" : "—"}</div>
+      <div className="flex h-[20px] items-center font-display text-[15px] font-semibold text-dim">{active ? <BotIcon size={18} /> : "—"}</div>
       <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[1px] text-dim">{active ? "completa" : "aberto"}</div>
     </div>
   );

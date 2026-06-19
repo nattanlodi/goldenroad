@@ -20,6 +20,7 @@ import type { SeriesState, SideMatch } from "../../game/online/roomState";
 import { ROLES } from "../../data/teams";
 import { isTournamentOver, competitorLabel, type Bracket, type BracketMatch, type Competitor, type TournamentPick } from "../../game/tournament";
 import { Logo6x0 } from "../../components/Logo6x0";
+import { BotIcon } from "../../components/BotIcon";
 import { LineColumn } from "../tournament/LineColumn";
 import { InspectOverlay } from "../tournament/InspectOverlay";
 import { useSeriesSounds } from "./useSeriesSounds";
@@ -79,7 +80,7 @@ function useSideScores(sideMatches: SideMatch[]): Map<string, { a: number; b: nu
 
 /** Estou ELIMINADO? (já joguei uma série concluída e não estou em nenhum match
  * ainda por jogar). Calculado sobre o bracket dado (o do host). */
-function isEliminated(bracket: Bracket, myId: string | null): boolean {
+export function isEliminated(bracket: Bracket, myId: string | null): boolean {
   if (!myId) return false;
   const all = [...bracket.qf, ...bracket.sf, bracket.gf];
   const playedDone = all.some((m) => m.done && (m.a === myId || m.b === myId));
@@ -177,7 +178,10 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
     const myPick = iAmA ? s.cards.pickA : s.cards.pickB;
     if (myPick) return null; // já escolhi (confirmado pelo host)
     if (pickedSeriesRef.current.has(s.seedSalt)) return null; // já enviei (otimista)
-    const countdownOver = s.startDeadline == null || Date.now() >= s.startDeadline;
+    // compara com o relógio do HOST (serverNow), não Date.now() local — senão um
+    // cliente com relógio dessincronizado (ex.: celular) acharia que o countdown
+    // ainda não acabou e o overlay de cartas NUNCA abriria (era o bug do guest mobile).
+    const countdownOver = s.startDeadline == null || r.serverNow() >= s.startDeadline;
     if (!countdownOver) return null;
     const myComp = byId.get(myId);
     const oppComp = byId.get(iAmA ? s.bId : s.aId);
@@ -220,6 +224,23 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
   const pendingWithHuman = [...bracket.qf, ...bracket.sf, bracket.gf].some(
     (m) => !m.done && m.a && m.b && (!byId.get(m.a)?.isBot || !byId.get(m.b)?.isBot)
   );
+  // MEU próximo confronto (não-resolvido onde eu estou) + a FASE dele — pra mostrar,
+  // já na "fase pronta", as duas lines (eu vs oponente, que já está definido) e um
+  // título condizente ("Quartas de final"/"Semifinal"/"Grande final").
+  const myNext = (() => {
+    if (!myId) return null;
+    const phaseOf = (m: BracketMatch): string =>
+      bracket.gf.id === m.id ? "Grande final" : bracket.sf.some((x) => x.id === m.id) ? "Semifinal" : "Quartas de final";
+    const m = [...bracket.qf, ...bracket.sf, bracket.gf].find(
+      (mm) => !mm.done && (mm.a === myId || mm.b === myId)
+    );
+    if (!m || !m.a || !m.b) return null;
+    const oppId = m.a === myId ? m.b : m.a;
+    const me = byId.get(myId);
+    const opp = byId.get(oppId);
+    if (!me || !opp) return null;
+    return { me, opp, phaseLabel: phaseOf(m) };
+  })();
 
   // placares "ao vivo" no bracket = bot×bot (schedule) + outras séries humanas (paralelo).
   const liveScores = new Map(sideScores);
@@ -231,25 +252,31 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
 
   return (
     <div className="anim-fade-fast mx-auto w-full max-w-[1360px]">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-[13px]">
-          <div onClick={onExit} title="Sair" className="-m-1 cursor-pointer rounded-lg p-1 transition-opacity hover:opacity-70">
-            <Logo6x0 className="h-auto w-[170px]" />
-          </div>
-          <span className="font-display text-[14px] font-bold uppercase tracking-[2px] text-gold-bright">🏆 Duelo online · Bracket de 8</span>
+      <div className="mb-4 flex flex-col items-center gap-1.5 text-center wide:flex-row wide:flex-nowrap wide:items-center wide:justify-between wide:text-left">
+        <div onClick={onExit} title="Sair" className="-m-1 cursor-pointer rounded-lg p-1 transition-opacity hover:opacity-70">
+          <Logo6x0 className="h-auto w-[150px] wide:w-[170px]" />
+        </div>
+        {/* badge de espectador: visível nos dois (mobile centralizado abaixo da logo). */}
+        {eliminated && (
+          <span className="rounded-full border border-gold/30 px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[2px] text-muted wide:hidden">👁 espectador</span>
+        )}
+        {/* título do bracket: só no desktop, alinhado à DIREITA (no mobile some). */}
+        <div className="hidden items-center gap-2.5 wide:flex">
           {eliminated && (
-            <span className="rounded-full border border-gold/30 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[2px] text-muted">👁 modo espectador</span>
+            <span className="rounded-full border border-gold/30 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[2px] text-muted">👁 espectador</span>
           )}
+          <span className="font-display text-[14px] font-bold uppercase tracking-[2px] text-gold-bright">🏆 Duelo online · Bracket de 8</span>
         </div>
       </div>
 
-      <div className="mb-3 text-center font-mono text-[10px] uppercase tracking-[2px] text-dim">toque num confronto pra ver as lines</div>
+      {/* dica de toque: só no desktop. */}
+      <div className="mb-3 hidden text-center font-mono text-[10px] uppercase tracking-[2px] text-dim wide:block">toque num confronto pra ver as lines</div>
 
       {/* bracket borboleta */}
       <Butterfly bracket={bracket} byId={byId} myId={myId} liveId={liveId} liveScore={s ? { a: s.scoreA, b: s.scoreB, aId: s.aId } : null} sideScores={liveScores} onInspect={setInspectId} />
 
-      {/* painel da série */}
-      <div className="mt-10 pt-7">
+      {/* painel da série (espaçamento menor pro feed no mobile) */}
+      <div className="mt-4 pt-3 wide:mt-10 wide:pt-7">
         {st.tournamentOver ? (
           // grande final acabou: o resultado fica AQUI (no bracket) até o host clicar
           // "Ver classificação final" — não pula direto pro pódio.
@@ -263,7 +290,7 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
         ) : st.parallelPending ? (
           // o HOST sempre comanda o início da rodada — mesmo eliminado e mesmo numa
           // fase só de bots (organizador do evento). Os demais aguardam o clique.
-          <ParallelStartPanel showButton={r.isHost} hasHuman={pendingWithHuman} onStart={r.startBracketSeries} />
+          <ParallelStartPanel showButton={r.isHost} hasHuman={pendingWithHuman} eliminated={eliminated} myNext={myNext} showRatings={showRatings} onStart={r.startBracketSeries} />
         ) : st.parallelSeries.length ? (
           // séries rolando mas a MINHA já acabou (ou não estou em nenhuma) → aguarda a fase.
           <div className="rounded-2xl border border-gold/20 px-4 py-10 text-center font-mono text-[13px] text-muted" style={{ background: "rgba(22,23,28,0.6)" }}>
@@ -273,7 +300,7 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
           // fase SÓ de bots (todos os humanos eliminados): as partidas rolam no
           // bracket acima (placar ao vivo). O campeonato continua até a final.
           <div className="flex flex-col items-center justify-center rounded-2xl border border-gold/20 px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.6)" }}>
-            <div className="text-[26px]">🤖</div>
+            <BotIcon size={30} />
             <div className="mt-2 font-display text-[15px] font-bold uppercase tracking-[1px] text-cream">Partidas dos bots em andamento</div>
             <div className="mt-2 font-mono text-[11px] uppercase tracking-[2px] text-muted">acompanhe os placares no bracket acima ↑</div>
           </div>
@@ -309,6 +336,7 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
           deadline={cardPhase.deadline}
           myLine={cardPhase.myComp}
           oppLine={cardPhase.oppComp}
+          serverNow={r.serverNow}
           onPick={(choice) => { r.pickCard(choice); markPicked(cardPhase.salt); }}
         />
       )}
@@ -332,10 +360,10 @@ function TournamentOverPanel({ champion, showButton, onShow }: { champion: Compe
       <div className="mt-2 font-mono text-[10px] uppercase tracking-[3px] text-muted">Grande final encerrada</div>
       <div className="mt-2 font-display text-[24px] font-black uppercase tracking-[1px]">
         {champion ? (
-          <>
-            {champion.isBot && <span className="text-cream">🤖 </span>}
+          <span className="inline-flex items-center gap-2">
+            {champion.isBot && <BotIcon size={22} className="mt-0.5" />}
             <span className="text-gold-fill">{champion.name} é campeão!</span>
-          </>
+          </span>
         ) : (
           <span className="text-gold-fill">Torneio encerrado</span>
         )}
@@ -351,23 +379,86 @@ function TournamentOverPanel({ champion, showButton, onShow }: { champion: Compe
   );
 }
 
+/** Mote condizente com a fase (não o genérico "hora da sua série"). */
+function phaseHype(label: string): { eyebrow: string; title: string } {
+  switch (label) {
+    case "Grande final": return { eyebrow: "É agora ou nunca", title: "A grande final é sua" };
+    case "Semifinal": return { eyebrow: "A um passo da decisão", title: "Vença e está na final" };
+    default: return { eyebrow: "Começa o mata-mata", title: "Sua estreia nas quartas" };
+  }
+}
+
 // ── painel "iniciar rodada" do modo paralelo (o host comanda, sempre) ──
-function ParallelStartPanel({ showButton, hasHuman, onStart }: { showButton: boolean; hasHuman: boolean; onStart: () => void }) {
+// Mostra JÁ as duas lines (eu vs oponente, definido) + um mote da fase. Quando o
+// jogador foi eliminado, NÃO sugere "sua série" — vira aviso de espectador.
+function ParallelStartPanel({ showButton, hasHuman, eliminated, myNext, showRatings, onStart }: {
+  showButton: boolean; hasHuman: boolean; eliminated: boolean;
+  myNext: { me: Competitor; opp: Competitor; phaseLabel: string } | null;
+  showRatings: boolean; onStart: () => void;
+}) {
+  const accent = eliminated ? "rgba(255,255,255,0.16)" : "rgba(201,162,75,0.25)";
+  const startBtn = showButton ? (
+    <button onClick={onStart} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
+      ▶ Iniciar rodada
+    </button>
+  ) : (
+    <span className="font-mono text-[12px] text-muted">
+      {eliminated ? "aguardando o host comandar a rodada…" : "aguardando o host iniciar a rodada…"}
+    </span>
+  );
+
+  // ELIMINADO: aviso de espectador (sem lines/mote de "sua série").
+  if (eliminated) {
+    return (
+      <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.7)", borderColor: accent }}>
+        <div className="text-[26px] opacity-70">👁</div>
+        <div className="mt-1.5 font-mono text-[10px] uppercase tracking-[2px] text-muted">Você foi eliminado</div>
+        <div className="mt-1 mb-5 font-display text-[17px] font-bold uppercase tracking-[1px] text-cream/80">
+          {showButton ? "Comande a próxima rodada" : "Modo espectador"}
+        </div>
+        {startBtn}
+      </div>
+    );
+  }
+
+  // JOGADOR ATIVO com confronto definido: as duas lines + o mote/botão.
+  // mobile: título em cima → 2 lines no meio → botão embaixo.
+  // desktop: 3 colunas (line · CENTRO com título+botão · line).
+  if (myNext) {
+    const hype = phaseHype(myNext.phaseLabel);
+    // centro com card PRÓPRIO (borda + fundo), igual ao painel de cartas/feed —
+    // NÃO um container englobando tudo. As lines têm seus próprios cards (LineColumn).
+    const center = (
+      // h-full: ACOMPANHA a altura das lines (o grid estica esta coluna no desktop).
+      // min-h só no mobile (lá ele fica em cima, sem line pra acompanhar).
+      <div className="flex h-full min-h-[160px] flex-col items-center justify-center rounded-2xl border px-3 py-5 text-center wide:min-h-0"
+        style={{ background: "rgba(22,23,28,0.7)", borderColor: accent }}>
+        <div className="font-mono text-[10px] uppercase tracking-[2px] text-muted">{myNext.phaseLabel} · {hype.eyebrow}</div>
+        <div className="mt-1.5 font-display text-[18px] font-bold uppercase leading-tight tracking-[1px] text-gold-bright wide:text-[20px]">{hype.title}</div>
+        <div className="mt-4 wide:mt-6">{startBtn}</div>
+      </div>
+    );
+    return (
+      // grid TRANSPARENTE (sem card em volta) — só organiza as 3 peças, cada uma com seu card.
+      // items-start no mobile (centro full-width não estica); items-stretch no desktop
+      // (as 3 colunas ficam da MESMA altura → o centro acompanha as lines).
+      <div className="grid items-start gap-3 [grid-template-columns:1fr_1fr] wide:items-stretch wide:[grid-template-columns:1fr_1.15fr_1fr]">
+        {/* mobile: centro ocupa a 1ª linha inteira (acima das lines); desktop: vai pro meio. */}
+        <div className="col-span-2 min-w-0 wide:order-2 wide:col-span-1 wide:h-full">{center}</div>
+        <div className="min-w-0 wide:order-1"><LineColumn c={myNext.me} mine side="left" showRatings={showRatings} subtitle="" compactMobile /></div>
+        <div className="min-w-0 wide:order-3"><LineColumn c={myNext.opp} mine={false} side="right" showRatings={showRatings} subtitle="" compactMobile /></div>
+      </div>
+    );
+  }
+
+  // SÓ BOTS (sem confronto meu nesta fase): só o aviso + botão.
   return (
-    <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border border-gold/25 px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.7)" }}>
+    <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border px-4 py-10 text-center" style={{ background: "rgba(22,23,28,0.7)", borderColor: accent }}>
       <div className="font-mono text-[10px] uppercase tracking-[2px] text-muted">Fase pronta</div>
       <div className="mt-2 mb-5 font-display text-[18px] font-bold uppercase tracking-[1px] text-cream">
-        {hasHuman
-          ? "Todas as séries com humano rodam juntas — cada um vê a sua"
-          : "Rodada só de bots — acompanhe os placares no bracket acima"}
+        {hasHuman ? "Hora da rodada" : "Rodada só de bots"}
       </div>
-      {showButton ? (
-        <button onClick={onStart} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
-          ▶ Iniciar rodada
-        </button>
-      ) : (
-        <span className="font-mono text-[12px] text-muted">aguardando o host iniciar a rodada…</span>
-      )}
+      {startBtn}
     </div>
   );
 }
@@ -385,19 +476,22 @@ function CardsPhasePanel({ s, byId, myId, showRatings, iSent }: { s: SeriesState
   const iPicked = iSent || (iAmA ? s.cards?.pickA : s.cards?.pickB) != null;
   const spectator = !iAmA && s.bId !== myId;
   return (
-    <div className="grid items-start gap-3 [grid-template-columns:1fr] wide:[grid-template-columns:1fr_1.1fr_1fr]">
-      <LineColumn c={left} mine={left.id === myId} side="left" showRatings={showRatings} subtitle="" />
-      <div className="flex h-full min-h-[330px] flex-col items-center justify-center rounded-2xl border px-3 py-5 text-center" style={{ background: "rgba(22,23,28,0.7)", borderColor: hostile ? "rgba(224,88,74,0.4)" : "rgba(201,162,75,0.3)" }}>
-        <div className="text-[34px]">{hostile ? "⚠️" : "⚡"}</div>
-        <div className="mt-2 font-display text-[17px] font-bold uppercase tracking-[1px]" style={{ color: hostile ? "#f0867a" : "#e8ce86" }}>
+    // mobile: status COMPACTO no topo + as 2 lines lado a lado embaixo (menos scroll).
+    // desktop: 3 colunas (line · centro · line).
+    <div className="grid items-start gap-3 [grid-template-columns:1fr_1fr] wide:[grid-template-columns:1fr_1.1fr_1fr]">
+      <div className="col-span-2 flex flex-col items-center justify-center rounded-2xl border px-3 py-4 text-center wide:order-2 wide:col-span-1 wide:min-h-[330px] wide:py-5"
+        style={{ background: "rgba(22,23,28,0.7)", borderColor: hostile ? "rgba(224,88,74,0.4)" : "rgba(201,162,75,0.3)" }}>
+        <div className="text-[28px] wide:text-[34px]">{hostile ? "⚠️" : "⚡"}</div>
+        <div className="mt-1.5 font-display text-[16px] font-bold uppercase tracking-[1px] wide:mt-2 wide:text-[17px]" style={{ color: hostile ? "#f0867a" : "#e8ce86" }}>
           {hostile ? "Evento de azar" : "Evento de cartas"}
         </div>
-        <div className="mt-2 font-mono text-[11px] uppercase tracking-[2px] text-muted">
+        <div className="mt-1.5 font-mono text-[11px] uppercase tracking-[2px] text-muted wide:mt-2">
           {spectator ? "os dois estão escolhendo…" : iPicked ? "aguardando o rival escolher…" : "escolha a sua carta acima"}
         </div>
-        <div className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-dim">mesmo nível pros dois lados</div>
+        <div className="mt-2 hidden font-mono text-[10px] uppercase tracking-[2px] text-dim wide:mt-3 wide:block">mesmo nível pros dois lados</div>
       </div>
-      <LineColumn c={right} mine={right.id === myId} side="right" showRatings={showRatings} subtitle="" />
+      <div className="min-w-0 wide:order-1"><LineColumn c={left} mine={left.id === myId} side="left" showRatings={showRatings} subtitle="" compactMobile /></div>
+      <div className="min-w-0 wide:order-3"><LineColumn c={right} mine={right.id === myId} side="right" showRatings={showRatings} subtitle="" compactMobile /></div>
     </div>
   );
 }
@@ -422,9 +516,10 @@ function SeriesPanel({ s, secs, byId, myId, showRatings }: { s: NonNullable<Retu
   const minute = events.length ? events[events.length - 1].minute : 0;
 
   return (
-    <div className="grid items-start gap-3 [grid-template-columns:1fr] wide:[grid-template-columns:1fr_1.1fr_1fr]">
-      <LineColumn c={left} mine={left.id === myId} side="left" showRatings={showRatings} subtitle="" />
-      <div className="flex h-full min-h-[330px] flex-col items-center justify-center rounded-2xl border border-gold/25 px-3 py-5 text-center" style={{ background: "rgba(22,23,28,0.7)" }}>
+    // mobile: placar/feed no topo (full-width) + as 2 lines lado a lado embaixo.
+    // desktop: 3 colunas (line · centro · line).
+    <div className="grid items-start gap-3 [grid-template-columns:1fr_1fr] wide:[grid-template-columns:1fr_1.1fr_1fr]">
+      <div className="col-span-2 flex flex-col items-center justify-center rounded-2xl border border-gold/25 px-3 py-4 text-center wide:order-2 wide:col-span-1 wide:min-h-[330px] wide:py-5" style={{ background: "rgba(22,23,28,0.7)" }}>
         {s.startDeadline != null ? (
           <>
             <div className="font-mono text-[10px] uppercase tracking-[2px] text-muted">Próxima série</div>
@@ -471,7 +566,8 @@ function SeriesPanel({ s, secs, byId, myId, showRatings }: { s: NonNullable<Retu
           </>
         )}
       </div>
-      <LineColumn c={right} mine={right.id === myId} side="right" showRatings={showRatings} subtitle="" />
+      <div className="min-w-0 wide:order-1"><LineColumn c={left} mine={left.id === myId} side="left" showRatings={showRatings} subtitle="" compactMobile /></div>
+      <div className="min-w-0 wide:order-3"><LineColumn c={right} mine={right.id === myId} side="right" showRatings={showRatings} subtitle="" compactMobile /></div>
     </div>
   );
 }
@@ -498,19 +594,41 @@ function Butterfly({ bracket, byId, myId, liveId, liveScore, sideScores, onInspe
     return { a: m.scoreA, b: m.scoreB, live: false, done: m.done };
   };
 
+  const card = (m: BracketMatch, opts?: { stage?: string; mirror?: boolean; final?: boolean; noHeader?: boolean }) => (
+    <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect}
+      stage={opts?.stage} mirror={opts?.mirror} final={opts?.final} noHeader={opts?.noHeader} />
+  );
+
   return (
-    <div className="grid items-center gap-3 [grid-template-columns:1fr_1fr_minmax(180px,1.25fr)_1fr_1fr]">
-      {/* quartas esq */}
-      <Column>{left.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Quartas" />)}</Column>
-      {/* semis esq */}
-      <Column>{left.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Semifinal" />)}</Column>
-      {/* final */}
-      <Column><MatchCard m={bracket.gf} byId={byId} myId={myId} live={liveId === bracket.gf.id} score={scoreOf(bracket.gf)} onInspect={onInspect} final /></Column>
-      {/* semis dir */}
-      <Column>{right.sf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Semifinal" />)}</Column>
-      {/* quartas dir */}
-      <Column>{right.qf.map((m) => <MatchCard key={m.id} m={m} byId={byId} myId={myId} live={liveId === m.id} score={scoreOf(m)} onInspect={onInspect} stage="Quartas" />)}</Column>
-    </div>
+    <>
+      {/* ── MOBILE (< wide): empilhado por FASE, de cima pra baixo. Cada seção tem
+          um título e os confrontos num grid (2 col), sem espelhar. ── */}
+      <div className="flex flex-col gap-5 wide:hidden">
+        <PhaseSection title="Quartas de final">
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="flex flex-col gap-2.5">{left.qf.map((m) => card(m, { noHeader: true }))}</div>
+            <div className="flex flex-col gap-2.5">{right.qf.map((m) => card(m, { noHeader: true, mirror: true }))}</div>
+          </div>
+        </PhaseSection>
+        <PhaseSection title="Semifinais">
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="flex flex-col gap-2.5">{left.sf.map((m) => card(m, { noHeader: true }))}</div>
+            <div className="flex flex-col gap-2.5">{right.sf.map((m) => card(m, { noHeader: true, mirror: true }))}</div>
+          </div>
+        </PhaseSection>
+        {/* a grande final NÃO tem rótulo de seção — o próprio card já diz. */}
+        {card(bracket.gf, { final: true })}
+      </div>
+
+      {/* ── DESKTOP (>= wide): bracket borboleta horizontal. ── */}
+      <div className="hidden items-center gap-3 wide:grid [grid-template-columns:1fr_1fr_minmax(180px,1.25fr)_1fr_1fr]">
+        <Column>{left.qf.map((m) => card(m, { stage: "Quartas" }))}</Column>
+        <Column>{left.sf.map((m) => card(m, { stage: "Semifinal" }))}</Column>
+        <Column>{card(bracket.gf, { final: true })}</Column>
+        <Column>{right.sf.map((m) => card(m, { stage: "Semifinal", mirror: true }))}</Column>
+        <Column>{right.qf.map((m) => card(m, { stage: "Quartas", mirror: true }))}</Column>
+      </div>
+    </>
   );
 }
 
@@ -518,41 +636,120 @@ function Column({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col justify-center gap-4">{children}</div>;
 }
 
-function MatchCard({ m, byId, myId, live, score, final, stage, onInspect }: {
+/** Seção de fase no layout MOBILE: título dourado CENTRALIZADO (linha dos 2 lados)
+ * + os confrontos da fase. */
+function PhaseSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center gap-2.5">
+        <span className="h-px flex-1 bg-gold/15" />
+        <span className="font-display text-[11px] font-bold uppercase tracking-[2px] text-gold-bright">{title}</span>
+        <span className="h-px flex-1 bg-gold/15" />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function MatchCard({ m, byId, myId, live, score, final, stage, mirror, noHeader, onInspect }: {
   m: BracketMatch; byId: Map<string, Competitor>; myId: string | null;
   live: boolean; score: { a: number; b: number; live: boolean; done: boolean }; final?: boolean;
-  stage?: string;
+  stage?: string; mirror?: boolean; noHeader?: boolean;
   onInspect: (id: string) => void;
 }) {
   const a = m.a ? byId.get(m.a) : null;
   const b = m.b ? byId.get(m.b) : null;
   const started = score.a > 0 || score.b > 0 || score.done;
   const canInspect = !!a && !!b;
-  return (
-    <div onClick={canInspect ? () => onInspect(m.id) : undefined}
-      className={`overflow-hidden rounded-[14px] border transition-shadow ${live ? "border-gold/70" : final ? "border-gold/45" : "border-gold/20"} ${canInspect ? "cursor-pointer hover:border-gold/55" : ""}`}
-      style={{ background: final ? "linear-gradient(160deg,rgba(74,60,26,0.6),rgba(36,29,12,0.88))" : "rgba(26,27,31,0.7)", boxShadow: live ? "0 0 18px -4px rgba(201,162,75,0.6)" : undefined }}>
-      {final ? (
+  const cardCls = `overflow-hidden rounded-[14px] border transition-shadow ${live ? "border-gold/70" : final ? "border-gold/45" : "border-gold/20"} ${canInspect ? "cursor-pointer hover:border-gold/55" : ""}`;
+  const cardStyle = { background: final ? "linear-gradient(160deg,rgba(74,60,26,0.6),rgba(36,29,12,0.88))" : "rgba(26,27,31,0.7)", boxShadow: live ? "0 0 18px -4px rgba(201,162,75,0.6)" : undefined };
+
+  // GRANDE FINAL: uma linha só — nome (esq) · placar no MEIO · nome (dir).
+  if (final) {
+    const aWin = score.done && score.a > score.b;
+    const bWin = score.done && score.b > score.a;
+    return (
+      <div onClick={canInspect ? () => onInspect(m.id) : undefined} className={cardCls} style={cardStyle}>
         <div className="border-b border-gold/25 py-1.5 text-center font-mono text-[9.5px] uppercase tracking-[2px] text-gold-bright">🏆 Grande Final</div>
-      ) : stage ? (
+        <div className="flex items-center gap-2 px-3 py-3">
+          <span className={`min-w-0 flex-1 truncate text-right font-display text-[14px] font-semibold ${m.a === myId ? "text-gold-bright" : a?.isBot ? "text-muted" : "text-cream"}`}>
+            {a ? <CompName c={a} mirror /> : <Tbd mirror />}
+          </span>
+          <span className="flex shrink-0 items-center gap-2">
+            <ScoreChip score={started ? score.a : null} win={aWin} />
+            <span className="font-display text-[11px] font-bold uppercase tracking-wide text-gold-bright/70">×</span>
+            <ScoreChip score={started ? score.b : null} win={bWin} />
+          </span>
+          <span className={`min-w-0 flex-1 truncate font-display text-[14px] font-semibold ${m.b === myId ? "text-gold-bright" : b?.isBot ? "text-muted" : "text-cream"}`}>
+            {b ? <CompName c={b} /> : <Tbd />}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div onClick={canInspect ? () => onInspect(m.id) : undefined} className={cardCls} style={cardStyle}>
+      {stage && !noHeader && (
         <div className="border-b border-gold/10 py-1 text-center font-mono text-[8.5px] uppercase tracking-[2px] text-muted">{stage}</div>
-      ) : null}
-      <Slot c={a} mine={m.a === myId} score={started ? score.a : null} win={score.done && score.a > score.b} eliminated={score.done && score.a < score.b} />
+      )}
+      <Slot c={a} mine={m.a === myId} score={started ? score.a : null} win={score.done && score.a > score.b} eliminated={score.done && score.a < score.b} mirror={mirror} />
       <div className="h-px bg-gold/15" />
-      <Slot c={b} mine={m.b === myId} score={started ? score.b : null} win={score.done && score.b > score.a} eliminated={score.done && score.b < score.a} />
+      <Slot c={b} mine={m.b === myId} score={started ? score.b : null} win={score.done && score.b > score.a} eliminated={score.done && score.b < score.a} mirror={mirror} />
     </div>
   );
 }
 
-function Slot({ c, mine, score, win, eliminated }: { c: Competitor | null | undefined; mine: boolean; score: number | null; win: boolean; eliminated: boolean }) {
+/** Nome de um competidor no bracket: BotIcon (SVG, não emoji) + nome quando bot.
+ * `mirror` (lado direito) põe o ícone DEPOIS do nome, encostado à direita. */
+function CompName({ c, mirror }: { c: Competitor; mirror?: boolean }) {
+  if (!c.isBot) return <>{c.name}</>;
+  const icon = <BotIcon size={13} className="-mt-px" />;
   return (
-    <div className={`flex items-center gap-2 px-2.5 py-2.5 ${eliminated ? "opacity-45" : ""}`} style={{ background: eliminated ? "rgba(0,0,0,0.55)" : undefined }}>
-      <span className={`min-w-0 flex-1 truncate font-display text-[14px] font-semibold ${mine ? "text-gold-bright" : win ? "text-cream" : "text-muted"}`}>
-        {c ? competitorLabel(c) : <span className="text-dim">a definir</span>}
-      </span>
-      <span className={`shrink-0 font-mono text-[16px] font-bold tabular-nums ${score === null || score === 0 ? "text-dim" : win ? "text-win" : "text-muted"}`}>
-        {score ?? "–"}
-      </span>
+    <span className={`inline-flex w-full items-center gap-1.5 ${mirror ? "justify-end" : ""}`}>
+      {mirror ? <><span className="truncate">{c.name}</span>{icon}</> : <>{icon}<span className="truncate">{c.name}</span></>}
+    </span>
+  );
+}
+
+/** "A DEFINIR" — caixa alta, sem bold, bem apagado (slot ainda sem time).
+ * h-[24px]+flex pra centralizar verticalmente na mesma altura do ScoreChip.
+ * `mirror` (lado direito do bracket) encosta o texto à direita. */
+function Tbd({ mirror }: { mirror?: boolean }) {
+  return (
+    <span className={`flex h-[24px] w-full items-center font-mono text-[10px] font-normal uppercase leading-none tracking-[1.5px] text-dim/55 ${mirror ? "justify-end" : ""}`}>
+      a definir
+    </span>
+  );
+}
+
+/** Placar num quadrado de fundo escuro (o número vai DENTRO). Vazio = quadrado
+ * escuro sem número (quando a série ainda não começou). */
+function ScoreChip({ score, win }: { score: number | null; win: boolean }) {
+  const has = score !== null;
+  return (
+    <span
+      className={`flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-[6px] font-mono text-[15px] font-bold tabular-nums ${win ? "text-win" : has ? "text-cream" : "text-dim"}`}
+      style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(201,162,75,0.16)" }}
+    >
+      {has ? score : ""}
+    </span>
+  );
+}
+
+function Slot({ c, mine, score, win, eliminated, mirror }: { c: Competitor | null | undefined; mine: boolean; score: number | null; win: boolean; eliminated: boolean; mirror?: boolean }) {
+  // humano: branco (cream); bot: levemente acinzentado (muted); eu: dourado.
+  const nameColor = mine ? "text-gold-bright" : c?.isBot ? "text-muted" : "text-cream";
+  const name = (
+    <span className={`min-w-0 flex-1 truncate font-display text-[13px] font-semibold wide:text-[14px] ${mirror ? "text-right" : ""} ${nameColor}`}>
+      {c ? <CompName c={c} mirror={mirror} /> : <Tbd mirror={mirror} />}
+    </span>
+  );
+  const scoreEl = <ScoreChip score={score} win={win} />;
+  // lado DIREITO do bracket é espelhado: placar primeiro, nome depois (aponta pro centro).
+  return (
+    <div className={`flex items-center gap-1.5 px-2 py-2 wide:gap-2 wide:px-2.5 wide:py-2.5 ${eliminated ? "opacity-45" : ""}`} style={{ background: eliminated ? "rgba(0,0,0,0.55)" : undefined }}>
+      {mirror ? <>{scoreEl}{name}</> : <>{name}{scoreEl}</>}
     </div>
   );
 }

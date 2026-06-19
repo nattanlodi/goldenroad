@@ -10,6 +10,7 @@ import { ROLES } from "../../data/teams";
 import { rarityFor, yy } from "../../game/helpers";
 import type { Competitor } from "../../game/tournament";
 import { ROLE_SVG } from "../../components/roleIcons";
+import { BotIcon } from "../../components/BotIcon";
 
 export function LiveRostersColumn({
   others,
@@ -55,8 +56,9 @@ function LiveRosterRow({ c, revealed, showRatings }: { c: Competitor; revealed: 
     <div className="rounded-[9px] border border-gold/12 px-2 py-1.5" style={{ background: "rgba(30,32,38,0.6)" }}>
       {/* nome do time + média (atualiza a cada pick — média das lanes reveladas) */}
       <div className="mb-1 flex items-center justify-between gap-1.5">
-        <span className="min-w-0 truncate font-display text-[12.5px] font-bold text-cream">
-          {c.isBot ? `🤖 ${c.name}` : c.name}
+        <span className="flex min-w-0 items-center gap-1.5 truncate font-display text-[12.5px] font-bold text-cream">
+          {c.isBot && <BotIcon size={12} className="-mt-px" />}
+          <span className="truncate">{c.name}</span>
         </span>
         {shownAvg != null && (
           <span

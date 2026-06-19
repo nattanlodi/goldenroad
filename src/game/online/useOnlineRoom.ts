@@ -66,6 +66,9 @@ export interface UseOnlineRoom {
   ended: boolean;
   /** presentes pela rede (presence) — pode divergir momentaneamente de players. */
   onlineCount: number;
+  /** "agora" no relógio do HOST (corrige clock skew do cliente). Use pra comparar
+   * com deadlines absolutas do estado, NUNCA Date.now() cru no cliente. */
+  serverNow: () => number;
   // ações
   setReady: (ready: boolean) => void;
   setConfig: (patch: Partial<RoomConfig>) => void;
@@ -76,6 +79,8 @@ export interface UseOnlineRoom {
   startBracketSeries: () => void;
   /** host: final acabou e o host clicou "Ver classificação final" → pódio. */
   showFinalResult: () => void;
+  /** host: "jogar de novo" na tela de resultado → volta a sala pro lobby. */
+  rematch: () => void;
   /** subfase de cartas: registra MINHA escolha (carta + alvo) na minha série. */
   pickCard: (choice: CardChoice) => void;
   leave: () => void;
@@ -177,7 +182,7 @@ export function useOnlineRoom(opts: {
       const out: AutoPick[] = [];
       for (const p of pendingThisRound(st)) {
         const rng = playerRng(code, p.playerId, st.draftRound * 101 + 7);
-        const ap = randomAutoPick(rng, p.picks);
+        const ap = randomAutoPick(rng, p.picks, st.config.campaigns);
         if (ap) out.push({ playerId: p.playerId, role: ap.role, pick: ap.pick });
       }
       return out;
@@ -350,6 +355,7 @@ export function useOnlineRoom(opts: {
     conn: view?.conn ?? "idle",
     ended: view?.ended ?? false,
     onlineCount: view?.members.length ?? 0,
+    serverNow: view?.serverNow ?? (() => Date.now()),
     setReady: useCallback((ready: boolean) => dispatch({ kind: "setReady", ready }), [dispatch]),
     setConfig: useCallback((patch: Partial<RoomConfig>) => dispatch({ kind: "setConfig", patch }), [dispatch]),
     start: useCallback(() => {
@@ -361,7 +367,7 @@ export function useOnlineRoom(opts: {
       const humans = cur ? humansOf(cur) : [];
       const need = Math.max(0, BRACKET_SIZE - humans.length);
       const rng = makeRng(seedFromCode(`${cur?.code ?? ""}:bots`));
-      const bots: RoomPlayer[] = makeBots(rng, need).map((c) => ({
+      const bots: RoomPlayer[] = makeBots(rng, need, cur?.config.campaigns).map((c) => ({
         playerId: c.id,
         nick: c.name,
         isHost: false,
@@ -390,6 +396,7 @@ export function useOnlineRoom(opts: {
       if (!cur?.bracket || !cur.winnerId) return;
       dispatch({ kind: "finishTournament", winnerId: cur.winnerId, bracket: cur.bracket });
     }, [dispatch, view?.state]),
+    rematch: useCallback(() => dispatch({ kind: "rematch" }), [dispatch]),
     leave,
   };
 }

@@ -1,8 +1,20 @@
 import type { Tournament } from "../../game/useTournament";
 import type { Role } from "../../types";
-import { competitorLabel, competitorSubtitle, placements, type Bracket, type Competitor } from "../../game/tournament";
+import { competitorSubtitle, placements, type Bracket, type Competitor } from "../../game/tournament";
 import { Flag } from "../../components/Flag";
 import { RoleBadge } from "../../components/RoleBadge";
+import { BotIcon } from "../../components/BotIcon";
+
+/** Nome de um competidor: BotIcon (SVG) + nome quando bot; só o nome se humano. */
+function CName({ c, iconSize = 13 }: { c: Competitor; iconSize?: number }) {
+  if (!c.isBot) return <>{c.name}</>;
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <BotIcon size={iconSize} className="-mt-px" />
+      <span className="truncate">{c.name}</span>
+    </span>
+  );
+}
 
 /** Cor/rótulo por colocação. */
 function placeStyle(place: number): { label: string; color: string; medal: string } {
@@ -27,13 +39,16 @@ export function TournamentResultScreen({ t }: { t: Tournament }) {
   );
 }
 
-/** Pódio do torneio de 8 — REUSADO no offline (1×7) e no online (Degrau 2). */
-export function TournamentPodium({ bracket, competitors, championId, myId, onReset }: {
+/** Pódio do torneio de 8 — REUSADO no offline (1×7) e no online (Degrau 2).
+ * Online: passe `online` com isHost/onRematch/onExit pra mostrar "Jogar de novo"
+ * (volta pra MESMA sala) + "Sair", em vez do "Novo torneio" do offline. */
+export function TournamentPodium({ bracket, competitors, championId, myId, onReset, online }: {
   bracket: Bracket;
   competitors: Competitor[];
   championId: string | null;
   myId: string;
   onReset: () => void;
+  online?: { isHost: boolean; onRematch: () => void; onExit: () => void };
 }) {
   const byId = new Map(competitors.map((c) => [c.id, c]));
   const places = placements(bracket);
@@ -60,10 +75,10 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
             iWon ? (
               <span className="text-gold-fill">Você é o campeão do mundo!</span>
             ) : (
-              <>
-                {champion.isBot && <span className="text-cream">🤖 </span>}
+              <span className="inline-flex items-center gap-2.5">
+                {champion.isBot && <BotIcon size={34} className="mt-1" />}
                 <span className="text-gold-fill">{champion.name} venceu!</span>
-              </>
+              </span>
             )
           ) : (
             "Torneio encerrado"
@@ -102,7 +117,7 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className={`truncate font-display text-[15px] font-bold ${mine ? "text-gold-bright" : "text-cream"}`}>
-                      {competitorLabel(c)}{mine ? " (você)" : ""}
+                      <CName c={c} />{mine ? " (você)" : ""}
                     </span>
                     <span className="truncate font-mono text-[9.5px] text-dim">{competitorSubtitle(c)}</span>
                   </span>
@@ -121,10 +136,29 @@ export function TournamentPodium({ bracket, competitors, championId, myId, onRes
       </div>
 
       {/* CTA */}
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onClick={onReset} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
-          🔁 Novo torneio
-        </button>
+      <div className="mt-8 flex flex-col items-center justify-center gap-3">
+        {online ? (
+          // ONLINE: volta pra MESMA sala (rematch). Só o host reinicia; os demais
+          // veem o aviso e voltam ao lobby quando o host clica.
+          <>
+            {online.isHost ? (
+              <button onClick={online.onRematch} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
+                ↺ Jogar de novo
+              </button>
+            ) : (
+              <div className="rounded-[12px] border border-gold/25 px-6 py-3 text-center font-mono text-[12px] text-muted" style={{ background: "rgba(22,23,28,0.6)" }}>
+                aguardando o host reiniciar a sala…
+              </div>
+            )}
+            <button onClick={online.onExit} className="btn-ghost cursor-pointer rounded-[10px] px-6 py-2.5 font-display text-[13px] font-semibold uppercase tracking-[1px]">
+              ← Sair da sala
+            </button>
+          </>
+        ) : (
+          <button onClick={onReset} className="btn-gold cursor-pointer rounded-[12px] border-none px-8 py-3.5 font-display text-[16px] font-semibold uppercase tracking-[2px]">
+            🔁 Novo torneio
+          </button>
+        )}
       </div>
     </div>
   );
@@ -137,10 +171,10 @@ function PodiumStep({ c, place, height, big, mine, second }: { c: Competitor | n
       <div className="mb-2 flex flex-col items-center text-center">
         <span className="text-[22px]">{st.medal}</span>
         <span className={`mt-1 font-display text-[14px] font-bold leading-tight ${big ? "text-gold-bright" : "text-cream"}`}>
-          {c ? competitorLabel(c) : "—"}{mine ? " (você)" : ""}
+          {c ? <CName c={c} /> : "—"}{mine ? " (você)" : ""}
         </span>
         {second && (
-          <span className="font-display text-[12px] font-semibold text-cream">{competitorLabel(second)}</span>
+          <span className="font-display text-[12px] font-semibold text-cream"><CName c={second} /></span>
         )}
         {c && <span className="font-mono text-[9px] text-dim">média {c.avg}</span>}
       </div>

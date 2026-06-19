@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Game } from "../game/useGame";
 import { DRAFT_TEAMS, ROLES, SEMIFINAL_IDS } from "../data/teams";
 import { lineScore, lineupPicks, rarityFor, tierFor, yy } from "../game/helpers";
@@ -6,6 +6,7 @@ import { Flag } from "../components/Flag";
 import { RoleBadge } from "../components/RoleBadge";
 import { Logo6x0 } from "../components/Logo6x0";
 import { RiftMap } from "../components/RiftMap";
+import { ConfirmModal } from "../components/ConfirmModal";
 
 const diffSelected: CSSProperties = {
   border: "1.5px solid #E8CE86",
@@ -47,13 +48,18 @@ export function DraftScreen({ game }: { game: Game }) {
   const canReroll = rerolls > 0 && !rolling;
   const canSame = !!current && !rolling && DRAFT_TEAMS.some((t) => t.team === current.team && t.id !== current.id);
 
+  // sair no MEIO do draft pede confirmação (se já pegou algum jogador). Antes do 1º
+  // pick não há o que perder → sai direto.
+  const [confirmExit, setConfirmExit] = useState(false);
+  const tryExit = () => { if (filledCount > 0) setConfirmExit(true); else game.restart(); };
+
   return (
     <div className="anim-fade-fast mx-auto w-full max-w-[1180px]">
       {/* top bar */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-4 sm:mb-[22px]">
         <div className="flex items-center gap-[13px]">
           <div
-            onClick={game.restart}
+            onClick={tryExit}
             title="Voltar ao início"
             className="-m-1 flex cursor-pointer items-center rounded-lg p-1 transition-opacity hover:opacity-70"
           >
@@ -355,6 +361,18 @@ export function DraftScreen({ game }: { game: Game }) {
           <RiftMap lineup={lineup} showRatings={showRatings} filledCount={filledCount} />
         </div>
       </div>
+
+      {confirmExit && (
+        <ConfirmModal
+          icon="🚪"
+          title="Sair do draft?"
+          message="Você está montando sua line. Se sair agora, perde o progresso e volta ao início."
+          cancelLabel="Continuar montando"
+          confirmLabel="Sair"
+          onCancel={() => setConfirmExit(false)}
+          onConfirm={() => { setConfirmExit(false); game.restart(); }}
+        />
+      )}
     </div>
   );
 }

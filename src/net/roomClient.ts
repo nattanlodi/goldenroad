@@ -55,6 +55,10 @@ export interface RoomView<S> {
   rev: number;
   /** sala encerrada (host saiu / bye). */
   ended: boolean;
+  /** "agora" no relógio do HOST (= meuNow + offset). Use ISTO pra comparar com
+   * deadlines absolutas do estado (startDeadline/cards.deadline) — não Date.now(),
+   * que pode estar dessincronizado no cliente (ex.: celular com relógio off). */
+  serverNow: () => number;
 }
 
 export interface RoomCallbacks<S> {
@@ -74,7 +78,7 @@ export interface RoomClientOpts<S, I> {
 
 type Wire<S, I> =
   | { w: "intent"; intent: I }
-  | { w: "snapshot"; rev: number; state: S }
+  | { w: "snapshot"; rev: number; state: S; hostTime: number }
   | { w: "hello"; playerId: string }
   | { w: "bye" };
 
@@ -91,6 +95,13 @@ export class RoomClient<S, I> {
   // estado oficial + revisão (no host é a fonte; no cliente é a cópia recebida).
   private state: S;
   private rev = 0;
+  // OFFSET de relógio (clienteNow + offset ≈ relógioDoHost). O host carimba cada
+  // snapshot com seu Date.now(); o cliente calcula a diferença pro relógio dele.
+  // Necessário porque o jogo usa DEADLINES ABSOLUTAS (startDeadline, cards.deadline)
+  // geradas pelo host — se o relógio do cliente (ex.: celular) estiver dessincronizado,
+  // ele compararia esses timestamps com a hora ERRADA e a janela de cartas/series
+  // nunca abriria (ou abriria fora de hora). No host o offset é sempre 0.
+  private clockOffset = 0;
 
   private cbs: RoomCallbacks<S> | null = null;
   private heartbeat: ReturnType<typeof setInterval> | null = null;
@@ -181,6 +192,7 @@ export class RoomClient<S, I> {
       state: this.rev > 0 || this.isHost() ? this.state : null,
       rev: this.rev,
       ended: this.ended,
+      serverNow: () => Date.now() + this.clockOffset,
     };
   }
 
@@ -198,7 +210,7 @@ export class RoomClient<S, I> {
 
   private broadcast(): void {
     this.rev += 1;
-    this.post({ w: "snapshot", rev: this.rev, state: this.state });
+    this.post({ w: "snapshot", rev: this.rev, state: this.state, hostTime: Date.now() });
     this.emit(); // host também re-renderiza com o próprio estado novo
   }
 
@@ -216,6 +228,10 @@ export class RoomClient<S, I> {
         if (!this.isHost() && m.rev > this.rev) {
           this.rev = m.rev;
           this.state = m.state;
+          // alinha o relógio ao do host: offset = hostTime - meuNow (no instante da
+          // recepção). Ignora a latência da rede (alguns ms/dezenas de ms), o que é
+          // ótimo o suficiente — as janelas do jogo são de segundos.
+          if (typeof m.hostTime === "number") this.clockOffset = m.hostTime - Date.now();
           this.emit();
         }
         break;

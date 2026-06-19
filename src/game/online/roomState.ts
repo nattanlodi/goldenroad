@@ -172,6 +172,7 @@ const DEFAULT_CONFIG: RoomConfig = {
   cardsOn: false,
   pace: "imersivo",
   seriesMode: "paralelo",
+  campaigns: ["worlds", "msi"], // pool completo por padrão
 };
 
 /** Estado inicial criado pelo HOST ao abrir a sala. Começa SEM players: cada um
@@ -221,6 +222,7 @@ export type RoomIntent =
   | { kind: "resolveBracketSeries"; bracket: Bracket; queue: string[]; queueIndex: number } // host aplica resultado(s) + propaga + avança a fila
   | { kind: "bracketFinished"; winnerId: string; bracket: Bracket } // final terminou → fica no bracket (tournamentOver) aguardando o host clicar
   | { kind: "finishTournament"; winnerId: string; bracket: Bracket } // host clicou "Ver classificação final" → pódio (com o bracket FINAL resolvido)
+  | { kind: "rematch" } // host: volta a sala pro LOBBY (mesmos humanos), pronto pra outra partida
   | { kind: "leave" }; // sair da sala
 
 /** Auto-pick que o host aplica a quem não escolheu ao zerar o timer. */
@@ -475,6 +477,35 @@ export function reduceRoom(state: RoomState, intent: RoomIntent, ctx: ReduceCtx)
       // (aplicado em bracketFinished); reusa o do estado se o intent não trouxer.
       if (ctx.from !== ctx.hostId || (state.phase !== "bracket")) return state;
       return { ...state, phase: "result", winnerId: intent.winnerId, bracket: intent.bracket, series: null, parallelSeries: [], bracketStartDeadline: null };
+    }
+
+    case "rematch": {
+      // host: "jogar de novo" na tela de resultado → volta a sala pro LOBBY com os
+      // MESMOS humanos (zera ready/picks). Os BOTS são descartados (o próximo
+      // "Iniciar" re-sorteia). Config e código preservados. Reseta TUDO de partida.
+      if (ctx.from !== ctx.hostId || state.phase !== "result") return state;
+      const humans = state.players
+        .filter((p) => !p.isBot)
+        .map((p) => ({ ...p, ready: false, picks: {}, pickedThisRound: false }));
+      return {
+        ...state,
+        phase: "lobby",
+        players: humans,
+        draftRound: 1,
+        roundDeadline: null,
+        series: null,
+        bracket: null,
+        bracketQueue: [],
+        queueIndex: 0,
+        bracketStartDeadline: null,
+        pendingSeries: null,
+        pendingSideMatches: [],
+        parallelSeries: [],
+        parallelPending: false,
+        sideMatches: [],
+        winnerId: null,
+        tournamentOver: false,
+      };
     }
 
     case "leave": {

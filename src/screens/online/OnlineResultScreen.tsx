@@ -33,7 +33,14 @@ export function OnlineResult({ r, myId, overrideBracket = null, onExit }: { r: U
     const championId = bracket.gf.winner ?? st?.winnerId ?? null;
     return (
       <div className="anim-fade mx-auto w-full">
-        <TournamentPodium bracket={bracket} competitors={competitors} championId={championId} myId={myId ?? ""} onReset={onExit} />
+        <TournamentPodium
+          bracket={bracket}
+          competitors={competitors}
+          championId={championId}
+          myId={myId ?? ""}
+          onReset={onExit}
+          online={{ isHost: r.isHost, onRematch: r.rematch, onExit }}
+        />
       </div>
     );
   }

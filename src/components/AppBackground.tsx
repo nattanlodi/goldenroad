@@ -7,7 +7,7 @@
  *   4. vinheta — escurece as bordas pra dar foco ao centro
  * Tudo em CSS (GPU via transform/opacity) e respeita prefers-reduced-motion.
  */
-export function AppBackground({ dim = false, variant }: { dim?: boolean; variant?: "game" }) {
+export function AppBackground({ dim = false, variant, gray = false }: { dim?: boolean; variant?: "game"; gray?: boolean }) {
   // NÃO usar `fixed` aqui: um elemento position:fixed cobrindo a viewport inteira
   // impede o Safari iOS de recolher a barra de endereço ao rolar. Usamos `absolute`
   // ancorado no container (.bg-app, position:relative) — o fundo cobre toda a área
@@ -15,8 +15,11 @@ export function AppBackground({ dim = false, variant }: { dim?: boolean; variant
   const cls = ["app-bg pointer-events-none absolute inset-0 z-0 overflow-hidden"];
   if (dim) cls.push("app-bg-dim");
   if (variant === "game") cls.push("app-bg-game");
+  // `gray`: dessatura o fundo (dourado → cinza). Usado quando o jogador foi
+  // eliminado do bracket online — reforça que ele saiu do torneio (virou espectador).
+  const style = gray ? { filter: "grayscale(0.92) brightness(0.92)" } : undefined;
   return (
-    <div aria-hidden className={cls.join(" ")}>
+    <div aria-hidden className={cls.join(" ")} style={style}>
       <div className="app-bg-aurora" />
       <div className="app-bg-beams" />
       <div className="app-bg-particles" />

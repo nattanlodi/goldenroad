@@ -9,7 +9,7 @@
 // nem estado de React. Isso é o que permite reproduzir o mesmo torneio em
 // qualquer navegador (base pro online no Degrau 1+).
 
-import type { Lineup, LineupPlayer, Role, Team } from "../types";
+import type { Lineup, LineupPlayer, Role, Team, Tournament } from "../types";
 import { DRAFT_TEAMS, ROLES } from "../data/teams";
 import { teamAvg } from "./helpers";
 import type { Rng } from "./prng";
@@ -34,6 +34,8 @@ export interface TournamentPick {
   year: number;
   league: string;
   country?: string;
+  /** torneio de origem do pick (worlds/msi/…) — default "worlds". */
+  tournament?: Tournament;
 }
 
 /** Um competidor do bracket: humano (line draftada) ou bot (line sorteada). */
@@ -97,6 +99,7 @@ export function teamToLine(t: Team): TournamentPick[] {
       short: t.short,
       year: t.year,
       league: t.league,
+      tournament: t.tournament ?? "worlds",
     });
   }
   return ROLES.map((r) => byRole.get(r)).filter((p): p is TournamentPick => !!p);
@@ -139,19 +142,22 @@ export function picksToLineup(picks: Partial<Record<Role, TournamentPick>>): Lin
  * pega um time finalista qualquer (uniforme), pra cobrir toda a faixa ~84..97.
  * Picks podem repetir entre bots por agora (pool não-exclusivo, V1).
  */
-export function rollBotLine(rng: Rng): TournamentPick[] {
-  const t = rng.pick(FINALIST_TEAMS);
+export function rollBotLine(rng: Rng, campaigns?: Tournament[]): TournamentPick[] {
+  const set = campaigns && campaigns.length ? new Set(campaigns) : null;
+  const pool = set ? FINALIST_TEAMS.filter((t) => set.has(t.tournament ?? "worlds")) : FINALIST_TEAMS;
+  const t = rng.pick(pool.length ? pool : FINALIST_TEAMS);
   return teamToLine(t);
 }
 
 /**
  * Gera os N bots que preenchem o bracket (8 − humanos). Nomes únicos com 🤖,
- * lines de força variada. `usedNames` evita repetir nomes já em uso (ex.: nicks).
+ * lines de força variada. `campaigns` (opcional) restringe os times-base aos
+ * campeonatos escolhidos na sala (online); ausente = todos (offline).
  */
-export function makeBots(rng: Rng, count: number): Competitor[] {
+export function makeBots(rng: Rng, count: number, campaigns?: Tournament[]): Competitor[] {
   const names = rng.shuffle(BOT_NAMES).slice(0, count);
   return names.map((name, i) => {
-    const line = rollBotLine(rng);
+    const line = rollBotLine(rng, campaigns);
     return {
       id: `bot-${i}`,
       name,

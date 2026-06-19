@@ -24,9 +24,11 @@ export function App() {
   // fase interna do duelo online (reportada pelo OnlineScreen).
   const [onlinePhase, setOnlinePhase] = useState<string>("lobby");
 
+  // eliminado no bracket online → fundo escuro porém DESSATURADO (cinza), não dourado.
+  const isSpectator = online && onlinePhase === "bracket-spectator";
   // fundo "game" (escuro/dourado): jogo solo em série E a série/bracket do duelo
-  // online — demais telas no fundo padrão.
-  const isGame = phase === "series" || (online && (onlinePhase === "series" || onlinePhase === "bracket"));
+  // online (inclusive o espectador eliminado) — demais telas no fundo padrão.
+  const isGame = phase === "series" || isSpectator || (online && (onlinePhase === "series" || onlinePhase === "bracket"));
   // tela de VITÓRIA lendária: campeão do mundo na tela de resultado (modo solo).
   const isVictory = phase === "result" && game.state.finished === "champion";
   // classificação final do Duelo online: fundo CERIMONIAL neutro (vale pro campeão
@@ -50,7 +52,7 @@ export function App() {
       ) : isOnlineResult ? (
         <FinaleBackdrop />
       ) : (
-        <AppBackground variant={isGame ? "game" : undefined} />
+        <AppBackground variant={isGame ? "game" : undefined} gray={isSpectator} />
       )}
       <MuteButton muted={game.muted} onToggle={game.toggleMute} />
 

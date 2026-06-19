@@ -47,6 +47,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
 
   const showRatings = !(st?.config.hideRatings ?? false);
   const timed = (st?.config.pickSeconds ?? 0) > 0;
+  const campaigns = st?.config.campaigns; // campeonatos no pool (undefined = todos)
   const secs = useCountdown(st?.roundDeadline ?? null);
   const urgent = secs <= 5;
 
@@ -115,15 +116,15 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
     // freia), em vez de ticks fixos — o giro dura o mesmo tempo do solo.
     let i = 0;
     const total = 15;
-    const tickShown = () => setSpinTeam(rollTeam(playerRng(code, myId ?? "", round * 7919 + i + 1)).team.team);
+    const tickShown = () => setSpinTeam(rollTeam(playerRng(code, myId ?? "", round * 7919 + i + 1), undefined, campaigns).team.team);
     tickShown();
     const step = () => {
       i++;
       if (i >= total) {
         sounds.sndReveal(); // trava o time (mesmo som do solo)
         const final = sameTeam
-          ? rollSameTeam(useRng, sameTeam, excludeId ?? "") ?? rollTeam(useRng, excludeId)
-          : rollTeam(useRng, excludeId);
+          ? rollSameTeam(useRng, sameTeam, excludeId ?? "", campaigns) ?? rollTeam(useRng, excludeId, campaigns)
+          : rollTeam(useRng, excludeId, campaigns);
         setRolled(final);
         setRolling(false);
         return;
@@ -140,7 +141,7 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
 
   // resorteios (gastam 1 dos 3) — só fora da roleta e com resorteio disponível.
   const canReroll = rerolls > 0 && !rolling && !pickedThisRound;
-  const canSame = !!rolled && hasSameTeamOtherYear(rolled.team.team, rolled.team.id);
+  const canSame = !!rolled && hasSameTeamOtherYear(rolled.team.team, rolled.team.id, campaigns);
 
   const rerollOther = () => {
     if (!canReroll) return;
@@ -180,24 +181,24 @@ export function OnlineDraft({ r, myId, sounds, onExit }: { r: UseOnlineRoom; myI
           </div>
           <span className="font-display text-[12px] font-bold uppercase tracking-[2px] text-gold-bright">🔴 Draft ao Vivo</span>
         </div>
-        <div className="flex items-center gap-[14px]">
-          <div className="flex items-center gap-[7px]">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-[14px]">
+          <div className="flex shrink-0 items-center gap-[7px] whitespace-nowrap">
             <span className="font-mono text-[12px] tracking-[1px] text-muted">RODADA</span>
             <span className="font-display text-[20px] font-semibold text-cream">{round}<span className="text-[15px] text-dim">/5</span></span>
           </div>
           {timed ? (
-            <div className="flex items-center gap-2 rounded-full border px-[13px] py-1.5"
+            <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-[11px] py-1.5 sm:gap-2 sm:px-[13px]"
               style={urgent ? { borderColor: "rgba(224,88,74,0.6)", background: "rgba(224,88,74,0.1)" } : { borderColor: "rgba(201,162,75,0.4)", background: "rgba(201,162,75,0.06)" }}>
               <span className="text-[13px]">⏱</span>
               <span className={`font-mono text-[18px] font-bold tabular-nums ${urgent ? "text-red-soft" : "text-gold-bright"}`}>{Math.floor(secs / 60)}:{String(secs % 60).padStart(2, "0")}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 rounded-full border border-gold/25 px-[13px] py-1.5">
+            <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-gold/25 px-[11px] py-1.5 sm:gap-2 sm:px-[13px]">
               <span className="text-[13px]">⏱</span>
               <span className="font-mono text-[12px] tracking-[1px] text-muted">sem limite</span>
             </div>
           )}
-          <div className="flex items-center gap-2 rounded-full border border-gold/30 px-[13px] py-1.5">
+          <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-gold/30 px-[11px] py-1.5 sm:gap-2 sm:px-[13px]">
             <span className="text-[14px] text-gold-bright">↻</span>
             <span className="font-mono text-[13px] text-[#D7D4CB]">{rerolls} resorteio{rerolls === 1 ? "" : "s"}</span>
           </div>

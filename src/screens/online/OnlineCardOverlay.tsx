@@ -28,7 +28,7 @@ const HOSTILE_GLOW = "rgba(224,88,74,0.5)";
 const ROLE_LABEL: Record<Role, string> = { TOP: "TOP", JNG: "JNG", MID: "MID", BOT: "ADC", SUP: "SUP" };
 
 export function OnlineCardOverlay({
-  trio, hostile, deadline, myLine, oppLine, onPick,
+  trio, hostile, deadline, myLine, oppLine, onPick, serverNow = () => Date.now(),
 }: {
   trio: EventCard[];
   hostile: boolean;
@@ -36,6 +36,8 @@ export function OnlineCardOverlay({
   myLine: Competitor;
   oppLine: Competitor;
   onPick: (choice: CardChoice) => void;
+  /** "agora" no relógio do host (corrige clock skew do cliente). */
+  serverNow?: () => number;
 }) {
   const [sel, setSel] = useState<EventCard | null>(null);
   const [swapRole, setSwapRole] = useState<Role | null>(null);
@@ -43,14 +45,16 @@ export function OnlineCardOverlay({
   const [done, setDone] = useState(false); // já enviei minha escolha
   const [secs, setSecs] = useState(15);
 
-  // countdown visual até o deadline (o host faz o auto-pick ao zerar).
+  // countdown visual até o deadline (o host faz o auto-pick ao zerar). Usa o
+  // relógio do HOST (serverNow) pra não mostrar tempo errado num cliente com
+  // relógio dessincronizado.
   useEffect(() => {
     if (deadline == null) return;
-    const tick = () => setSecs(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
+    const tick = () => setSecs(Math.max(0, Math.ceil((deadline - serverNow()) / 1000)));
     tick();
     const id = setInterval(tick, 250);
     return () => clearInterval(id);
-  }, [deadline]);
+  }, [deadline, serverNow]);
 
   // trava scroll da página enquanto o overlay está aberto.
   useEffect(() => {
@@ -118,8 +122,15 @@ export function OnlineCardOverlay({
         <div className="mt-1 font-mono text-[11px] uppercase tracking-[2px] text-muted">
           {sel ? targetHint(sel, swapRole) : "os dois lados receberam evento do mesmo nível"}
         </div>
-        <div className="mt-2 font-mono text-[12px] uppercase tracking-[2px]" style={{ color: secs <= 3 ? "#f0867a" : "#9aa3b0" }}>
-          ⏱ {secs}s {secs === 0 ? "· escolhendo por você…" : ""}
+        <div className="mt-3 flex items-center justify-center">
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px] tabular-nums transition-colors"
+            style={secs <= 3
+              ? { color: "#f0867a", borderColor: "rgba(224,88,74,0.55)", background: "rgba(224,88,74,0.12)" }
+              : { color: "#e8ce86", borderColor: "rgba(201,162,75,0.4)", background: "rgba(201,162,75,0.08)" }}
+          >
+            ⏱ {secs}s{secs === 0 ? " · escolhendo por você…" : ""}
+          </span>
         </div>
       </div>
 

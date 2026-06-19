@@ -8,7 +8,7 @@
 // Tudo derivado de uma SEED (PRNG) — o draft dos bots, o sorteio do bracket e as
 // simulações são reproduzíveis. Base pronta pro online (Degrau 1+).
 
-import type { Role } from "../types";
+import type { Role, Tournament } from "../types";
 import type { Bracket, Competitor, TournamentPick } from "./tournament";
 import type { GameTimeline } from "./timeline";
 
@@ -30,6 +30,8 @@ export interface RoomConfig {
   cardsOn: boolean; // cartas de evento ligadas
   pace: Pace; // imersivo | rapido
   seriesMode?: SeriesMode; // online: coletivo (default) | paralelo
+  /** campeonatos que entram no pool de draft (mín. 1). Ausente = todos (default). */
+  campaigns?: Tournament[];
 }
 
 /** Estado de uma série EM ANDAMENTO sendo assistida (timeline imersiva). */
