@@ -273,6 +273,12 @@ export function useOnlineRoom(opts: {
         // os HUMANOS já escolheram (bots não bloqueiam) OU o deadline (10s) passou.
         const cardsKey = "cards:" + st.parallelSeries.map((s) => s.seedSalt).sort().join(",");
         const deadline = st.parallelSeries.reduce((mx, s) => Math.max(mx, s.cards?.deadline ?? 0), 0);
+        // GRACE: o pick do guest viaja guest→host pela rede (best-effort, pode
+        // atrasar). Se o host auto-resolvesse no INSTANTE do deadline, um pick que
+        // saiu a tempo mas chegou 200-500ms depois era descartado (auto-pick
+        // aleatório no lugar) → a série rodava com a carta ERRADA e o guest às vezes
+        // perdia uma série que ganharia. Tolerância de 2.5s cobre o trânsito do pick.
+        const RESOLVE_GRACE_MS = 2500;
         const tryResolveCards = () => {
           if (resolvedPhaseRef.current === cardsKey) return;
           const cur = view?.state ?? st;
@@ -283,7 +289,8 @@ export function useOnlineRoom(opts: {
             const bBot = byId.get(s.bId)?.isBot ?? false;
             return (aBot || !!s.cards.pickA) && (bBot || !!s.cards.pickB);
           });
-          if (!humansPicked && Date.now() < deadline) return; // ainda escolhendo
+          // se todos já pickaram, resolve JÁ; senão espera até deadline+GRACE.
+          if (!humansPicked && Date.now() < deadline + RESOLVE_GRACE_MS) return; // ainda escolhendo / aguardando pick em trânsito
           resolvedPhaseRef.current = cardsKey;
           const start = Date.now() + 1200;
           const resolved = series.map((s) => (s.cards ? simulateSeriesState(s, byId, code, start) : s));
@@ -481,8 +488,14 @@ export function buildConfrontSeries(a: Competitor, b: Competitor, code: string, 
 /** Resolve a subfase de cartas de uma série: completa picks faltantes (auto-pick
  * aleatório p/ humano ausente, MELHOR carta p/ bot), aplica os efeitos às lines e
  * SIMULA a Bo5 com as lines efetivas. Devolve a série pronta pra narrar (cartas
- * com deadline zerado, games preenchidos). `start` = countdown de início. */
-function simulateSeriesState(s: SeriesState, byId: Map<string, Competitor>, code: string, start: number): SeriesState {
+ * com deadline zerado, games preenchidos). `start` = countdown de início.
+ *
+ * EXPORTADA: o CONVIDADO também a usa pra simular a SUA série LOCALMENTE quando já
+ * pickou e o host ainda não mandou a série simulada (snapshot grande pode se perder
+ * no Realtime). Por ser 100% determinística (mesma seed → mesmo resultado), o local
+ * bate com o do host — desde que o guest injete o pick que ELE escolheu (senão
+ * completePicks daria um auto-pick aleatório diferente). */
+export function simulateSeriesState(s: SeriesState, byId: Map<string, Competitor>, code: string, start: number): SeriesState {
   const a = byId.get(s.aId);
   const b = byId.get(s.bId);
   if (!a || !b || !s.cards) return s;

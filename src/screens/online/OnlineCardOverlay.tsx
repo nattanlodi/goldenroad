@@ -117,31 +117,31 @@ export function OnlineCardOverlay({
   const myPicks = myLine.line;
 
   return (
-    <div className="anim-fade-fast fixed inset-0 z-50 flex flex-col overflow-y-auto px-4 py-10" style={{ background: "rgba(12,13,17,0.65)", backdropFilter: "blur(5px)" }}>
+    <div className="anim-fade-fast fixed inset-0 z-50 flex flex-col overflow-y-auto px-4 py-4 sm:py-10" style={{ background: "rgba(12,13,17,0.65)", backdropFilter: "blur(5px)" }}>
       {/* título + timer */}
       <div className="shrink-0 text-center">
-        <div className="mx-auto mb-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[13px] font-bold uppercase tracking-[3px]"
+        <div className="mx-auto mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 font-display text-[11px] font-bold uppercase tracking-[2px] sm:mb-3 sm:px-4 sm:py-1.5 sm:text-[13px] sm:tracking-[3px]"
           style={hostile
             ? { color: "#1a0606", background: "linear-gradient(180deg,#f07a6c,#c0392b)", boxShadow: "0 0 22px rgba(224,88,74,0.55)" }
             : { color: "#1a1206", background: "linear-gradient(180deg,#e8ce86,#c9a24b)", boxShadow: "0 0 22px rgba(201,162,75,0.5)" }}>
           {hostile ? "⚠️ Evento de Azar" : "⚡ Evento"}
         </div>
-        <div className="font-display text-[26px] font-bold uppercase tracking-[2px]" style={{ color: hostile ? "#f0867a" : "#e8ce86" }}>
+        <div className="font-display text-[19px] font-bold uppercase tracking-[1px] sm:text-[26px] sm:tracking-[2px]" style={{ color: hostile ? "#f0867a" : "#e8ce86" }}>
           {!sel ? (hostile ? "Escolha o mal menor" : "Escolha uma carta") : sel.name}
         </div>
-        <div className="mt-1 font-mono text-[11px] uppercase tracking-[2px] text-muted">
+        <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[1.5px] text-muted sm:mt-1 sm:text-[11px] sm:tracking-[2px]">
           {sel ? targetHint(sel, swapRole) : "os dois lados receberam evento do mesmo nível"}
         </div>
-        <div className="mt-3 flex items-center justify-center">
+        <div className="mt-2 flex items-center justify-center sm:mt-3">
           {!canPick ? (
             // cartas aparecendo / ainda travadas pro clique (anti-clique-acidental).
-            <span className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px]"
+            <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 font-mono text-[13px] font-bold uppercase tracking-[1.5px] sm:px-3.5 sm:py-1 sm:text-[15px]"
               style={{ color: "#9aa3b0", borderColor: "rgba(154,163,176,0.4)", background: "rgba(154,163,176,0.08)" }}>
               🔒 {revealed ? "Já vai liberar…" : "Preparando…"}
             </span>
           ) : (
             <span
-              className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 font-mono text-[15px] font-bold uppercase tracking-[1.5px] tabular-nums transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 font-mono text-[13px] font-bold uppercase tracking-[1.5px] tabular-nums transition-colors sm:px-3.5 sm:py-1 sm:text-[15px]"
               style={secs <= 3
                 ? { color: "#f0867a", borderColor: "rgba(224,88,74,0.55)", background: "rgba(224,88,74,0.12)" }
                 : { color: "#e8ce86", borderColor: "rgba(201,162,75,0.4)", background: "rgba(201,162,75,0.08)" }}
@@ -152,17 +152,17 @@ export function OnlineCardOverlay({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center py-4 sm:py-8">
+      <div className="flex flex-1 items-start justify-center py-3 sm:items-center sm:py-8">
         <div className="w-full max-w-[1000px]">
           {/* 1s inicial: cartas ainda não reveladas → placeholder discreto. */}
           {!revealed && (
-            <div className="flex min-h-[168px] items-center justify-center sm:min-h-[440px]">
-              <div className="anim-pulse font-display text-[15px] uppercase tracking-[3px] text-muted">distribuindo as cartas…</div>
+            <div className="flex min-h-[120px] items-center justify-center sm:min-h-[440px]">
+              <div className="anim-pulse font-display text-[14px] uppercase tracking-[3px] text-muted sm:text-[15px]">distribuindo as cartas…</div>
             </div>
           )}
           {/* fase 1: as 3 cartas */}
           {revealed && !sel && (
-            <div className="grid gap-4 [grid-template-columns:1fr] sm:gap-12 sm:[grid-template-columns:repeat(3,1fr)]">
+            <div className="grid gap-2.5 [grid-template-columns:1fr] sm:gap-12 sm:[grid-template-columns:repeat(3,1fr)]">
               {trio.map((card, i) => {
                 const r = hostile
                   ? { label: HOSTILE_TONE[card.rarity].label, accent: HOSTILE_ACCENT, glow: HOSTILE_GLOW }
@@ -170,7 +170,7 @@ export function OnlineCardOverlay({
                 const legendary = !hostile && card.rarity === "lendaria";
                 return (
                   <button key={`${card.id}-${i}`} onClick={() => canPick && choose(card)} disabled={!canPick}
-                    className={`event-card anim-pop group relative flex min-h-[168px] flex-col items-center overflow-hidden rounded-[20px] border px-4 pb-4 pt-6 text-center transition-all duration-300 sm:min-h-[440px] sm:px-6 sm:pb-8 sm:pt-11 ${legendary ? "event-card--legendary" : ""} ${canPick ? "cursor-pointer hover:-translate-y-2.5" : "cursor-not-allowed opacity-65"}`}
+                    className={`event-card anim-pop group relative flex flex-col items-center overflow-hidden rounded-[16px] border px-3 pb-3 pt-4 text-center transition-all duration-300 sm:min-h-[440px] sm:rounded-[20px] sm:px-6 sm:pb-8 sm:pt-11 ${legendary ? "event-card--legendary" : ""} ${canPick ? "cursor-pointer hover:-translate-y-2.5" : "cursor-not-allowed opacity-65"}`}
                     style={{
                       background: `linear-gradient(180deg, color-mix(in srgb, ${r.accent} 13%, rgba(28,29,33,0.96)), rgba(16,17,20,0.97))`,
                       borderColor: `color-mix(in srgb, ${r.accent} 45%, transparent)`,
@@ -184,7 +184,7 @@ export function OnlineCardOverlay({
                       style={{ color: r.accent, background: `color-mix(in srgb, ${r.accent} 16%, rgba(16,17,20,0.9))`, border: `1px solid color-mix(in srgb, ${r.accent} 45%, transparent)`, boxShadow: `0 0 14px -4px ${r.glow}` }}>
                       {hostile ? "⚠ " : legendary ? "✦ " : ""}{r.label}{card.permanent && " · perm"}
                     </span>
-                    <span className="event-card__medal relative my-1 flex h-[60px] w-[60px] items-center justify-center rounded-full text-[32px] leading-none transition-transform duration-300 group-hover:scale-110 sm:my-2 sm:h-[100px] sm:w-[100px] sm:text-[52px]"
+                    <span className="event-card__medal relative my-0.5 flex h-[46px] w-[46px] items-center justify-center rounded-full text-[24px] leading-none transition-transform duration-300 group-hover:scale-110 sm:my-2 sm:h-[100px] sm:w-[100px] sm:text-[52px]"
                       style={{
                         background: `radial-gradient(circle at 50% 38%, color-mix(in srgb, ${r.accent} 22%, rgba(20,21,24,0.9)), rgba(14,15,18,0.95))`,
                         border: `1.5px solid color-mix(in srgb, ${r.accent} 60%, transparent)`,
@@ -192,10 +192,10 @@ export function OnlineCardOverlay({
                       }}>
                       <span className="event-card__icon drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">{card.icon}</span>
                     </span>
-                    <span className="relative mt-2 font-display text-[21px] font-extrabold uppercase tracking-[1px] sm:mt-5 sm:text-[22px]" style={{ color: "#f3ecd8", textShadow: `0 0 18px color-mix(in srgb, ${r.accent} 55%, transparent)` }}>
+                    <span className="relative mt-1.5 font-display text-[16px] font-extrabold uppercase tracking-[1px] sm:mt-5 sm:text-[22px]" style={{ color: "#f3ecd8", textShadow: `0 0 18px color-mix(in srgb, ${r.accent} 55%, transparent)` }}>
                       {card.name}
                     </span>
-                    <span className="relative mt-3.5 text-[12.5px] leading-snug text-[#C7CCD4] sm:mt-5 sm:text-[13.5px] sm:leading-relaxed">{card.desc}</span>
+                    <span className="relative mt-1.5 text-[11.5px] leading-snug text-[#C7CCD4] sm:mt-5 sm:text-[13.5px] sm:leading-relaxed">{card.desc}</span>
                   </button>
                 );
               })}

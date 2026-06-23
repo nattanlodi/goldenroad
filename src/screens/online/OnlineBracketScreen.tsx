@@ -12,12 +12,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   withTimelines,
   effectiveCompetitors,
+  simulateSeriesState,
   type UseOnlineRoom,
 } from "../../game/online/useOnlineRoom";
 import type { TournamentSounds } from "../../game/useTournament";
 import { useSeriesNarration } from "../../game/online/useSeriesNarration";
 import { scoreAtElapsed } from "../../game/online/seriesNarration";
-import type { SeriesState, SideMatch } from "../../game/online/roomState";
+import type { CardChoice, SeriesState, SideMatch } from "../../game/online/roomState";
 import { ROLES } from "../../data/teams";
 import { isTournamentOver, competitorLabel, type Bracket, type BracketMatch, type Competitor, type TournamentPick } from "../../game/tournament";
 import { Logo6x0 } from "../../components/Logo6x0";
@@ -155,19 +156,21 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
   }, [st?.tournamentOver, sounds]);
 
   // tick local pra abrir o overlay de cartas quando o countdown da minha série
-  // acaba (a janela de escolha começa só depois do "começa em Xs").
-  const [, forceTick] = useState(0);
+  // acaba (a janela de escolha começa só depois do "começa em Xs"). O VALOR também
+  // alimenta o useMemo da simulação local (re-deriva quando eu acabo de pickar).
+  const [forceTickValue, forceTick] = useState(0);
   useEffect(() => {
     const id = setInterval(() => forceTick((n) => n + 1), 300);
     return () => clearInterval(id);
   }, []);
-  // séries cujo MEU pick eu JÁ ENVIEI (por seedSalt). Como o cliente é otimista
-  // (a intent vai pro host e só volta no snapshot), marco localmente pra FECHAR o
-  // overlay na hora — senão o convidado ficaria preso em "aguardando" até o
-  // snapshot do host voltar (e se o pick chega tarde, ele nunca volta). Assim o
-  // convidado segue o snapshot do host (que avança a fase) sem travar no overlay.
-  const pickedSeriesRef = useRef<Set<string>>(new Set());
-  const markPicked = (salt: string) => { pickedSeriesRef.current.add(salt); forceTick((n) => n + 1); };
+  // séries cujo MEU pick eu JÁ ENVIEI (por seedSalt → a CardChoice escolhida). Como
+  // o cliente é otimista (a intent vai pro host e só volta no snapshot), marco
+  // localmente pra FECHAR o overlay na hora — senão o convidado ficaria preso em
+  // "aguardando" até o snapshot do host voltar (e se o pick chega tarde, ele nunca
+  // volta). Guardamos a ESCOLHA (não só o salt) pra poder simular a série LOCALMENTE
+  // (com a minha carta) caso o host demore/perca o snapshot da série simulada.
+  const pickedSeriesRef = useRef<Map<string, CardChoice>>(new Map());
+  const markPicked = (salt: string, choice: CardChoice) => { pickedSeriesRef.current.set(salt, choice); forceTick((n) => n + 1); };
   // devo escolher uma carta AGORA? (minha série tem cartas pendentes, o countdown
   // já passou, e eu ainda não pickei). myId é um dos lados → A ou B.
   const cardPhase = (() => {
@@ -187,13 +190,42 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
     if (!myComp || !oppComp) return null;
     return { salt: s.seedSalt, trio: iAmA ? s.cards.trioA : s.cards.trioB, hostile: s.cards.hostile, deadline: s.cards.deadline, myComp, oppComp };
   })();
-  // série ainda na subfase de CARTAS (sem jogos simulados)? não narra ainda — o
-  // overlay cuida da escolha; a narração só começa quando os games chegam.
-  const cardsPending = !!mySeries?.cards && mySeries.games.length === 0;
+  // SIMULAÇÃO LOCAL da MINHA série (anti-travamento): se eu já enviei meu pick mas o
+  // host ainda não mandou a série simulada (games vazios) — porque o snapshot grande
+  // se perdeu no Realtime ou está demorando — eu mesmo simulo a Bo5 LOCALMENTE,
+  // injetando a carta que ESCOLHI. Como é 100% determinístico por seed, bate com o
+  // que o host vai produzir; assim eu vejo a série rolar em vez de ficar preso em
+  // "aguardando o rival". Quando o snapshot do host chega, ele assume (mesma seed →
+  // mesmo resultado, sem salto). Só vale quando EU sou um dos lados (não espectador).
+  const localSim = useMemo(() => {
+    const s = mySeries;
+    if (!s?.cards || s.games.length > 0 || !myId) return null;
+    const iAmA = s.aId === myId;
+    const iAmB = s.bId === myId;
+    if (!iAmA && !iAmB) return null;
+    const myChoice = pickedSeriesRef.current.get(s.seedSalt);
+    if (!myChoice) return null; // só simulo depois de TER escolhido
+    // injeta minha carta no lado certo; o resto (oponente bot / já pickado) o
+    // simulateSeriesState completa deterministicamente, igual ao host.
+    const withMine: SeriesState = {
+      ...s,
+      cards: { ...s.cards, pickA: iAmA ? myChoice : s.cards.pickA, pickB: iAmB ? myChoice : s.cards.pickB },
+    };
+    const start = (s.cards.deadline ?? Date.now()) + 1200; // mesmo ritmo do host (deadline + respiro)
+    return simulateSeriesState(withMine, byId, st!.code, start);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mySeries, myId, byId, st?.code, forceTickValue]);
+
+  // a série EFETIVA a narrar: a oficial do host (se já simulada) OU a minha
+  // simulação local (se já pickei e o host ainda não respondeu).
+  const effectiveSeries = (mySeries && mySeries.games.length > 0) ? mySeries : localSim;
+  // série ainda na subfase de CARTAS (sem jogos simulados E sem simulação local)?
+  // não narra ainda — o overlay cuida da escolha; a narração começa quando há games.
+  const cardsPending = !!mySeries?.cards && !effectiveSeries;
   // reidrata as timelines da série (não trafegam na rede; regeneradas por seed).
   const hydratedSeries = useMemo(
-    () => (mySeries && !cardsPending ? withTimelines(mySeries, byId, st!.code, imersivo) : null),
-    [mySeries, cardsPending, byId, st?.code, imersivo]
+    () => (effectiveSeries && effectiveSeries.games.length > 0 ? withTimelines(effectiveSeries, byId, st!.code, imersivo) : null),
+    [effectiveSeries, byId, st?.code, imersivo]
   );
 
   // ── MODO ESPECTADOR (eliminado) ──
@@ -336,7 +368,7 @@ export function OnlineBracket({ r, myId, sounds, onExit }: { r: UseOnlineRoom; m
           myLine={cardPhase.myComp}
           oppLine={cardPhase.oppComp}
           serverNow={r.serverNow}
-          onPick={(choice) => { r.pickCard(choice); markPicked(cardPhase.salt); }}
+          onPick={(choice) => { r.pickCard(choice); markPicked(cardPhase.salt, choice); }}
         />
       )}
     </div>
